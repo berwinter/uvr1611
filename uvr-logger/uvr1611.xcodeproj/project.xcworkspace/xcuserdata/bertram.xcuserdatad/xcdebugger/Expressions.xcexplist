@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "recv_data:main.c">
+      </ContextState>
+      <ContextState
+         contextName = "main:main.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "argv[2]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "recv_latest:main.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "recvBuf">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "recv_data:uvrconnection.c">
+      </ContextState>
+      <ContextState
+         contextName = "fill_address:main.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "buffer[1]">
+            </PersistentString>
+            <PersistentString
+               value = "buffer[0]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "parseOptions:helper.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "bActual">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "check_header:main.c">
+      </ContextState>
+      <ContextState
+         contextName = "parse_analog:parser.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "(*data)[1]">
+            </PersistentString>
+            <PersistentString
+               value = "(*data)[0]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "check_header:uvrconnection.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "buffer">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

@@ -10,3 +10,13 @@
 *.lai
 *.la
 *.a
+
+web-server/js/.DS_Store
+
+web-server/images/.DS_Store
+
+web-server/css/.DS_Store
+
+web-server/.DS_Store
+
+uvr-logger/.DS_Store
