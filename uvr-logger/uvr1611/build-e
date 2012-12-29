@@ -1,1 +1,0 @@
-gcc -o uvr1611-logger $(mysql_config --cflags) main.c helper.c parser.c tcpip.c uvrconnection.c logger.c -std=gnu99 $(mysql_config --libs)
