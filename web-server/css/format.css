@@ -1,39 +1,75 @@
 body {
 	background-color: #EEE;
 	margin:0;
+	font-size:12px;
 	font-family:Helvetica;
 }
 
 #content {
-	top:90px;
-	left:100px;
-	padding:30px;
+	left:0;
 	right:0;
 	bottom:0;
+	top:100%;
 	position:fixed;
 	background-color: #FFF;
-	border-top: 1px solid #DDD;
-	border-left: 1px solid #DDD;
-	border-radius: 10px 0 0 0;
-	overflow:auto;
+	display:none;
 }
 
-#navigation {
-	top:90px;
-	left:0;
+
+#menu {
+	top:0;
 	bottom:0;
-	width:100px;
-	position:fixed;
+	right:0;
+	left:0;
+	margin: auto;
+	width: 400px;
+	height: 250px;
+	position:absolute;
+	background-color: #FFF;
+	border: 1px solid #DDD;
+	border-radius: 10px;
+	padding: 10px 20px;
 }
 
-.chart {
+#browser h1 {
+	font-size:1.5em;
+}
+
+#browser {
+	font-size: 1.1em;
+	color: #444;
+}
+
+#browser a {
+	color: #444;
+}
+
+#browser ul {
+	padding-left:20px;
+	color: #444;
+	list-style-type: none;
+}
+
+#indicator {
+	top: 24px;
+	left: 19px;
+	background-color: #eee;
+	border: 1px solid #DDD;
+	border-radius: 5px;
+	height:60px;
+	width:100px;
+	position: absolute;
+	display:none;
+}
+
+div.chart {
 	background: url(../images/chart_bar.png) no-repeat transparent;
 }
 
-.home {
+div.home {
 	background: url(../images/home.png) no-repeat transparent;
 }
-.icon
+div.icon
 {
     background-position: 50% 100%;
 	width:32px;
@@ -41,18 +77,23 @@ body {
 	margin: 20px auto 5px;	
 }
 
-.item {
+div.item {
+	position: relative;
 	color:#BBB;
 	text-align:center;
-	font-size: 75%;
+	font-size:1.1em;
+	height:80px;
+	width:100px;
+	float: left;
+	display:none;
 }
 
-.hover, .active{
+div.hover, div.active{
 	color:#888;
 	cursor:pointer;
 }
 
-.hover > div.icon, .active > div.icon {
+div.hover > div.icon, div.active > div.icon {
     background-position: 50% 0;
 }
 
@@ -61,18 +102,66 @@ body {
 }
 
 #logo {
-	top:20px;
-	left: 100px;
+	top:50%;
+	left:50%;
+	margin-left:-210px;
+	margin-top:-210px;
 	background: url(../images/logo.png) no-repeat transparent;
-	width:350px;
+	width:400px;
 	height:80px;
-	position: fixed;
+	position: absolute;
 }
 
-#indicator {
-	background: url(../images/indicator.png) 92px 0 no-repeat #ddd;
-	height:60px;
-	width:101px;
-	top:105px;
-	position: fixed;
+#pages {
+	margin:auto;
+	width:800px;
+}
+#container {
+	width:100%;
+	top:37px;
+	bottom:0;
+	position:absolute;
+	overflow:auto;
+}
+
+#toolbar {
+	border-top: 1px solid #DDD;
+	border-bottom: 1px solid #DDD;
+	background-color: #EEE;
+	height: 35px;
+	position:absolute;
+	width:100%;
+}
+
+#datepicker {
+	position:absolute;
+	display:block;
+	left: 50%;
+	margin-top:5px;
+	margin-left:-75px;
+	width:150px;
+	text-align:center;
+	font-size: 1.5em;
+}
+#buttonset {
+	right: 10px;
+	position:absolute;
+}
+#home {
+	left: 10px;
+	display:block;
+	position:absolute;
+}
+
+#overlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+	background: url(../images/loading.gif) 50% 50% no-repeat #FFF;
+	z-index: 100;
+	border-radius: 10px 0 0 0;
+	opacity: 0.75;
+	display: none;
 }

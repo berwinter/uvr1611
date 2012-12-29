@@ -23,8 +23,10 @@
 #define NUMBER_OF_SETS 1
 #define MAX_LENGTH 524
 #define DATE_FORMATTER "20%02d-%02d-%02d %02d:%02d:%02d"
-#define INSERT_QUERY "INSERT IGNORE INTO data (timestamp, analog1, analog2, analog3, analog4, analog5, analog6, analog7, analog8, analog9, analog10, analog11, analog12, analog13, analog14, analog15, analog16, digital1, digital2, digital3, digital4, digital5, digital6, digital7, digital8, digital9, digital10, digital11, digital12, digital13, speed1, speed2, speed3, speed4, heatmeter1_power, heatmeter1_energy, heatmeter2_power, heatmeter2_energy) VALUES ('%s',%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d)"
-#define JSON_STRING "{\"analog1\":\"%.1f\",\"analog2\":\"%.1f\",\"analog3\":\"%.1f\",\"analog4\":\"%.1f\",\"analog5\":\"%.1f\",\"analog6\":\"%.1f\",\"analog7\":\"%.1f\",\"analog8\":\"%.1f\",\"analog9\":\"%.1f\",\"analog10\":\"%.1f\",\"analog11\":\"%.1f\",\"analog12\":\"%.1f\",\"analog13\":\"%.1f\",\"analog14\":\"%.1f\",\"analog15\":\"%.1f\",\"analog16\":\"%.1f\",\"digital1\":\"\\u%04d\",\"digital2\":\"\\u%04d\",\"digital3\":\"\\u%04d\",\"digital4\":\"\\u%04d\",\"digital5\":\"\\u%04d\",\"digital6\":\"\\u%04d\",\"digital7\":\"\\u%04d\",\"digital8\":\"\\u%04d\",\"digital9\":\"\\u%04d\",\"digital10\":\"\\u%04d\",\"digital11\":\"\\u%04d\",\"digital12\":\"\\u%04d\",\"digital13\":\"\\u%04d\",\"speed1\":\"%d\",\"speed2\":\"%d\",\"speed3\":\"%d\",\"speed4\":\"%d\",\"heatmeter1_power\":\"%d\",\"heatmeter1_energy\":\"%d\",\"heatmeter2_power\":\"%d\",\"heatmeter2_energy\":\"%d\"}"
+#define INSERT_QUERY "REPLACE INTO data (timestamp, analog1, analog2, analog3, analog4, analog5, analog6, analog7, analog8, analog9, analog10, analog11, analog12, analog13, analog14, analog15, analog16, digital1, digital2, digital3, digital4, digital5, digital6, digital7, digital8, digital9, digital10, digital11, digital12, digital13, speed1, speed2, speed3, speed4, heatmeter1_power, heatmeter2_power) VALUES ('%s',%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%.3f,%.3f)"
+#define INSERT_BINARY_QUERY "UPDATE data SET bin=%s WHERE timestamp = '%s'"
+#define POWER_INSERT_QUERY "REPLACE INTO energy (timestamp, energy1, energy2) VALUES ('20%02d-%02d-%02d',%.1f,%.1f)"
+#define JSON_STRING "{\"analog1\":\"%.1f\",\"analog2\":\"%.1f\",\"analog3\":\"%.1f\",\"analog4\":\"%.1f\",\"analog5\":\"%.1f\",\"analog6\":\"%.1f\",\"analog7\":\"%.1f\",\"analog8\":\"%.1f\",\"analog9\":\"%.1f\",\"analog10\":\"%.1f\",\"analog11\":\"%.1f\",\"analog12\":\"%.1f\",\"analog13\":\"%.1f\",\"analog14\":\"%.1f\",\"analog15\":\"%.1f\",\"analog16\":\"%.1f\",\"digital1\":\"\\u%04d\",\"digital2\":\"\\u%04d\",\"digital3\":\"\\u%04d\",\"digital4\":\"\\u%04d\",\"digital5\":\"\\u%04d\",\"digital6\":\"\\u%04d\",\"digital7\":\"\\u%04d\",\"digital8\":\"\\u%04d\",\"digital9\":\"\\u%04d\",\"digital10\":\"\\u%04d\",\"digital11\":\"\\u%04d\",\"digital12\":\"\\u%04d\",\"digital13\":\"\\u%04d\",\"speed1\":\"%d\",\"speed2\":\"%d\",\"speed3\":\"%d\",\"speed4\":\"%d\",\"heatmeter1_power\":\"%.3f\",\"heatmeter1_energy\":\"%.1f\",\"heatmeter2_power\":\"%.3f\",\"heatmeter2_energy\":\"%.1f\"}"
 
 typedef struct
 {
@@ -60,9 +62,8 @@ typedef struct {
 
 typedef struct {
     uint8_t active;
-    uint32_t power;
-    uint16_t kWh;
-    uint16_t MWh;
+    float power;
+    double kWh;
 } heat_t;
 
 typedef struct {

@@ -15,7 +15,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.3.1 r9886"
-   sodipodi:docname="Neues Dokument 1">
+   sodipodi:docname="schema.svg">
   <defs
      id="defs4">
     <linearGradient
@@ -140,26 +140,26 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="416.90818"
-     inkscape:cy="269.13845"
+     inkscape:zoom="7.9195959"
+     inkscape:cx="593.48924"
+     inkscape:cy="75.306158"
      inkscape:document-units="px"
-     inkscape:current-layer="svg2"
+     inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:snap-bbox="false"
+     inkscape:snap-bbox="true"
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:snap-bbox-midpoints="false"
      inkscape:snap-center="true"
      inkscape:snap-object-midpoints="true"
-     inkscape:bbox-paths="true"
+     inkscape:bbox-paths="false"
      inkscape:object-paths="true"
      inkscape:snap-bbox-edge-midpoints="true"
      inkscape:snap-midpoints="false"
-     inkscape:bbox-nodes="true"
+     inkscape:bbox-nodes="false"
      inkscape:snap-nodes="false"
      inkscape:window-width="1920"
-     inkscape:window-height="1138"
+     inkscape:window-height="1137"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1" />
@@ -171,7 +171,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -245,7 +245,7 @@
          style="fill:none;stroke:#000000;stroke-width:5.1727953;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <path
          transform="translate(43.748349,-92.676613)"
-         d="m 314.15743,434.84006 a 4.0406103,4.0406103 0 1 1 -8.08122,0 4.0406103,4.0406103 0 1 1 8.08122,0 z"
+         d="m 314.15743,434.84006 c 0,2.23156 -1.80904,4.04061 -4.04061,4.04061 -2.23157,0 -4.04061,-1.80905 -4.04061,-4.04061 0,-2.23157 1.80904,-4.04061 4.04061,-4.04061 2.23157,0 4.04061,1.80904 4.04061,4.04061 z"
          sodipodi:ry="4.0406103"
          sodipodi:rx="4.0406103"
          sodipodi:cy="434.84006"
@@ -265,7 +265,7 @@
          style="fill:none;stroke:#000000;stroke-width:5.1727953;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <path
          transform="translate(43.748349,-92.676613)"
-         d="m 314.15743,434.84006 a 4.0406103,4.0406103 0 1 1 -8.08122,0 4.0406103,4.0406103 0 1 1 8.08122,0 z"
+         d="m 314.15743,434.84006 c 0,2.23156 -1.80904,4.04061 -4.04061,4.04061 -2.23157,0 -4.04061,-1.80905 -4.04061,-4.04061 0,-2.23157 1.80904,-4.04061 4.04061,-4.04061 2.23157,0 4.04061,1.80904 4.04061,4.04061 z"
          sodipodi:ry="4.0406103"
          sodipodi:rx="4.0406103"
          sodipodi:cy="434.84006"
@@ -325,7 +325,7 @@
          style="fill:none;stroke:#000000;stroke-width:5.1727953;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <path
          transform="translate(43.748349,-92.676613)"
-         d="m 314.15743,434.84006 a 4.0406103,4.0406103 0 1 1 -8.08122,0 4.0406103,4.0406103 0 1 1 8.08122,0 z"
+         d="m 314.15743,434.84006 c 0,2.23156 -1.80904,4.04061 -4.04061,4.04061 -2.23157,0 -4.04061,-1.80905 -4.04061,-4.04061 0,-2.23157 1.80904,-4.04061 4.04061,-4.04061 2.23157,0 4.04061,1.80904 4.04061,4.04061 z"
          sodipodi:ry="4.0406103"
          sodipodi:rx="4.0406103"
          sodipodi:cy="434.84006"
@@ -931,209 +931,198 @@
     </g>
     <text
        xml:space="preserve"
-       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
-       x="551.42859"
-       y="101.19406"
+       style="font-size:14px;font-style:normal;font-weight:normal;text-align:end;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       x="603.87793"
+       y="101.74714"
        id="text6120"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6122"
-         x="551.42859"
-         y="101.19406"
-         style="font-size:18px">Innen</tspan></text>
+         x="603.87793"
+         y="101.74714"
+         style="font-size:14px;text-align:end;text-anchor:end">Innen</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
-       x="670.82092"
-       y="103.29953"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       x="670.54803"
+       y="101.74714"
        id="text6120-5"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6122-5"
-         x="670.82092"
-         y="103.29953"
-         style="font-size:18px">Außen</tspan></text>
+         x="670.54803"
+         y="101.74714"
+         style="font-size:14px">Außen</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
-       x="295.71426"
-       y="150.71429"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="306.77661"
+       y="150.46239"
        id="text6147"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6149"
-         x="295.71426"
-         y="150.71429">Heizkörper</tspan></text>
+         x="306.77661"
+         y="150.46239">Heizkörper</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
-       x="450.60645"
-       y="151.83623"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="461.49463"
+       y="151.07372"
        id="text6147-1"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6149-5"
-         x="450.60645"
-         y="151.83623">Fußboden</tspan></text>
+         x="461.49463"
+         y="151.07372">Fußboden</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
-       x="229.85715"
-       y="549.14288"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       x="228.9635"
+       y="546.19653"
        id="kessel_temp"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6174"
-         x="229.85715"
-         y="549.14288"
-         style="font-style:oblique;-inkscape-font-specification:Sans Oblique">85 °C</tspan></text>
+         x="228.9635"
+         y="546.19653"
+         style="font-size:14px;font-style:oblique;-inkscape-font-specification:Sans Oblique">? °C</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:18px;font-style:normal;font-weight:normal;text-align:end;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       style="font-size:14px;font-style:normal;font-weight:normal;text-align:end;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
        x="410.95633"
-       y="460.97906"
+       y="461.11636"
        id="speicher1_oben"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6149-8"
          x="410.95633"
-         y="460.97906"
-         style="font-style:oblique;text-align:end;text-anchor:end;-inkscape-font-specification:Sans Oblique">75 °C</tspan></text>
+         y="461.11636"
+         style="font-size:14px;font-style:oblique;text-align:end;text-anchor:end;-inkscape-font-specification:Sans Oblique">? °C</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:18px;font-style:oblique;font-weight:normal;text-align:end;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Sans Oblique"
-       x="413.58023"
-       y="603.12195"
+       style="font-size:14px;font-style:oblique;font-weight:normal;text-align:end;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Sans Oblique"
+       x="413.3277"
+       y="603.22504"
        id="speicher1_unten"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6149-0"
-         x="413.58023"
-         y="603.12195">35 °C</tspan></text>
+         x="413.3277"
+         y="603.22504">? °C</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:18px;font-style:oblique;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Sans Oblique"
-       x="767.03497"
-       y="461.55051"
+       style="font-size:14px;font-style:oblique;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Sans Oblique"
+       x="768.29767"
+       y="461.11636"
        id="speicher2_oben"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6149-7"
-         x="767.03497"
-         y="461.55051">35 °C</tspan></text>
+         x="768.29767"
+         y="461.11636">? °C</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:18px;font-style:oblique;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Sans Oblique"
-       x="766.64508"
-       y="601.2951"
+       style="font-size:14px;font-style:oblique;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Sans Oblique"
+       x="768.59552"
+       y="602.66431"
        id="speicher2_unten"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6149-7-1"
-         x="766.64508"
-         y="601.2951">35 °C</tspan></text>
+         x="768.59552"
+         y="602.66431">? °C</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:18px;font-style:oblique;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Sans Oblique"
-       x="669.67163"
-       y="121.87096"
+       style="font-size:14px;font-style:oblique;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Sans Oblique"
+       x="669.57733"
+       y="118.77012"
        id="aussen_temp"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6149-7-9"
-         x="669.67163"
-         y="121.87096">5 °C</tspan></text>
+         x="669.57733"
+         y="118.77012">? °C</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:18px;font-style:oblique;font-weight:normal;text-align:end;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Sans Oblique"
-       x="601.02441"
-       y="121.15667"
+       style="font-size:14px;font-style:oblique;font-weight:normal;text-align:end;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Sans Oblique"
+       x="603.01093"
+       y="118.77012"
        id="innen_temp"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6149-7-9-0"
-         x="601.02441"
-         y="121.15667">20 °C</tspan></text>
+         x="603.01093"
+         y="118.77012">? °C</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:18px;font-style:normal;font-weight:normal;text-align:end;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
-       x="275.74863"
-       y="345.58527"
+       style="font-size:14px;font-style:normal;font-weight:normal;text-align:end;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       x="273.22324"
+       y="345.44376"
        id="rl3_temp"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6149-8-0"
-         x="275.74863"
-         y="345.58527"
-         style="font-style:oblique;text-align:end;text-anchor:end;-inkscape-font-specification:Sans Oblique">35 °C</tspan></text>
+         x="273.22324"
+         y="345.44376"
+         style="font-size:14px;font-style:oblique;text-align:end;text-anchor:end;-inkscape-font-specification:Sans Oblique">? °C</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:18px;font-style:normal;font-weight:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
-       x="469.08679"
-       y="319.29953"
+       style="font-size:14px;font-style:normal;font-weight:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       x="469.26535"
+       y="317.38879"
        id="vl1_temp"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6149-8-0-5"
-         x="469.08679"
-         y="319.29953"
-         style="font-style:oblique;text-align:start;text-anchor:start;-inkscape-font-specification:Sans Oblique">35 °C</tspan></text>
+         x="469.26535"
+         y="317.38879"
+         style="font-size:14px;font-style:oblique;text-align:start;text-anchor:start;-inkscape-font-specification:Sans Oblique">? °C</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:18px;font-style:normal;font-weight:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
-       x="606.22968"
-       y="317.87097"
+       style="font-size:14px;font-style:normal;font-weight:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       x="607.65826"
+       y="317.38879"
        id="vl2_temp"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6149-8-0-5-7"
-         x="606.22968"
-         y="317.87097"
-         style="font-style:oblique;text-align:start;text-anchor:start;-inkscape-font-specification:Sans Oblique">35 °C</tspan></text>
+         x="607.65826"
+         y="317.38879"
+         style="font-size:14px;font-style:oblique;text-align:start;text-anchor:start;-inkscape-font-specification:Sans Oblique">? °C</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
-       x="225.71428"
-       y="590"
-       id="kessel_pump"
-       sodipodi:linespacing="125%"><tspan
-         sodipodi:role="line"
-         id="tspan6331"
-         x="225.71428"
-         y="590">AUS</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
-       x="342.67914"
-       y="344.29953"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       x="346.17712"
+       y="343.74664"
        id="ww_pump"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6331-7"
-         x="342.67914"
-         y="344.29953">EIN</tspan></text>
+         x="346.17712"
+         y="343.74664">?</tspan></text>
     <text
        sodipodi:linespacing="125%"
        id="hz_pump"
-       y="344.29953"
+       y="343.74664"
        x="466.67914"
-       style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
        xml:space="preserve"><tspan
-         y="344.29953"
+         y="343.74664"
          x="466.67914"
          id="tspan6365"
-         sodipodi:role="line">EIN</tspan></text>
+         sodipodi:role="line">?</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
-       x="608.67914"
-       y="344.29953"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       x="606.50055"
+       y="343.74664"
        id="fb_pump"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6378"
-         x="608.67914"
-         y="344.29953">EIN</tspan></text>
+         x="606.50055"
+         y="343.74664">?</tspan></text>
   </g>
   <g
      inkscape:groupmode="layer"

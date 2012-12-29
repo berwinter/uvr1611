@@ -7,26 +7,61 @@
     <title>UVR1611 Data Logger Pro</title>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/format.css">
+	<link rel="stylesheet" type="text/css" href="css/smoothness/jquery-ui-1.9.2.custom.min.css">
   </head>
 
   <body>
 	<div id="logo"></div>
 	<div id="content">
+	<div id="overlay"></div>
+	<div id="toolbar">
+		<button id="home">Hauptmenü</button>
+		<input id="datepicker"/>
+		<div id="buttonset" >
+			<button id="back">Zurück</button>
+			<button id="date">Heute</button>
+			<button id="forward">Vor</button>
+		</div>
+	</div>
+	<div id="container">
+	<div id="pages">
 	<div id="chart_container">
-		<button id="back">Zurück</button>
-		<button id="forward">Vor</button>
 		<div id="chart_div"></div>
 	</div>
-	<div id="schema_container">
+	<div id="energy_container">
+		<div id="energy_chart_div"></div>
+	</div>
+	<div id="schema_container1">
+  	</div>
+	<div id="schema_container2">
   	</div>
 	</div>
-	<div id="indicator"></div>
-	<div id="navigation">
+	</div>
+	</div>
+	<div id="menu">
+		<div id="browser">
+			<h1>Achtung</h1>
+			<p>Zur Darstellung dieser Anwendung wird ein aktueller Browser benötigt. Bei älteren Versionen kann es zu Darstellungsfehlern kommen.</p>
+			<ul>
+				<li>Internet Explorer 9.0</li>
+				<li>Mozilla Firefox 4.0</li>
+				<li>Google Chrome 7.0</li>
+				<li>Safari 5.1</li>
+				<li>Opera 11.6</li>
+			</ul>
+			<p><a href="#">Anwendung starten</a></p>
+		</div>
+		<div id="indicator"></div>
 		<div id="1" class="item active">
 			<div class="icon home"></div>
 			<div>Schema</div>			
+		</div>
+		<div id="6" class="item">
+			<div class="icon home"></div>
+			<div>Kollektoren</div>			
 		</div>
 		<div id="2" class="item">
 			<div class="icon chart"></div>
@@ -39,6 +74,18 @@
 		<div id="4" class="item">
 			<div class="icon chart"></div>
 			<div>Sonstige</div>			
+		</div>
+		<div id="5" class="item">
+			<div class="icon chart"></div>
+			<div>Solar</div>			
+		</div>
+		<div id="7" class="item">
+			<div class="icon chart"></div>
+			<div>Leistung</div>			
+		</div>
+		<div id="8" class="item">
+			<div class="icon chart"></div>
+			<div>Erträge</div>			
 		</div>
 	</div>
 	</body>

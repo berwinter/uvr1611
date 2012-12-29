@@ -11,14 +11,17 @@
 #include <stdint.h>
 #include <unistd.h>
 #include <mysql.h>
+#include <string.h>
 
 #include "uvrconnection.h"
 #include "tcpip.h"
 #include "helper.h"
 #include "parser.h"
+#include "logger.h"
 
 
 static uint8_t buffer[1024];
+
 
 static int waitCycles = 4;
 
@@ -35,7 +38,7 @@ void check_mode(void) {
     
     if(mode != CAN_MODE)
     {
-        exit(ERROR);
+        exitError();
     }
 }
 
@@ -52,7 +55,8 @@ int check_header(int * startAddress, int * endAddress) {
         
         if(trailer->checksum != checksum8(buffer, HEADER_SIZE + header->numberOfFrames + TRAILER_SIZE))
         {
-            exit(ERROR);
+            printSyslog("Checksum error");
+            exitError();
         }
         
         *startAddress = parse_address(trailer->startAddress);
@@ -60,8 +64,9 @@ int check_header(int * startAddress, int * endAddress) {
         
         if(*startAddress == EMPTY_BUFFER && *endAddress == EMPTY_BUFFER)
         {
+            printSyslog("No new data");
             printf("No data!\n");
-            exit(ERROR);
+            exitError();
         }
         else
         {
@@ -69,6 +74,11 @@ int check_header(int * startAddress, int * endAddress) {
             fix_address(endAddress);
             count = (*endAddress-*startAddress)/0x40 + 1;
         }
+    }
+    else
+    {
+        printSyslog("Could not get info");
+        exitError();
     }
     closeConnection();
     return count;
@@ -84,26 +94,31 @@ void recv_data(int startAddress, int endAddress, int count)
     MYSQL *conn;
     char *server = "mybook.lan";
     char *user = "uvr1611";
-    char *password = "uvr1611"; /* set me first */
+    char *password = "uvr1611"; 
     char *database = "uvr1611";
     char query[1024];
+    char blob[256];
     char date[20];
+    char temp[3];
     conn = mysql_init(NULL);
     
     if (!mysql_real_connect(conn, server,
                             user, password, database, 0, NULL, 0)) {
-        printf("%s\n", mysql_error(conn));
-        return;
+        printSyslog("%s", mysql_error(conn));
+        exitError();
     }
     
     uint8_t * pData;
-    initialiseConnection(hostname, tcpPort);
     while (count > 0)
     {
+        initialiseConnection(hostname, tcpPort);
         fill_address(&sendBuf[1], startAddress);
         sendBuf[5] = checksum8(sendBuf, 5);
         if(queryCommand(sendBuf, 6, buffer, 65) == 0)
         {
+            printSyslog("Read from 0x%x",startAddress);
+            closeConnection();
+            
             if(checksum8(buffer, 64) == buffer[64])
             {
                 
@@ -136,23 +151,55 @@ void recv_data(int startAddress, int endAddress, int count)
                         data.digitals[8].active, data.digitals[9].active, data.digitals[10].active, data.digitals[11].active, 
                         data.digitals[12].active,
                         data.speed[0].speed, data.speed[1].speed, data.speed[2].speed, data.speed[3].speed,
-                        data.heatmeters[0].power, data.heatmeters[0].MWh,
-                        data.heatmeters[1].power, data.heatmeters[1].MWh);
+                        data.heatmeters[0].power,
+                        data.heatmeters[1].power);
+                
+            
                 /* send SQL query */
                 if (mysql_query(conn,query)) {
-                    printf("%s\n", mysql_error(conn));
-                    break;
+                    printSyslog("%s", mysql_error(conn));
+                    exitError();
                 }
+                
+                // save energy values
+                sprintf(query, POWER_INSERT_QUERY, data.time.year , data.time.month, data.time.day,
+                        data.heatmeters[0].kWh, data.heatmeters[1].kWh);
+                
+                if (mysql_query(conn,query)) {
+                    printSyslog("%s", mysql_error(conn));
+                    exitError();
+                }
+                
+                strcpy(blob, "0x");
+                
+                for(int i=0; i<64;i++)
+                {
+                    sprintf(temp, "%02x", buffer[i]);
+                    strcat(blob,temp);
+                }
+                
+                
+                // save binary buffer
+                sprintf(query, INSERT_BINARY_QUERY, blob, date);
+                
+                if (mysql_query(conn,query)) {
+                    printSyslog("%s", mysql_error(conn));
+                    exitError();
+                }
+            }
+            else
+            {
+                printSyslog("CRC error in dataset %d",count);
             }
             count--;
             startAddress += 0x40;
         }
         else
         {
-            exit(ERROR);
+            printSyslog( "Receive error in dataset %d", count);
+            exitError();
         }
     }
-    closeConnection();
     mysql_close(conn);
 }
 
@@ -196,8 +243,8 @@ void recv_latest(void)
                        data.digitals[8].active, data.digitals[9].active, data.digitals[10].active, data.digitals[11].active, 
                        data.digitals[12].active,
                        data.speed[0].speed, data.speed[1].speed, data.speed[2].speed, data.speed[3].speed,
-                       data.heatmeters[0].power, data.heatmeters[0].MWh,
-                       data.heatmeters[1].power, data.heatmeters[1].MWh);
+                       data.heatmeters[0].power, data.heatmeters[0].kWh,
+                       data.heatmeters[1].power, data.heatmeters[1].kWh);
             }
             
         }
@@ -224,6 +271,7 @@ void reset_data(void)
 static int waitms(int time)
 {
     closeConnection();
+    printSyslog("Go to sleep for %d ms", time);
     sleep(time);
     waitCycles--;
     initialiseConnection(hostname, tcpPort);

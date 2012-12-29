@@ -41,14 +41,14 @@ uint32_t parse_timestamp(uint8_t ** data)
 analog_t parse_analog(uint8_t ** data)
 {
     analog_t analog;
-    int value = ((*data)[0] | ((*data)[1] & 0xF) << 8);
+    short value = ((*data)[0] | ((*data)[1] & 0xF) << 8);
     
     if((*data)[1] & SENS_SIGN)
     {
-        printf("negvalue: %x",value);
-        value = -value;
+        //printf("negvalue: %x",value);
+        value |= 0xF000;
     }
-    
+    /*
     switch ((((*data)[1]) >> 4) & 0x7) {
         case SENS_TEMP:
             analog.type = TEMP;
@@ -67,7 +67,9 @@ analog_t parse_analog(uint8_t ** data)
             value &= RAS_VALUE;
             analog.value = (float)value / 10;
             break;
-    }
+    }*/
+    analog.type = TEMP;
+    analog.value = (float)value / 10;
     *data += 2;
     return analog;
 }
@@ -117,16 +119,19 @@ datetime_t parse_time(uint8_t ** data)
 
 void parse_heatmeter(uint8_t ** data, heat_t * heatmeters)
 {
+    long temp;
     heatmeters[0].active = ((*data)[0] & 0x01)? 1: 0;
     heatmeters[1].active = ((*data)[0] & 0x02)? 1: 0;
     
-    heatmeters[0].power = (*data)[1] | ((*data)[2] << 8) | ((*data)[3] << 16) | ((*data)[4] << 24);
-    heatmeters[0].kWh = (*data)[5] | ((*data)[6] << 8);
-    heatmeters[0].MWh = (*data)[7] | ((*data)[8] << 8);
+    temp = (*data)[1] | ((*data)[2] << 8) | ((*data)[3] << 16) | ((*data)[4] << 24);
     
-    heatmeters[1].power = (*data)[9] | ((*data)[10] << 8) | ((*data)[11] << 16) | ((*data)[12] << 24);
-    heatmeters[1].kWh = (*data)[13] | ((*data)[14] << 8);
-    heatmeters[1].MWh = (*data)[15] | ((*data)[16] << 8);
+    heatmeters[0].power = (float)temp / 2560;
+    heatmeters[0].kWh = (double)((*data)[5] | ((*data)[6] << 8))/10 + ((*data)[7] | ((*data)[8] << 8))*1000;
+    
+    temp = (*data)[9] | ((*data)[10] << 8) | ((*data)[11] << 16) | ((*data)[12] << 24);
+    
+    heatmeters[1].power = (float)temp / 2560;
+    heatmeters[1].kWh = (double)((*data)[13] | ((*data)[14] << 8))/10 + ((*data)[15] | ((*data)[16] << 8))*1000;
     
     *data += 17;
 }

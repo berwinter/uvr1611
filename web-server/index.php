@@ -1,5 +1,7 @@
 <?php
-include 'common.php';
+header('Cache-Control: no-cache, must-revalidate');
+header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+header('Content-type: application/json; charset=utf-8');
 
 $date = date("Y-m-d");
 $id = 2;
@@ -13,6 +15,24 @@ if(isset($_GET["id"]))
 {
 	$id = $_GET["id"];	
 }
+
+mysql_connect("localhost","uvr1611","uvr1611") or die ("Keine Verbindung moeglich");
+mysql_set_charset('utf8'); 
+
+mysql_select_db("uvr1611") or die("Konnte die Datenbank nicht waehlen.");
+
+
+
+if($date == date("Y-m-d"))
+{
+	$query = mysql_query("SELECT MAX(timestamp) FROM data;") or die("Anfrage nicht erfolgreich");
+	$last = mysql_fetch_row($query);
+	if((strtotime($last[0]) + 600) < time())
+	{
+		exec('uvr1611-logger -r 10.0.0.100');	
+	}
+}
+
 
 $query = mysql_query("SELECT columnId FROM chartColumns WHERE chartId=".$id.";") or die("Anfrage nicht erfolgreich");
 

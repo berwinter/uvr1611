@@ -13,8 +13,11 @@
 #include <unistd.h>
 
 #include "helper.h"
+#include "logger.h"
+#include "tcpip.h"
 
 int tcpPort=40000;
+int bVerbose = 0;
 int bActual=0;
 int bReset=0;
 char * hostname;
@@ -28,10 +31,25 @@ uint8_t checksum8(uint8_t * data, int length )
     return retval;
 }
 
+void createPid(void)
+{
+    if (access(PID_FILE, F_OK ) != -1) {
+        printSyslog("Program already running");
+        closeSyslog();
+        exit(ERROR);
+    }
+    else
+    {
+        FILE * pid;
+        pid = fopen(PID_FILE, "w");
+        fclose(pid);
+    }
+}
+
 void parseOptions(int argc, char ** argv)
 {
     int c;
-    while ((c = getopt (argc, argv, "arp:")) != -1)
+    while ((c = getopt (argc, argv, "arvp:")) != -1)
     {
         switch(c)
         {
@@ -45,6 +63,9 @@ void parseOptions(int argc, char ** argv)
                 // parse port number
                 tcpPort = atoi(optarg);
                 break;
+            case 'v':
+                bVerbose = 1;
+                break;
             case '?':
                 if (optopt == 'p')
                     fprintf (stderr, "Option -%c requires an argument.\n", optopt);
@@ -54,7 +75,7 @@ void parseOptions(int argc, char ** argv)
                     fprintf (stderr,
                              "Unknown option character `\\x%x'.\n",
                              optopt);
-                exit(ERROR);
+                exitError();
             default:
                 abort();
         }
@@ -62,4 +83,12 @@ void parseOptions(int argc, char ** argv)
     
     hostname = argv[optind];
     
+}
+
+void exitError(void)
+{
+    closeConnection();
+    closeSyslog();
+    remove(PID_FILE);
+    exit(ERROR);
 }
