@@ -1,0 +1,173 @@
+body {
+	background-color: #EEE;
+	margin:0;
+	padding:0;
+	font-size:12px;
+	font-family:Helvetica;
+}
+
+#content {
+	left:0;
+	right:0;
+	bottom:0;
+	top:100%;
+	position:fixed;
+	background-color: #FFF;
+	display:none;
+}
+
+
+#menu {
+	top:0;
+	bottom:0;
+	right:0;
+	left:0;
+	margin: auto;
+	width: 400px;
+	height: 250px;
+	position:absolute;
+	background-color: #FFF;
+	border: 1px solid #DDD;
+	border-radius: 10px;
+	padding: 10px 20px;
+}
+
+#browser h1 {
+	font-size:1.5em;
+}
+
+#browser {
+	font-size: 1.1em;
+	color: #444;
+}
+
+#browser a {
+	color: #444;
+}
+
+#browser ul {
+	padding-left:20px;
+	color: #444;
+	list-style-type: none;
+}
+
+#indicator {
+	top: 24px;
+	left: 19px;
+	background-color: #eee;
+	border: 1px solid #DDD;
+	border-radius: 5px;
+	height:60px;
+	width:100px;
+	position: absolute;
+	display:none;
+}
+
+div.chart {
+	background: url(../images/chart_bar.png) no-repeat transparent;
+}
+
+div.home {
+	background: url(../images/home.png) no-repeat transparent;
+}
+div.icon
+{
+    background-position: 50% 100%;
+	width:32px;
+	height:32px;
+	margin: 20px auto 5px;	
+}
+
+div.item {
+	position: relative;
+	color:#BBB;
+	text-align:center;
+	font-size:1.1em;
+	height:80px;
+	width:100px;
+	float: left;
+	display:none;
+}
+
+div.hover, div.active{
+	color:#888;
+	cursor:pointer;
+}
+
+div.hover > div.icon, div.active > div.icon {
+    background-position: 50% 0;
+}
+
+#chart_div {
+	margin:20px;
+}
+
+#logo {
+	top:50%;
+	left:50%;
+	margin-left:-210px;
+	margin-top:-210px;
+	background: url(../images/logo.png) no-repeat transparent;
+	width:400px;
+	height:80px;
+	position: absolute;
+}
+
+#pages {
+	margin:auto;
+	width:800px;
+}
+#container {
+	width:100%;
+	top:37px;
+	bottom:0;
+	position:absolute;
+	overflow:auto;
+}
+
+#toolbar {
+	border-top: 1px solid #DDD;
+	border-bottom: 1px solid #DDD;
+	background-color: #EEE;
+	height: 35px;
+	position:absolute;
+	width:100%;
+}
+
+#datepicker {
+	position:absolute;
+	display:block;
+	left: 50%;
+	margin-top:5px;
+	margin-left:-75px;
+	width:150px;
+	text-align:center;
+	font-size: 1.5em;
+}
+#buttonset {
+	right: 10px;
+	position:absolute;
+}
+
+#buttonset > button{
+	margin-top:2px;
+}
+
+#home {
+	margin-top:2px;
+	left: 10px;
+	display:block;
+	position:absolute;
+}
+
+#overlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+	background: url(../images/loading.gif) 50% 50% no-repeat #FFF;
+	z-index: 100;
+	opacity: 0.75;
+	display: none;
+}
