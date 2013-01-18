@@ -11,7 +11,7 @@ Die Features sind:
 * Leistungskurven
 * Ertragsdiagramme
 
-<!---
+<!--
 Ein Beispiel der Anwendung befindet sich hier: [Demo](http://berwinter.dyndns.org/uvr1611/)
 --!>
 
