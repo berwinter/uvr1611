@@ -46,7 +46,30 @@ In der Sektion `mysql` befinden sich die Parameter für den Zugang zur Datenbank
 Anpassen der Anwendung
 ------
 
-Die Anpassung der Anwendung erfolgt vollständig über die Datenbank.
+Die Anpassung der Anwendung erfolgt vollständig über die Datenbank:
+
+#### t_menu ####
+
+![Hauptmenü](./doc/t_menu.png)
+
+#### t_names ####
+
+![Senornamen](./doc/t_names.png)
+
+#### t_names_of_charts ####
+
+![Verknüpfung zwischen Sensoren und Diagrammen](./doc/t_names_of_charts.png)
+
+Screenshots
+------
+
+![Hauptmenü](./doc/main.png)
+
+![Schema](./doc/schema.png)
+
+![Temperaturdiagramme](./doc/linien.png)
+
+![Ertäge](./doc/balken.png)
 
 Kontakt
 ------
