@@ -74,11 +74,20 @@ class Database
 	
 	private function insertDate($date)
 	{
-		$statement = $this->mysqli->prepare("REPLACE INTO t_datasets (date) VALUES (?)");
+		// insert
+		$statement = $this->mysqli->prepare("INSERT IGNORE INTO t_datasets (date) VALUES (?)");
 		$statement->bind_param('s', $date);
-		
 		$statement->execute();
-		return $statement->insert_id;
+		$statement->close();
+		
+		// get id
+		$statement = $this->mysqli->prepare("SELECT id FROM t_datasets WHERE date = ?;");
+		$statement->bind_param('s', $date);
+		$statement->bind_result($id);
+		$statement->execute();
+		$statement->fetch();
+		
+		return $id;
 	}
 	
 	private function insertAnalog($value, $id, $name, $frame)

@@ -53,6 +53,38 @@ function checkBrowser()
 	}
 }
 
+
+function Page(){
+	this.changeState("init");
+	this.changeState = function(state) {
+		switch(state) {
+			case "init":
+				var config = fetchConfig();
+				main = new Main(config);
+				main.fetchSchemas();
+				
+				$(document).ready(function() {	
+					if()
+					{
+						this.changeState("main");
+					}
+					else
+					{
+						this.changeState("browser");
+					}
+
+				});
+				break;
+			case "browser":
+				break;
+			case "main":
+				break;
+			case "workspace":
+				break;
+		}
+	}
+}
+
 $(document).ready(function() {	
 	checkBrowser();
 	

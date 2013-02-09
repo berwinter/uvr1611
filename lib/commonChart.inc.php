@@ -29,8 +29,12 @@ if($date == date("Y-m-d"))
 		$uvr = Uvr1611::getInstance();
 		while($uvr->getCount())
 		{
-			$data = $uvr->fetchData();
-			$database->insterDataset($data, "frame1");
+			$i=1;
+			foreach ($uvr->fetchData() as $frame)
+			{
+				$database->insterDataset($frame, "frame".$i);
+				$i++;
+			}
 		}
 	}
 }

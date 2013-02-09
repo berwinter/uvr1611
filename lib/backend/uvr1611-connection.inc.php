@@ -12,32 +12,34 @@ class Uvr1611
 	private $sock;
 	private $count=0;
 	private $address=0;
+	private $mode;
+	private $addressInc = 64;
+	private $canFrames = 1;
 
 	public static function getInstance()
 	{
 		if (null == self::$instance) {
 			self::$instance = new self;
 		}
-
 		return self::$instance;
 	}
 
 	private function __construct(array $options=array())
 	{
 		$this->config = Config::getInstance()->uvr1611;
+		$this->checkMode();
 		
 	}
 
 	public function getLatest()
 	{
 		create_pid();
-		$this->checkMode();
 		
 		$cmd = GET_LATEST."\x01";
 		
 		for($i=0; $i<MAX_RETRYS; $i++)
 		{
-			$data = $this->query($cmd, 57);
+			$data = $this->query($cmd, 524);
 			
 			if($this->checksum($data))
 			{
@@ -49,7 +51,7 @@ class Uvr1611
 				else
 				{	
 					close_pid();
-					return new Parser($data);
+					return $this->splitLatest($data);
 				}
 			}
 		}
@@ -60,7 +62,6 @@ class Uvr1611
 	public function resetData()
 	{
 		create_pid();
-		$this->checkMode();
 		$this->count = 0;
 		$this->address = 0;
 		close_pid();
@@ -72,7 +73,6 @@ class Uvr1611
 		if($this->count > 0)
 		{
 			create_pid();
-			$this->checkMode();
 			
 			$address1 = $this->address & 0xFF;
 			$address2 = ($this->address & 0xFF00)>>7;
@@ -82,17 +82,18 @@ class Uvr1611
 							  READ_DATA + 1 + $address1 + $address2 + $address3);
 			
 			//print_r(unpack("C*", $cmd));
-
-			$data = $this->query($cmd, 65);
+			
+			$data = $this->query($cmd, 524);
 			
 			//print_r(unpack("C*", $data));
 			
 			if($this->checksum($data))
 			{
-				$this->address += 64;
+
+				$this->address += $this->addressInc;
 				$this->count--;
 				close_pid();
-				return new Parser($data);
+				return $this->splitDatasets($data);
 			}
 			close_pid();
 			throw new Exception("Could not get data!");
@@ -104,15 +105,29 @@ class Uvr1611
 		if($this->count == 0)
 		{
 			create_pid();
-			$this->checkMode();
-			
-			$data = $this->query(GET_HEADER, 14);
+			$data = $this->query(GET_HEADER, 21);
+
 			
 			if($this->checksum($data))
 			{
-				$binary = unpack("C5/CnumberOfFrames/C*",$data);
-				$binary = unpack("Ctype/Cversion/C3timestamp/CnumberOfFrames/C".$binary["numberOfFrames"]."/C3startaddress/C3endaddress/Cchecksum",$data);
-				
+				switch($this->mode)
+				{
+					case CAN_MODE:
+						$binary = unpack("C5/CnumberOfFrames/C*",$data);
+						$binary = unpack("Ctype/Cversion/C3timestamp/CnumberOfFrames/C".$binary["numberOfFrames"]."/C3startaddress/C3endaddress/Cchecksum",$data);
+						$this->addressInc = 64 * $binary["numberOfFrames"];
+						$this->canFrames = $binary["numberOfFrames"];
+						break;
+					case DL_MODE:
+						$binary = unpack("C5/Cdevice1/C3startaddress/C3endaddress/Cchecksum",$data);
+						$this->addressInc = 64;
+						break;
+					case DL2_MODE:
+						$binary = unpack("C5/Cdevice1/Cdevice2/C3startaddress/C3endaddress/Cchecksum",$data);
+						$this->addressInc = 128;
+						break;
+					
+				}
 				if($binary["startaddress3"] != 0xFF ||
 				   $binary["startaddress2"] != 0xFF ||
 				   $binary["startaddress1"] != 0xFF ||
@@ -135,11 +150,15 @@ class Uvr1611
 	private function checkMode()
 	{
 
-		$mode = $this->query(GET_MODE, 1);
-		if($mode != CAN_MODE)
+		$this->mode = $this->query(GET_MODE, 1);
+		switch($this->mode)
 		{
-			throw new Exception('BL-Net is not in CAN mode!');
+			case CAN_MODE:
+			case DL_MODE:
+			case DL2_MODE:
+				return;
 		}
+		throw new Exception('BL-Net mode is not supported!');
 	}
 	
 	private function connect()
@@ -189,6 +208,54 @@ class Uvr1611
 		throw new Exception('Error while querying command!\nCommand: '.bin2hex($cmd));
 
 	}
+	
+	private function splitDatasets($data)
+	{
+		$frames = array();
+		switch($this->mode)
+		{
+			case CAN_MODE:
+				for($i=0;$i<$this->canFrames;$i++)
+				{
+					$frames[] = new Parser(substr($data, 3+62*$i, 62));
+				}
+				break;
+			case DL_MODE:
+				$frames[] = new Parser(substr($data, 0, 62));
+				break;
+			case DL2_MODE:
+				$frames[] = new Parser(substr($data, 0, 62));
+				$frames[] = new Parser(substr($data, 3+62, 62));
+				break;
+		}
+		
+		print_r($frames);
+		return $frames;
+	}
+	
+	private function splitLatest($data)
+	{
+		$frames = array();
+	
+		switch($this->mode)
+		{
+			case CAN_MODE:
+				for($i=0;$i<$this->canFrames;$i++)
+				{
+				$frames[] = new Parser(substr($data, 1+56*$i, 56));
+				}
+				break;
+				case DL_MODE:
+				$frames[] = new Parser(substr($data, 1, 56));
+				break;
+				case DL2_MODE:
+				$frames[] = new Parser(substr($data, 1, 56));
+				$frames[] = new Parser(substr($data,1+56, 56));
+				break;
+		}
+	
+		return $frames;
+	}
 }
 
 
@@ -202,7 +269,7 @@ function create_pid() {
 		}
 		else
 		{
-			throw new Exception("Another process is excessing the bl-net!");
+			throw new Exception("Another process is accessing the bl-net!");
 		}
 
 	}

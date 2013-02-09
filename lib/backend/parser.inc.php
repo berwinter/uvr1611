@@ -4,20 +4,13 @@ class Parser
 {
 	public function __construct($data)
 	{
-		if(strlen($data) == 65)
+		if(strlen($data) == 62)
 		{
-			$package = unpack("C3timestamp/v16analog/Sdigital/C4speed/Cactive/Vpower1/Venergy1/Vpower2/Venergy2/Cseconds/Cminutes/Chours/Cdays/Cmonths/Cyears",$data);
-			$this->timestamp = $package["timestamp1"] + ($package["timestamp2"]<<8) + ($package["timestamp3"]<<16);
+			$package = unpack("C55/Cseconds/Cminutes/Chours/Cdays/Cmonths/Cyears",$data);
 			$this->date = sprintf("20%02d-%02d-%02d %02d:%02d:%02d", $package["years"], $package["months"], $package["days"],$package["hours"], $package["minutes"],$package["seconds"]);
 		}
-		else if(strlen($data) == 57)
-		{
-			$package = unpack("C/v16analog/Sdigital/C4speed/Cactive/Vpower1/Venergy1/Vpower2/Venergy2",$data);
-		}
-		else
-		{
-			throw new Exception("Unknown data format!");
-		}
+
+		$package = unpack("v16analog/Sdigital/C4speed/Cactive/Vpower1/Venergy1/Vpower2/Venergy2",$data);
 		
 		for($i=1; $i<=16; $i++)
 		{

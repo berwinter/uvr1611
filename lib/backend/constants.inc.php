@@ -1,5 +1,7 @@
 <?php
 const CAN_MODE = "\xDC";
+const DL_MODE = "\xA8";
+const DL2_MODE = "\xD1";
 const GET_MODE = "\x81";
 const GET_HEADER = "\xAA";
 const GET_LATEST = "\xAB";
