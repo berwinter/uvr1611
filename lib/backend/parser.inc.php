@@ -4,7 +4,7 @@ class Parser
 {
 	public function __construct($data)
 	{
-		if(strlen($data) == 62)
+		if(strlen($data) == 61)
 		{
 			$package = unpack("C55/Cseconds/Cminutes/Chours/Cdays/Cmonths/Cyears",$data);
 			$this->date = sprintf("20%02d-%02d-%02d %02d:%02d:%02d", $package["years"], $package["months"], $package["days"],$package["hours"], $package["minutes"],$package["seconds"]);

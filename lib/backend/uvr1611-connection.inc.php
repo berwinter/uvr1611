@@ -14,6 +14,8 @@ class Uvr1611
 	private $address=0;
 	private $mode;
 	private $addressInc = 64;
+	private $actualSize = 57;
+	private $fetchSize = 65;
 	private $canFrames = 1;
 
 	public static function getInstance()
@@ -33,13 +35,16 @@ class Uvr1611
 
 	public function getLatest()
 	{
+		$this->getCount();
 		create_pid();
 		
-		$cmd = GET_LATEST."\x01";
+		$cmd = pack("C2",GET_LATEST,1);
+		
+		print bin2hex($cmd);
 		
 		for($i=0; $i<MAX_RETRYS; $i++)
 		{
-			$data = $this->query($cmd, 524);
+			$data = $this->query($cmd, $this->actualSize);
 			
 			if($this->checksum($data))
 			{
@@ -75,17 +80,13 @@ class Uvr1611
 			create_pid();
 			
 			$address1 = $this->address & 0xFF;
-			$address2 = ($this->address & 0xFF00)>>7;
-			$address3 = ($this->address & 0xFF0000)>>15;
+			$address2 = ($this->address & 0x7F00)>>7;
+			$address3 = ($this->address & 0xFF8000)>>15;
 			
 			$cmd = pack("C6", READ_DATA, $address1, $address2, $address3, 1,
 							  READ_DATA + 1 + $address1 + $address2 + $address3);
 			
-			//print_r(unpack("C*", $cmd));
-			
-			$data = $this->query($cmd, 524);
-			
-			//print_r(unpack("C*", $data));
+			$data = $this->query($cmd, $this->fetchSize);
 			
 			if($this->checksum($data))
 			{
@@ -106,7 +107,6 @@ class Uvr1611
 		{
 			create_pid();
 			$data = $this->query(GET_HEADER, 21);
-
 			
 			if($this->checksum($data))
 			{
@@ -117,17 +117,24 @@ class Uvr1611
 						$binary = unpack("Ctype/Cversion/C3timestamp/CnumberOfFrames/C".$binary["numberOfFrames"]."/C3startaddress/C3endaddress/Cchecksum",$data);
 						$this->addressInc = 64 * $binary["numberOfFrames"];
 						$this->canFrames = $binary["numberOfFrames"];
+						$this->actualSize = 57;
+						$this->fetchSize = 4+61*$this->canFrames;
 						break;
 					case DL_MODE:
 						$binary = unpack("C5/Cdevice1/C3startaddress/C3endaddress/Cchecksum",$data);
 						$this->addressInc = 64;
+						$this->actualSize = 57;
+						$this->fetchSize = 65;
 						break;
 					case DL2_MODE:
 						$binary = unpack("C5/Cdevice1/Cdevice2/C3startaddress/C3endaddress/Cchecksum",$data);
 						$this->addressInc = 128;
+						$this->actualSize = 113;
+						$this->fetchSize = 126;
 						break;
 					
 				}
+				
 				if($binary["startaddress3"] != 0xFF ||
 				   $binary["startaddress2"] != 0xFF ||
 				   $binary["startaddress1"] != 0xFF ||
@@ -137,7 +144,7 @@ class Uvr1611
 				{
 					$startaddress = ($binary["startaddress3"] << 15) + ($binary["startaddress2"] << 7) + $binary["startaddress1"];
 					$endaddress = ($binary["endaddress3"] << 15) + ($binary["endaddress2"] << 7) + $binary["endaddress1"];
-					$this->count = (($endaddress - $startaddress) / 64) + 1;
+					$this->count = (($endaddress - $startaddress) / $this->addressInc) + 1;
 					$this->address = $startaddress;
 				}
 			}
@@ -198,7 +205,13 @@ class Uvr1611
 		
 		if(strlen($cmd) == socket_write($this->sock, $cmd, strlen($cmd)))
 		{
-			$data = socket_read($this->sock, $length, PHP_BINARY_READ);
+			$data = "";
+			do {
+				$return = socket_read($this->sock, $length, PHP_BINARY_READ);
+				$data .= $return;
+				print strlen($data);
+			}
+			while(strlen($return)>32 && strlen($data) < $length);
 			
 			$this->disconnect();
 			return $data;
@@ -217,15 +230,15 @@ class Uvr1611
 			case CAN_MODE:
 				for($i=0;$i<$this->canFrames;$i++)
 				{
-					$frames[] = new Parser(substr($data, 3+62*$i, 62));
+					$frames[] = new Parser(substr($data, 3+61*$i, 61));
 				}
 				break;
 			case DL_MODE:
-				$frames[] = new Parser(substr($data, 0, 62));
+				$frames[] = new Parser(substr($data, 0, 61));
 				break;
 			case DL2_MODE:
-				$frames[] = new Parser(substr($data, 0, 62));
-				$frames[] = new Parser(substr($data, 3+62, 62));
+				$frames[] = new Parser(substr($data, 0, 61));
+				$frames[] = new Parser(substr($data, 3+61, 61));
 				break;
 		}
 		
@@ -242,13 +255,13 @@ class Uvr1611
 			case CAN_MODE:
 				for($i=0;$i<$this->canFrames;$i++)
 				{
-				$frames[] = new Parser(substr($data, 1+56*$i, 56));
+					$frames[] = new Parser(substr($data, 1+56*$i, 56));
 				}
 				break;
-				case DL_MODE:
+			case DL_MODE:
 				$frames[] = new Parser(substr($data, 1, 56));
 				break;
-				case DL2_MODE:
+			case DL2_MODE:
 				$frames[] = new Parser(substr($data, 1, 56));
 				$frames[] = new Parser(substr($data,1+56, 56));
 				break;
