@@ -40,8 +40,6 @@ class Uvr1611
 		
 		$cmd = pack("C2",GET_LATEST,1);
 		
-		print bin2hex($cmd);
-		
 		for($i=0; $i<MAX_RETRYS; $i++)
 		{
 			$data = $this->query($cmd, $this->actualSize);
@@ -209,7 +207,6 @@ class Uvr1611
 			do {
 				$return = socket_read($this->sock, $length, PHP_BINARY_READ);
 				$data .= $return;
-				print strlen($data);
 			}
 			while(strlen($return)>32 && strlen($data) < $length);
 			
@@ -241,8 +238,7 @@ class Uvr1611
 				$frames[] = new Parser(substr($data, 3+61, 61));
 				break;
 		}
-		
-		print_r($frames);
+
 		return $frames;
 	}
 	
