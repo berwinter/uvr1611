@@ -315,14 +315,14 @@ class Database
 		}
 		
 		
-		$statement = $this->mysqli->prepare("SELECT path, frame, type FROM t_schema;");
+		$statement = $this->mysqli->prepare("SELECT path, frame, type, format FROM t_schema;");
 		$statement->execute();
-		$statement->bind_result($path, $frame, $type);
+		$statement->bind_result($path, $frame, $type, $format);
 		
 		
 		while($statement->fetch())
 		{
-			$rows["values"][] = array("path" => $path, "frame" => $frame, "type" => $type);
+			$rows["values"][] = array("path" => $path, "frame" => $frame, "type" => $type, "format" => $format);
 		}
 		$statement->close();
 		

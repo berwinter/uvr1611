@@ -1,24 +1,3 @@
-jQuery(function($){
-	$.datepicker.regional['de'] = {clearText: 'löschen', clearStatus: 'aktuelles Datum löschen',
-	    closeText: 'schließen', closeStatus: 'ohne Änderungen schließen',
-	    prevText: '<zurück', prevStatus: 'letzten Monat zeigen',
-	    nextText: 'Vor>', nextStatus: 'nächsten Monat zeigen',
-	    currentText: 'heute', currentStatus: '',
-	    monthNames: ['Januar','Februar','März','April','Mai','Juni',
-	    'Juli','August','September','Oktober','November','Dezember'],
-	    monthNamesShort: ['Jan','Feb','Mär','Apr','Mai','Jun',
-	    'Jul','Aug','Sep','Okt','Nov','Dez'],
-	    monthStatus: 'anderen Monat anzeigen', yearStatus: 'anderes Jahr anzeigen',
-	    weekHeader: 'Wo', weekStatus: 'Woche des Monats',
-	    dayNames: ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
-	    dayNamesShort: ['So','Mo','Di','Mi','Do','Fr','Sa'],
-	    dayNamesMin: ['So','Mo','Di','Mi','Do','Fr','Sa'],
-	    dayStatus: 'Setze DD als ersten Wochentag', dateStatus: 'Wähle D, M d',
-	    dateFormat: 'dd.mm.yy', firstDay: 1, 
-	    initStatus: 'Wähle ein Datum', isRTL: false};
-	$.datepicker.setDefaults($.datepicker.regional['de']);
-});
-
 var currentTime = new Date();
 
 // Load the Visualization API and the piechart package.
@@ -34,165 +13,142 @@ function checkBrowser()
 	   ($.browser.msie && $.browser.version.slice(0,2)>7) ||
 	   ($.browser.opera && $.browser.version.slice(0,4)>11.5) )
 	{
-		$("#browser").hide();
-		if(!$("div.item").is(":visible"))
-		{
-			$("div.item").fadeIn('slow');
-		}	
+		$(document).ready(loadMenu);
 	}
 	else
 	{		
-		$("#browser a").click(function() {
-			$("#browser").hide();
-			if(!$("div.item").is(":visible"))
-			{
-				$("div.item").fadeIn('slow');
-			}
-			
+		$(document).ready(function() {
+			$("#browser a").click(function() {		
+				loadMenu();
+			});
 		});
 	}
 }
+checkBrowser();
 
-
-function Page(){
-	this.changeState("init");
-	this.changeState = function(state) {
-		switch(state) {
-			case "init":
-				var config = fetchConfig();
-				main = new Main(config);
-				main.fetchSchemas();
-				
-				$(document).ready(function() {	
-					if()
-					{
-						this.changeState("main");
-					}
-					else
-					{
-						this.changeState("browser");
-					}
-
-				});
-				break;
-			case "browser":
-				break;
-			case "main":
-				break;
-			case "workspace":
-				break;
-		}
-	}
+function loadMenu()
+{
+	$("#browser").hide();
+	if(!$("div.item").is(":visible"))
+	{
+		$("div.item").fadeIn('slow');
+	}	
 }
 
-$(document).ready(function() {	
-	checkBrowser();
+
+$.ajax({
+    url: "menu.php",
+    dataType:"json",
+    success: function(jsonData){
+		values = jsonData.values;
+		var $menu = $("<div></div>");
+		for (var i in jsonData.menu)
+		{
+			var item = jsonData.menu[i];
+			var $item = $('<div class="item"><div class="icon"></div><div>'+item.name+'</div></div>');
+			switch(item.type)
+			{
+				case 'schema':
+					$item.find("div.icon").addClass("home");
+					break;
+				default:
+					$item.find("div.icon").addClass("chart");
+			  		break;
+			}
+		  
+			$item.data(item);
+			$menu.append($item);
+		}
+
+		$menu.find("div.item").hover(function() {
+			$(this).addClass("hover");
+		},
+		function() {
+			$(this).removeClass("hover");
+		});
+		
+		$menu.find("div.item").click(menuClickHandler);
+		
+		$(document).ready(function() {
+			$("#menu").append($menu.children());
+		});
+    }
+});
+
+
+function menuClickHandler()
+{
+	var newItem = $(this);
+	$("div.active").removeClass("active");
+	newItem.addClass("active");
 	
-	$.ajax({
-	      url: "menu.php",
-	      dataType:"json",
-	      success: function(jsonData) {
-
-	    	  values = jsonData.values;
-	    	  
-	    	  for (var i in jsonData.menu)
-	    	  {
-	    		  var item = jsonData.menu[i];
-
-	    		  var $item = $('<div class="item"><div class="icon"></div><div>'+item.name+'</div></div>');
-	    		  
-	    		  switch(item.type)
-	    		  {
-	    		  	case 'schema':
-	    		  		$item.find("div.icon").addClass("home");
-	    			    break;
-	    		  	default:
-	    		  		$item.find("div.icon").addClass("chart");
-	    		  		break;
-	    		  }
-	    		  
-	    		  $item.data(item);
-	    		  $("#menu").append($item);
-	    	  }
-	    	
-	    	if(!$("#browser").is(":visible"))
-	    	{
-	    		$("div.item").fadeIn('slow');
-	    	}
-	    	
-			// menu hover effect
-			$("div.item").hover(function() {
-				$(this).addClass("hover");
-			},
-			function() {
-				$(this).removeClass("hover");
-			});
+	var indicator = $("#indicator");
+	var top = newItem.position().top + 14;
+	var left = newItem.position().left -1;
 	
-			$("div.item").click(function() {
-				var newItem = $(this);
-				$("div.active").removeClass("active");
-				newItem.addClass("active");
-				
-				var indicator = $("#indicator");
-				var top = newItem.position().top + 14;
-				var left = newItem.position().left -1;
-				
-				if(!indicator.is(':visible'))
-				{
-					indicator.css({'top': top , 'left': left});
-					indicator.fadeIn();
-				}
+	if(!indicator.is(':visible'))
+	{
+		indicator.css({'top': top , 'left': left});
+		indicator.fadeIn();
+	}
 
-				if(indicator.position().top != top)
-				{
-					$("#indicator").animate({'top':top});
-				}
-				$("#indicator").animate({'left':left}, function() {
-					
-					
-					$("#logo").animate({'top':230,'left':230});
-					$("#menu").fadeOut();
-					$("body").animate({'background-color':'#FFF'});
-					$("#content").show().animate({'top':90}, function() {
-						$("#content").trigger('complete');
-					});
-					if(newItem != selectedItem)
-					{
-						selectedItem = newItem;
-						$("#pages").children().hide();
-						$("#datepicker").hide();
-						$("#buttonset").hide();
-						
-						switch(selectedItem.data("type"))
-						{
-							case 'schema':
-								$("#schema_container1").show();
-								$("#schema_container2").show();
-								break;
-							case 'energy':
-								$("#energy_container").show();
-								fetchColumnChartData();
-								break;
-							case 'line':
-								$("#chart_container").show();
-								$("#datepicker").show();
-								$("#buttonset").show();
-								fetchLineChartData("analogChart.php");
-								break;
-							case 'power':
-								$("#chart_container").show();
-								$("#datepicker").show();
-								$("#buttonset").show();
-								fetchLineChartData("powerChart.php");
-								break;
-						}
-					}
-				});
-			});
-	     }
+	if(indicator.position().top != top)
+	{
+		$("#indicator").animate({'top':top});
+	}
+	$("#indicator").animate({'left':left}, function() {
+		
+		
+		$("#logo").animate({'top':230,'left':230});
+		$("#menu").fadeOut();
+		$("body").animate({'background-color':'#FFF'});
+		$("#content").show().animate({'top':90}, function() {
+			$("#content").trigger('complete');
+		});
+		if(newItem != selectedItem)
+		{
+			selectedItem = newItem;
+			$("#pages").children().hide();
+			$("#datepicker").hide();
+			$("#buttonset").hide();
+			
+			switch(selectedItem.data("type"))
+			{
+				case 'schema':
+					$("#schema_container1").show();
+					$("#schema_container2").show();
+					break;
+				case 'energy':
+					$("#energy_container").show();
+					fetchColumnChartData();
+					break;
+				case 'line':
+					$("#chart_container").show();
+					$("#datepicker").show();
+					$("#buttonset").show();
+					fetchLineChartData("analogChart.php");
+					break;
+				case 'power':
+					$("#chart_container").show();
+					$("#datepicker").show();
+					$("#buttonset").show();
+					fetchLineChartData("powerChart.php");
+					break;
+			}
+		}
 	});
+}
+
+$(document).ready(function() {
 	initSchema();
 	
+	initToolbar();
+	lineChart = new google.visualization.LineChart(document.getElementById('line_chart'));
+	barChart = new google.visualization.ColumnChart(document.getElementById('bar_chart'));
+});
+
+function initToolbar()
+{
 	$("#home").button({
 		icons: {
 				primary: "ui-icon-home"
@@ -207,10 +163,6 @@ $(document).ready(function() {
 
 	});
 	
-	initChart();
-});
-
-function initChart() {
 	$("#back").button({
 		icons: {
 			primary: "ui-icon-carat-1-w"
@@ -249,9 +201,6 @@ function initChart() {
 	$("#datepicker").datepicker("setDate", currentTime);
 	
 	$("#buttonset").buttonset();
-	
-	chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-	energy = new google.visualization.ColumnChart(document.getElementById('energy_chart_div'));
 }
 
 function fetchLineChartData(source) {
@@ -387,30 +336,13 @@ function actualValues()
 
 function printValues(jsonData)
 {
-	$("#speicher1_oben > tspan").text(jsonData.analog1 + ' \u00B0C');
-	$("#speicher1_unten > tspan").text(jsonData.analog2 + ' \u00B0C');
-	$("#speicher2_oben > tspan").text(jsonData.analog3 + ' \u00B0C');
-	$("#speicher2_unten > tspan").text(jsonData.analog4 + ' \u00B0C');
-	$("#innen_temp > tspan").text(jsonData.analog5 + ' \u00B0C');
-	$("#aussen_temp > tspan").text(jsonData.analog6 + ' \u00B0C');
-	$("#vl1_temp > tspan").text(jsonData.analog7 + ' \u00B0C');
-	$("#vl2_temp > tspan").text(jsonData.analog8 + ' \u00B0C');
-	$("#rl3_temp > tspan").text(jsonData.analog9 + ' \u00B0C');
-	$("#kessel_temp > tspan").text(jsonData.analog12 + ' \u00B0C');
-	$("#roehren_temp > tspan").text(jsonData.analog15 + ' \u00B0C');
-	$("#flach_temp > tspan").text(jsonData.analog16 + ' \u00B0C');
-	$("#solarrl_temp > tspan").text(jsonData.analog14 + ' \u00B0C');
-	$("#solarvl_temp > tspan").text(jsonData.analog13 + ' \u00B0C');
-	$("#fb_pump > tspan").text(digitalValue(jsonData.digital2));
-	$("#hz_pump > tspan").text(digitalValue(jsonData.digital1));
-	$("#ww_pump > tspan").text(digitalValue(jsonData.digital6));
-	$("#flach_pumpe > tspan").text(digitalValue(jsonData.digital11));
-	$("#roehren_pumpe > tspan").text(digitalValue(jsonData.digital10));
-	$("#lade_pumpe > tspan").text(digitalValue(jsonData.digital7));
-	$("#flach_info > tspan:eq(1)").text("Gesamt: " + jsonData.energy1 +"kWh");
-	$("#flach_info > tspan:eq(2)").text("Aktuell: " + jsonData.power1 +"kW");
-	$("#roehren_info > tspan:eq(1)").text("Gesamt: " + jsonData.energy2 +"kWh");
-	$("#roehren_info > tspan:eq(2)").text("Aktuell: " + jsonData.power2 +"kW");
+	for(var i in values)
+	{
+		var value = values[i];
+		$(value.path).text(value.format.replace(/#\.?(#*)/, function(number,fractions) {
+			return jsonData[value.frame][value.type].toFixed(fractions.length);
+		}));
+	}
 }
 
 function initSchema()

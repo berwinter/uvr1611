@@ -86,7 +86,6 @@ div.item {
 	height:80px;
 	width:100px;
 	float: left;
-	display:none;
 }
 
 div.hover, div.active{

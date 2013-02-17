@@ -227,15 +227,15 @@ class Uvr1611
 			case CAN_MODE:
 				for($i=0;$i<$this->canFrames;$i++)
 				{
-					$frames[] = new Parser(substr($data, 3+61*$i, 61));
+					$frames["frame".($i+1)] = new Parser(substr($data, 3+61*$i, 61));
 				}
 				break;
 			case DL_MODE:
-				$frames[] = new Parser(substr($data, 0, 61));
+				$frames["frame1"] = new Parser(substr($data, 0, 61));
 				break;
 			case DL2_MODE:
-				$frames[] = new Parser(substr($data, 0, 61));
-				$frames[] = new Parser(substr($data, 3+61, 61));
+				$frames["frame1"] = new Parser(substr($data, 0, 61));
+				$frames["frame2"] = new Parser(substr($data, 3+61, 61));
 				break;
 		}
 
@@ -251,15 +251,15 @@ class Uvr1611
 			case CAN_MODE:
 				for($i=0;$i<$this->canFrames;$i++)
 				{
-					$frames[] = new Parser(substr($data, 1+56*$i, 56));
+					$frames["frame".($i+1)] = new Parser(substr($data, 1+56*$i, 56));
 				}
 				break;
 			case DL_MODE:
-				$frames[] = new Parser(substr($data, 1, 56));
+				$frames["frame1"] = new Parser(substr($data, 1, 56));
 				break;
 			case DL2_MODE:
-				$frames[] = new Parser(substr($data, 1, 56));
-				$frames[] = new Parser(substr($data,1+56, 56));
+				$frames["frame1"] = new Parser(substr($data, 1, 56));
+				$frames["frame2"] = new Parser(substr($data,1+56, 56));
 				break;
 		}
 	
