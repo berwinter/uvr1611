@@ -7,7 +7,7 @@ CREATE TABLE `t_datasets` (
   `date` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `date` (`date`)
-) ENGINE=MyISAM AUTO_INCREMENT=133117 DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 DROP TABLE IF EXISTS `t_analogs`;
 CREATE TABLE `t_analogs` (
@@ -20,7 +20,7 @@ CREATE TABLE `t_analogs` (
   UNIQUE KEY `UNIQUE` (`frame`,`dataset`,`type`),
   KEY `dataset` (`dataset`),
   KEY `name` (`frame`,`type`)
-) ENGINE=MyISAM AUTO_INCREMENT=15498505 DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 DROP TABLE IF EXISTS `t_digitals`;
 CREATE TABLE `t_digitals` (
@@ -33,7 +33,7 @@ CREATE TABLE `t_digitals` (
   UNIQUE KEY `UNIQUE` (`dataset`,`frame`,`type`),
   KEY `dataset` (`dataset`),
   KEY `name` (`frame`,`type`)
-) ENGINE=MyISAM AUTO_INCREMENT=1233216 DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 DROP TABLE IF EXISTS `t_energies`;
 CREATE TABLE `t_energies` (
@@ -46,7 +46,7 @@ CREATE TABLE `t_energies` (
   UNIQUE KEY `UNIQUE` (`dataset`,`frame`,`type`),
   KEY `dataset` (`dataset`),
   KEY `name` (`frame`,`type`)
-) ENGINE=MyISAM AUTO_INCREMENT=50489 DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 DROP TABLE IF EXISTS `t_powers`;
 CREATE TABLE `t_powers` (
@@ -59,7 +59,7 @@ CREATE TABLE `t_powers` (
   UNIQUE KEY `UNIQUE` (`frame`,`dataset`,`type`),
   KEY `dataset` (`dataset`),
   KEY `name` (`frame`,`type`)
-) ENGINE=MyISAM AUTO_INCREMENT=188879 DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 DROP TABLE IF EXISTS `t_speeds`;
 CREATE TABLE `t_speeds` (
@@ -69,7 +69,7 @@ CREATE TABLE `t_speeds` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQUE` (`digital`),
   KEY `digital` (`digital`)
-) ENGINE=MyISAM AUTO_INCREMENT=1677 DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 DROP TABLE IF EXISTS `t_menu`;
 CREATE TABLE `t_menu` (
@@ -80,7 +80,7 @@ CREATE TABLE `t_menu` (
   `order` tinyint(4) DEFAULT NULL,
   `schema` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `t_schema`;
 CREATE TABLE `t_schema` (
@@ -88,10 +88,11 @@ CREATE TABLE `t_schema` (
   `path` varchar(200) NOT NULL,
   `frame` enum('frame1','frame2','frame3','frame4','frame5','frame6','frame7','frame8') NOT NULL,
   `type` enum('analog1','analog2','analog3','analog4','analog5','analog6','analog7','analog8','analog9','analog10','analog11','analog12','analog13','analog14','analog15','analog16','digital1','digital2','digital3','digital4','digital5','digital6','digital7','digital8','digital9','digital10','digital11','digital12','digital13','digital14','digital15','digital16','energy1','energy2','power1','power2') NOT NULL,
+  `format` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQUE` (`frame`,`type`),
   KEY `index` (`frame`,`type`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `t_names`;
 CREATE TABLE `t_names` (
@@ -102,7 +103,7 @@ CREATE TABLE `t_names` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `frame` (`frame`,`type`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `t_names_of_charts`;
 CREATE TABLE `t_names_of_charts` (

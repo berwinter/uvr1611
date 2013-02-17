@@ -1,10 +1,10 @@
 UVR1611 Datalogger Pro
 ======
 
-Der *UVR1611 Datalogger Pro* ist ein webbasierender Datenlogger für die Universalregelung UVR1611 von TA mithilfe des BL-NET über den CAN-Bus.
+Der *UVR1611 Datalogger Pro* ist ein webbasierender Datenlogger für die Universalregelung UVR1611 von TA mithilfe des BL-NET über den CAN-Bus und DL.
 
 Die Features sind:
-* Datenlogging über den CAN-Bus in eine MySQL Datenbank
+* Datenlogging über CAN-Bus und DL in eine MySQL Datenbank
 * Web-Interface
 * Onlinegrafik
 * Temperaturkurven
@@ -59,6 +59,12 @@ Die Anpassung der Anwendung erfolgt vollständig über die Datenbank:
 #### t_names_of_charts ####
 
 ![Verknüpfung zwischen Sensoren und Diagrammen](./doc/t_names_of_charts.png)
+
+#### t_schema ####
+
+Die angezeigten Werte im Schema können in der Tabelle `t_schema` angepasst werden. Dazu musst der Pfad des `t_span` Elements in der SVG Grafik angebenen werden, welches den aktuellen Wert enthalten soll. Als Formatierung kann die Anzahl der Kommastellen angegenem werden (zB.: #.## für 2 Kommastellen). Für die digitalen Ausgänge kann die Funktion `DIGITAL()` verwendet werden um EIN bzw. AUS im Schema anzuzeigen.
+
+![Anzeige der aktuellen Werte im Schema](./doc/t_schema.png)
 
 Screenshots
 ------
