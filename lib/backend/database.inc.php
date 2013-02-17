@@ -245,7 +245,7 @@ class Database
 			$i++;
 		}
 		
-		$sql = "SELECT DATE_FORMAT(tmp.date, '%d.%m') AS date, ";
+		$sql = "SELECT DATE_FORMAT(tmp.date, '%d-%m') AS date, ";
 		$sql .= join(", ", $columns);
 		$sql .= sprintf(" FROM (
     			  	SELECT t_datasets.date AS date, MIN(t_datasets.id) AS minId, MAX(t_datasets.id) AS maxId    
@@ -255,7 +255,6 @@ class Database
 		$sql .= join(" ", $joins);
 
 		$statement->close();
-	
 	
 		$result = $this->mysqli->query($sql);
 			

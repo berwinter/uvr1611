@@ -112,9 +112,14 @@ div.hover > div.icon, div.active > div.icon {
 	position: absolute;
 }
 
+.schema {
+	text-align: center;
+}
+
 #pages {
 	margin:auto;
-	width:800px;
+	min-width:800px;
+	max-width:1200px;
 }
 #container {
 	width:100%;

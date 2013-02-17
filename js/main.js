@@ -35,27 +35,47 @@ function loadMenu()
 	}	
 }
 
-
 $.ajax({
     url: "menu.php",
     dataType:"json",
     success: function(jsonData){
 		values = jsonData.values;
+		menu = jsonData.menu;
 		var $menu = $("<div></div>");
-		for (var i in jsonData.menu)
+		var $pages = $("<div><div id=\"chart_container\"><div id=\"line_chart\"></div></div><div id=\"energy_container\"><div id=\"bar_chart\"></div></div></div>");
+		
+		for (var i in menu)
 		{
-			var item = jsonData.menu[i];
+			var item = menu[i];
 			var $item = $('<div class="item"><div class="icon"></div><div>'+item.name+'</div></div>');
+			item["item"] = $item;
+			item["index"] = i;
 			switch(item.type)
 			{
 				case 'schema':
 					$item.find("div.icon").addClass("home");
+					var $container = $('<div class="schema"></div>').load("images/"+item.schema);
+					$pages.append($container);
+					item["container"] = $container;
 					break;
-				default:
+				case 'energy':
 					$item.find("div.icon").addClass("chart");
+					item["container"] = $pages.find("#energy_container");
+					item["load"] = fetchBarChartData;
+			  		break;
+				case 'line':
+					$item.find("div.icon").addClass("chart");
+					item["container"] = $pages.find("#chart_container");
+					item["load"] = fetchLineChartData;
+					item["page"] = "analogChart.php"
+			  		break;
+				case 'power':
+					$item.find("div.icon").addClass("chart");
+					item["container"] = $pages.find("#chart_container");
+					item["load"] = fetchLineChartData;
+					item["page"] = "powerChart.php"
 			  		break;
 			}
-		  
 			$item.data(item);
 			$menu.append($item);
 		}
@@ -67,85 +87,91 @@ $.ajax({
 			$(this).removeClass("hover");
 		});
 		
-		$menu.find("div.item").click(menuClickHandler);
+		$menu.find("div.item").click(function() {
+			location.hash = $(this).data("index");
+		});
 		
 		$(document).ready(function() {
 			$("#menu").append($menu.children());
+			$("#pages").append($pages.children());
+			lineChart = new google.visualization.LineChart(document.getElementById('line_chart'));
+			barChart = new google.visualization.ColumnChart(document.getElementById('bar_chart'));
+			handleMenu();
 		});
     }
 });
 
-
-function menuClickHandler()
-{
-	var newItem = $(this);
-	$("div.active").removeClass("active");
-	newItem.addClass("active");
+$(document).ready(function() {
+	actualValues();
+	initToolbar();
 	
-	var indicator = $("#indicator");
-	var top = newItem.position().top + 14;
-	var left = newItem.position().left -1;
-	
-	if(!indicator.is(':visible'))
-	{
-		indicator.css({'top': top , 'left': left});
-		indicator.fadeIn();
-	}
+	$(window).on("hashchange", handleMenu);
+});
 
-	if(indicator.position().top != top)
+function handleMenu() {
+	var id = location.hash.substr(1);
+	
+	if(id == "home" || menu[id]==null)
 	{
-		$("#indicator").animate({'top':top});
-	}
-	$("#indicator").animate({'left':left}, function() {
-		
-		
-		$("#logo").animate({'top':230,'left':230});
-		$("#menu").fadeOut();
-		$("body").animate({'background-color':'#FFF'});
-		$("#content").show().animate({'top':90}, function() {
-			$("#content").trigger('complete');
+		$("#logo").animate({'top':'50%','left':'50%'});
+		$("#menu").fadeIn();
+		$("body").animate({'background-color':'#EEE'});
+		$("#content").animate({'top':'100%'},function(){
+			$("#content").hide();
 		});
-		if(newItem != selectedItem)
+		selectedItem = null;
+	}
+	else if(menu[id] != selectedItem)
+	{
+		selectedItem = menu[id];
+		if($("#menu").is(':visible'))
 		{
-			selectedItem = newItem;
-			$("#pages").children().hide();
-			$("#datepicker").hide();
-			$("#buttonset").hide();
-			
-			switch(selectedItem.data("type"))
+			var newItem = menu[id].item;
+			$("div.active").removeClass("active");
+			newItem.addClass("active");
+			var indicator = $("#indicator");
+			var top = newItem.position().top + 14;
+			var left = newItem.position().left -1;
+			if(!indicator.is(':visible'))
 			{
-				case 'schema':
-					$("#schema_container1").show();
-					$("#schema_container2").show();
-					break;
-				case 'energy':
-					$("#energy_container").show();
-					fetchColumnChartData();
-					break;
-				case 'line':
-					$("#chart_container").show();
-					$("#datepicker").show();
-					$("#buttonset").show();
-					fetchLineChartData("analogChart.php");
-					break;
-				case 'power':
-					$("#chart_container").show();
-					$("#datepicker").show();
-					$("#buttonset").show();
-					fetchLineChartData("powerChart.php");
-					break;
+				indicator.css({'top': top , 'left': left});
+				indicator.fadeIn();
 			}
+			if(indicator.position().top != top)
+			{
+				indicator.animate({'top':top});
+			}
+			indicator.animate({'left':left}, function() {
+				$("#logo").animate({'top':230,'left':230});
+				$("#menu").fadeOut();
+				$("body").animate({'background-color':'#FFF'});
+				$("#content").show().animate({'top':90}, function() {
+					$("#content").trigger('complete');
+				});
+				
+				showContent();
+			});
 		}
-	});
+		else
+		{
+			showContent();
+		}
+	}
 }
 
-$(document).ready(function() {
-	initSchema();
-	
-	initToolbar();
-	lineChart = new google.visualization.LineChart(document.getElementById('line_chart'));
-	barChart = new google.visualization.ColumnChart(document.getElementById('bar_chart'));
-});
+function showContent()
+{
+	$("#pages").children().hide();
+	$("#datepicker").hide();
+	$("#buttonset").hide();
+	selectedItem["container"].show();
+	if(selectedItem["type"] != "schema")
+	{
+		$("#datepicker").show();
+		$("#buttonset").show();
+		selectedItem.load();
+	}
+}
 
 function initToolbar()
 {
@@ -154,13 +180,7 @@ function initToolbar()
 				primary: "ui-icon-home"
 			}
 		}).click(function (){
-			$("#logo").animate({'top':'50%','left':'50%'});
-			$("#menu").fadeIn();
-			$("body").animate({'background-color':'#EEE'});
-			$("#content").animate({'top':'100%'},function(){
-				$("#content").hide();
-			});
-
+			location.hash = "home";
 	});
 	
 	$("#back").button({
@@ -171,13 +191,13 @@ function initToolbar()
 	}).click(function (){
 		currentTime.setTime(currentTime.getTime() - 86400000);
 		$("#datepicker").datepicker("setDate", currentTime);
-		fetchLineChartData();
+		selectedItem.load();
 	});
 	
 	$("#date").button().click(function (){
 		currentTime =  new Date();
 		$("#datepicker").datepicker("setDate", currentTime);
-		fetchLineChartData();
+		selectedItem.load();
 	});
 	
 	$("#forward").button({
@@ -188,13 +208,13 @@ function initToolbar()
 	}).click(function (){
 		currentTime.setTime(currentTime.getTime() + 86400000);
 		$("#datepicker").datepicker("setDate", currentTime);		
-		fetchLineChartData();
+		selectedItem.load();
 	});
 	
 	$("#datepicker").addClass("ui-widget ui-widget-content ui-corner-all").datepicker({
 		"onSelect": function(date) {
 			currentTime = $.datepicker.parseDate("dd.mm.yy",date);
-			fetchLineChartData();
+			selectedItem.load();
 		}
 	});
 	
@@ -203,12 +223,12 @@ function initToolbar()
 	$("#buttonset").buttonset();
 }
 
-function fetchLineChartData(source) {
-	var chartId = selectedItem.data("id");
+function fetchLineChartData() {
+  var chartId = selectedItem["id"];
 	
 	
   $.ajax({
-      url: source,
+      url: selectedItem["page"],
 	  data: {
 		date: (currentTime.getFullYear() + "-" + (currentTime.getMonth() + 1) + "-" + currentTime.getDate()),
 		id: chartId
@@ -240,7 +260,7 @@ function drawLineChart(object)
 	var data = new google.visualization.DataTable();
 	data.addColumn('datetime', 'Time');
 	
-	var cols = selectedItem.data("columns");
+	var cols = selectedItem["columns"];
 	
 	for (var i in cols)
 	{
@@ -254,12 +274,10 @@ function drawLineChart(object)
 	data.addRows(object.data);
 
 
-	unit = selectedItem.data("unit");
-
+	unit = selectedItem["unit"];
 	// Instantiate and draw our chart, passing in some options.
-	chart.draw(data,
+	lineChart.draw(data,
 	{
-		width: 800,
 		height: 500,
 		hAxis: {format: 'H:mm'},
 		vAxis: {format: unit, minValue: 0},
@@ -272,22 +290,23 @@ function drawLineChart(object)
 	});
 }
 
-function fetchColumnChartData() {
-
+function fetchBarChartData() {
+  var chartId = selectedItem["id"];
   $.ajax({
       url: "energyChart.php",
 	  data: {
-		type: "days",
+		date: (currentTime.getFullYear() + "-" + (currentTime.getMonth() + 1) + "-" + currentTime.getDate()),
+		id: chartId
 	  },
       dataType:"json",
       success: function(jsonData) {
 		  if($("#content").is(":animated"))
 		  {
-		  	 $("#content").one('complete', jsonData, drawColumnChart);
+		  	 $("#content").one('complete', jsonData, drawBarChart);
 		  }
 		  else
 		  {
-			 drawColumnChart({data:jsonData});
+			  drawBarChart({data:jsonData});
 		  }
 	  },
 	  complete: function(xhr,status) {
@@ -299,15 +318,24 @@ function fetchColumnChartData() {
   });
 }
 
-function drawColumnChart(object)
+function drawBarChart(object)
 {
 	// Create our data table out of JSON data loaded from server.
-	var data = new google.visualization.DataTable(object.data);
+	var data = new google.visualization.DataTable();
+	data.addColumn('string', 'Date');
+	
+	var cols = selectedItem["columns"];
+	
+	for (var i in cols)
+	{
+		data.addColumn('number', cols[i]);
+	}
+	
+	data.addRows(object.data);
 
 	// Instantiate and draw our chart, passing in some options.
-	energy.draw(data,
+	barChart.draw(data,
 	{
-		width: 800,
 		height: 500,
 		vAxis: {format: '#.## kWh', minValue: 0},
 		animation: {
@@ -321,16 +349,13 @@ function drawColumnChart(object)
 
 function actualValues()
 {
-	if(selectedItem.data('type') == 'schema')
-	{
-	  $.ajax({
+	$.ajax({
 	      url: "latest.php",
 	      dataType:"json",
 	      success: function(jsonData) {
 		  	printValues(jsonData);
 		  }
-	  });
-	}
+	});
 	setTimeout(actualValues, 60000);
 }
 
@@ -339,32 +364,17 @@ function printValues(jsonData)
 	for(var i in values)
 	{
 		var value = values[i];
-		$(value.path).text(value.format.replace(/#\.?(#*)/, function(number,fractions) {
-			return jsonData[value.frame][value.type].toFixed(fractions.length);
+		$(value.path).text(value.format.replace(/((DIGITAL)\()?#\.?(#*)\)?/, function(number,tmp,modifier,fractions) {
+			switch(modifier)
+			{
+				case "DIGITAL":
+					return digitalValue(jsonData[value.frame][value.type]);
+				default:
+					return jsonData[value.frame][value.type].toFixed(fractions.length);
+			}
+
 		}));
 	}
-}
-
-function initSchema()
-{
-	$.ajax({
-	      url: "latest.php",
-	      dataType:"json",
-	      success: function(jsonData) {
-			$("#schema_container1").load("images/schema.svg",function() {
-				$("#schema_container2").load("images/kollektoren.svg",function() {
-					printValues(jsonData);
-					setTimeout(actualValues, 60000);
-				});
-			});
-		  },
-		  complete: function(xhr,status) {
-			$("#overlay").hide();
-		  },
-		  beforeSend: function(xhr,settings) {
-			$("#overlay").show();
-		  }
-	});
 }
 
 function digitalValue(value)
