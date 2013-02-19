@@ -1,9 +1,8 @@
 var currentTime = new Date();
+var selectedItem = null;
 
-// Load the Visualization API and the piechart package.
 google.load('visualization', '1', {'packages':['corechart']});
 
-var selectedItem = null;
 
 function checkBrowser()
 {
@@ -256,7 +255,6 @@ function fetchLineChartData() {
 
 function drawLineChart(object)
 {
-	// Create our data table out of JSON data loaded from server.
 	var data = new google.visualization.DataTable();
 	data.addColumn('datetime', 'Time');
 	
@@ -272,10 +270,9 @@ function drawLineChart(object)
 	}
 
 	data.addRows(object.data);
-
-
+	
 	unit = selectedItem["unit"];
-	// Instantiate and draw our chart, passing in some options.
+	
 	lineChart.draw(data,
 	{
 		height: 500,
@@ -320,7 +317,6 @@ function fetchBarChartData() {
 
 function drawBarChart(object)
 {
-	// Create our data table out of JSON data loaded from server.
 	var data = new google.visualization.DataTable();
 	data.addColumn('string', 'Date');
 	
@@ -333,7 +329,6 @@ function drawBarChart(object)
 	
 	data.addRows(object.data);
 
-	// Instantiate and draw our chart, passing in some options.
 	barChart.draw(data,
 	{
 		height: 500,

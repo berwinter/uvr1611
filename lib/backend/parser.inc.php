@@ -1,110 +1,169 @@
 <?php
-
+/**
+ * Parses a binary string containing a dataset
+ * 
+ * Provides access to the values of a dataset as object properties
+ *
+ * @copyright  Copyright (c) Bertram Winter bertram.winter@gmail.com
+ * @license    GPLv3 License
+ */
 class Parser
 {
+	/**
+	 * Parser constant
+	 */
+	const SIGN_BIT = 0x8000;
+	const POSITIVE_VALUE_MASK = 0x00000FFF;
+	const NEGATIVE_VALUE_MASK = 0xFFFFF000;
+	const DIGITAL_ON = 1;
+	const DIGITAL_OFF = 0;
+	const SPEED_ACTIVE = 0x80;
+	const SPEED_MASK = 0x1F;
+	
+	/**
+	 * Constructor
+	 * Parses thourgh the dataset and add values as properties
+	 * @param string $data binary string containing the dataset
+	 */
 	public function __construct($data)
 	{
-		if(strlen($data) == 61)
-		{
-			$package = unpack("C55/Cseconds/Cminutes/Chours/Cdays/Cmonths/Cyears",$data);
-			$this->date = sprintf("20%02d-%02d-%02d %02d:%02d:%02d", $package["years"], $package["months"], $package["days"],$package["hours"], $package["minutes"],$package["seconds"]);
+		// check if dataset contains time information
+		// (fetched from bootloader storage)
+		if(strlen($data) == 61) {
+			$package = unpack("C55/Cseconds/Cminutes/"
+					         ."Chours/Cdays/Cmonths/Cyears",$data);
+			$this->date = sprintf("20%02d-%02d-%02d %02d:%02d:%02d",
+					              $package["years"],   $package["months"],
+								  $package["days"],    $package["hours"],
+								  $package["minutes"], $package["seconds"]);
 		}
 
-		$package = unpack("v16analog/Sdigital/C4speed/Cactive/Vpower1/Venergy1/Vpower2/Venergy2",$data);
+		// unpack binary string
+		$package = unpack("v16analog/Sdigital/C4speed/Cactive".
+						  "/Vpower1/Venergy1/Vpower2/Venergy2",$data);
 		
-		for($i=1; $i<=16; $i++)
-		{
+		// 16 Analog channels
+		for($i=1; $i<=16; $i++) {
 			$key = ("analog".$i);
 			$this->$key = self::convertAnalog($package["analog".$i]);
 		}
 		
-		for($i=1; $i<=16; $i++)
-		{
+		// 16 Digital channels (only 13 in use)
+		for($i=1; $i<=16; $i++) {
 			$key = ("digital".$i);
 			$this->$key = self::convertDigital($package["digital"],$i);
 		}
 		
-		for($i=1; $i<=4; $i++)
-		{
+		// 4 speeds
+		for($i=1; $i<=4; $i++) {
 			$key = ("speed".$i);
 			$this->$key = self::convertSpeed($package["speed".$i]);
 		}
 		
-		for($i=1; $i<=2; $i++)
-		{
+		// 2 energy values
+		for($i=1; $i<=2; $i++) {
 			$key = ("energy".$i);
-			$this->$key = self::convertEnergy($package["energy".$i],$package["active"],$i);
+			$this->$key = self::convertEnergy($package["energy".$i],
+											  $package["active"], $i);
 		}
 		
-		for($i=1; $i<=2; $i++)
-		{
+		// 2 power values
+		for($i=1; $i<=2; $i++) {
 			$key = ("power".$i);
-			$this->$key = self::convertPower($package["power".$i],$package["active"],$i);
+			$this->$key = self::convertPower($package["power".$i],
+					                         $package["active"], $i);
 		}
 	
 	}
 	
+	/**
+	 * Provides access to the configuration properties
+	 * @param string $name Property name
+	 * @throws Exception Property not found
+	 */
 	public function __get($name)
 	{
-		throw new Exception('call to undefined property: ' . $name);
+		throw new Exception('call to undefined property: '.$name);
 	}
 	
+	/**
+	 * Convert the int value to a float
+	 * @param int $value
+	 * @return number
+	 */
 	private static function convertAnalog($value)
 	{
-		if($value & 0x8000)
-		{
-			return (($value | 0xFFFFF000)/10);
+		if($value & self::SIGN_BIT) {
+			return (($value | self::NEGATIVE_VALUE_MASK)/10);
 		}
-		else
-		{
-			return (($value & 0xFFF)/10);
+		else {
+			return (($value & self::POSITIVE_VALUE_MASK)/10);
 		}
 	}
 	
-	private static function convertDigital($value, $i)
+	/**
+	 * Check if bit is set on a given position
+	 * @param int $value
+	 * @param int $position
+	 * @return number
+	 */
+	private static function convertDigital($value, $position)
 	{
-		if($value & (0x1<<($i-1)))
-		{
-			return 1;
+		if($value & (0x1<<($position-1))) {
+			return self::DIGITAL_ON;
 		}
-		else
-		{
-			return 0;
+		else {
+			return self::DIGITAL_OFF;
 		}
 	}
 	
+	/**
+	 * Check if speed is activated and returns its actual value
+	 * @param int  $value
+	 * @return NULL|boolean
+	 */
 	private static function convertSpeed($value)
 	{
-		if($value & 0x80)
-		{
+		if($value & self::SPEED_ACTIVE) {
 			return NULL;
 		}
-		else
-		{
-			return ($value & 0x1F);
+		else {
+			return ($value & self::SPEED_MASK);
 		}
 	}
 	
-	private static function convertEnergy($value, $active, $i)
+	/**
+	 * Checks if heat meter is activated on a given position
+	 * and returns its energy
+	 * @param int $value
+	 * @param int $active
+	 * @param int $position
+	 * @return number|NULL
+	 */
+	private static function convertEnergy($value, $active, $position)
 	{
-		if($active & $i)
-		{
+		if($active & $position) {
 			return ($value/10);
 		}
-		else
-		{
+		else{
 			return NULL;
 		}
 	}
 	
-	private static function convertPower($value, $active, $i)
+	/**
+	 * Checks if heat meter is activated on a given position
+	 * and returns its power
+	 * @param int $value
+	 * @param int $active
+	 * @param int $position
+	 * @return number|NULL
+	 */
+	private static function convertPower($value, $active, $position)
 	{
-		if($active & $i)
-		{
+		if($active & $position) {
 			return ($value/2560);
 		}
-		else
-		{
+		else {
 			return NULL;
 		}
 	}
