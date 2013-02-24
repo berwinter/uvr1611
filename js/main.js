@@ -270,11 +270,12 @@ function drawLineChart(object)
 	}
 
 	data.addRows(object.data);
+	google.visualization.events.addListener(lineChart, 'click', clickHandler);
+	google.visualization.events.addListener(lineChart, 'select', selectHandler);
 	
 	unit = selectedItem["unit"];
-	
-	lineChart.draw(data,
-	{
+
+	lineChartOptions = 	{
 		height: 500,
 		hAxis: {format: 'H:mm'},
 		vAxis: {format: unit, minValue: 0},
@@ -284,7 +285,29 @@ function drawLineChart(object)
 		},
 		chartArea: {width: '80%', height: '80%'},
 		legend: {position: 'bottom'}
-	});
+	};
+	
+	if(object.data[0]){
+		lineChartOptions.hAxis.viewWindow = {min:object.data[0][0], max:object.data[object.data.length-1][0]};
+	}
+	
+	function selectHandler(e) {
+		if(lineChart.getSelection().length && lineChart.getSelection()[0].row) {
+			var row = lineChart.getSelection()[0].row;
+			lineChartOptions.hAxis.viewWindow.min = new Date(object.data[row][0].getTime()-1800000);
+			lineChartOptions.hAxis.viewWindow.max = new Date(object.data[row][0].getTime()+1800000);
+			lineChart.draw(data, lineChartOptions);
+		}
+	}
+	function clickHandler(e) {
+		if(e.targetID == "chartarea") {
+			lineChartOptions.hAxis.viewWindow.min = object.data[0][0];
+			lineChartOptions.hAxis.viewWindow.max = object.data[object.data.length-1][0];
+			lineChart.draw(data, lineChartOptions);
+		}
+	}
+	
+	lineChart.draw(data, lineChartOptions);
 }
 
 function fetchBarChartData() {
