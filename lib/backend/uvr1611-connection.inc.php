@@ -96,11 +96,21 @@ class Uvr1611
 	}
 	
 	/**
-	 * Reset memory on the bootloader
+	 * End read and reset memory on the bootloader
 	 */
-	public function resetData()
+	public function endRead()
 	{
 		create_pid();
+		// send end read command
+		if($this->query(self::END_READ, 1) != self::END_READ) {
+			throw new Exception("End read command failed.");
+		}
+		// reset data if configured
+		if($this->config->reset) {
+			if($this->query(self::RESET_DATA, 1) != self::RESET_DATA) {
+				throw new Exception("Could not reset memory.");
+			}
+		}
 		$this->count = 0;
 		$this->address = 0;
 		close_pid();

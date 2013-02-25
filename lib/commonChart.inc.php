@@ -40,4 +40,5 @@ if($date == date("Y-m-d") && ($database->lastDataset() + 600) < time()) {
 			next($data);
 		}
 	}
+	$uvr->endRead();
 }
