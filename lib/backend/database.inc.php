@@ -217,9 +217,10 @@ class Database
 	 * Query the analog chart with given id and date
 	 * @param Date $date
 	 * @param int $chartId
+	 * @param int $period
 	 * @return Array
 	 */
-	public function queryAnalog($date, $chartId)
+	public function queryAnalog($date, $chartId, $period)
 	{
 		// get the columns of a chart
 		$statement = $this->mysqli->prepare("SELECT frame, type FROM t_names ".
@@ -233,9 +234,11 @@ class Database
 		
 		$columns = array();
 		$joins = array();
+		$columnNames = array();
 		$i = 1;
 		// build chart query
 		while($statement->fetch()) {
+			$columnNames[] = sprintf("c%d",$i);
 			$columns[] = sprintf("FORMAT(d%02d.value,1) AS c%d",$i,$i);
 			$joins[] = sprintf("INNER JOIN t_analogs AS d%02d ".
 							   "ON (t_datasets.id = d%02d.dataset ".
@@ -244,13 +247,16 @@ class Database
 			$i++;
 		}
 
-		$sql = "SELECT UNIX_TIMESTAMP(t_datasets.date) AS date, ";
+		$sql = "SELECT date, ";
+		$sql .= join(", ",$columnNames);
+		$sql .= " FROM (SELECT @row := @row+1 AS rownum, UNIX_TIMESTAMP(t_datasets.date) AS date, ";
 		$sql .= join(", ", $columns);
-		$sql .= " FROM t_datasets ";
+		$sql .= " FROM (SELECT @row :=0) r, t_datasets ";
 		$sql .= join(" ", $joins);
-		$sql .= sprintf(" WHERE t_datasets.date > \"%s\" ".
-						"AND t_datasets.date < DATE_ADD(\"%s\", INTERVAL 1 DAY);",
-						$date, $date);
+		$sql .= sprintf(" WHERE t_datasets.date > DATE_SUB(\"%s\", INTERVAL %d DAY) ".
+						"AND t_datasets.date < DATE_ADD(\"%s\", INTERVAL 1 DAY))".
+						"ranked WHERE rownum %%%d =1;",
+						$date, $period, $date, ($period+1)*2);
 		
 		$statement->close();
 		
@@ -267,9 +273,10 @@ class Database
 	 * Query the power chart with given id and date
 	 * @param Date $date
 	 * @param int $chartId
+	 * @param int $period
 	 * @return Array
 	 */
-	public function queryPower($date, $chartId)
+	public function queryPower($date, $chartId, $period)
 	{
 		// get the columns of a chart
 		$statement = $this->mysqli->prepare("SELECT frame, type FROM t_names ".
@@ -282,9 +289,11 @@ class Database
 	
 		$columns = array();
 		$joins = array();
+		$columnNames = array();
 		$i = 1;
 		// build chart query
 		while($statement->fetch()) {
+			$columnNames[] = sprintf("c%d",$i);
 			$columns[] = sprintf("FORMAT(d%02d.value,3) AS c%d",$i,$i);
 			$joins[] = sprintf("INNER JOIN t_powers AS d%02d ".
 							   "ON (t_datasets.id = d%02d.dataset ".
@@ -293,14 +302,16 @@ class Database
 			$i++;
 		}
 		
-		$sql = "SELECT UNIX_TIMESTAMP(t_datasets.date) AS date, ";
+		$sql = "SELECT date, ";
+		$sql .= join(", ",$columnNames);
+		$sql .= " FROM (SELECT @row := @row+1 AS rownum, UNIX_TIMESTAMP(t_datasets.date) AS date, ";
 		$sql .= join(", ", $columns);
-		$sql .= " FROM t_datasets ";
+		$sql .= " FROM (SELECT @row :=0) r, t_datasets ";
 		$sql .= join(" ", $joins);
-		$sql .= sprintf(" WHERE t_datasets.date > \"%s\" ".
-						"AND t_datasets.date < DATE_ADD(\"%s\", INTERVAL 1 DAY);",
-						$date, $date);
-	
+		$sql .= sprintf(" WHERE t_datasets.date > DATE_SUB(\"%s\", INTERVAL %d DAY) ".
+						"AND t_datasets.date < DATE_ADD(\"%s\", INTERVAL 1 DAY))".
+						"ranked WHERE rownum %%%d =1;",
+						$date, $period, $date, ($period+1)*2);
 		$statement->close();
 		
 		// fetch chart data
@@ -316,9 +327,10 @@ class Database
 	 * Query the energy chart with given id and date
 	 * @param Date $date
 	 * @param int $chartId
+	 * @param string $grouping
 	 * @return Array
 	 */
-	public function queryEnergy($date, $chartId)
+	public function queryEnergy($date, $chartId, $grouping)
 	{
 		// get the columns of a chart
 		$statement = $this->mysqli->prepare("SELECT frame, type FROM t_names ".
@@ -345,14 +357,25 @@ class Database
 			$i++;
 		}
 		
-		$sql = "SELECT DATE_FORMAT(tmp.date, '%d-%m') AS date, ";
+		if($grouping=="months") {
+			$format = "%b 20%y";
+			$interval = "1 YEAR";
+			$groupby = "MONTH(date),YEAR(date)";
+		}
+		else {
+			$format = "%d. %b";
+			$interval = "10 DAY";
+			$groupby = "DATE(date)";
+		}
+		$sql = "SELECT DATE_FORMAT(tmp.date, '".$format."') AS date, ";
 		$sql .= join(", ", $columns);
 		$sql .= sprintf(" FROM (SELECT t_datasets.date AS date,".
 						"MIN(t_datasets.id) AS minId, MAX(t_datasets.id) AS maxId ".  
     			    	"FROM t_datasets ".
     					"WHERE t_datasets.date < DATE_ADD(\"%s\",INTERVAL 1 DAY) ".
-						"AND t_datasets.date > DATE_SUB(\"%s\", INTERVAL 10 DAY) ".
-						"GROUP BY DATE(date)) AS tmp ", $date, $date);
+						"AND t_datasets.date > DATE_SUB(\"%s\", INTERVAL %s) ".
+						"GROUP BY %s) AS tmp ", $date, $date,
+						$interval, $groupby);
 		$sql .= join(" ", $joins);
 
 		$statement->close();

@@ -8,6 +8,8 @@
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
     <script type="text/javascript" src="js/datepicker.de.js"></script>
+    <script type="text/javascript" src="js/charts.js"></script>
+    <script type="text/javascript" src="js/toolbar.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/format.css">
 	<link rel="stylesheet" type="text/css" href="css/smoothness/jquery-ui-1.9.2.custom.min.css">
@@ -20,6 +22,14 @@
 	<div id="toolbar">
 		<button id="home">Hauptmenü</button>
 		<input id="datepicker"/>
+		<div id="period">
+			<input type="radio" id="week1" name="week" value="day" checked="checked"/><label for="week1">Tag</label>
+			<input type="radio" id="week2" name="week" value="week" /><label for="week2">Woche</label>
+		</div>
+		<div id="grouping">
+			<input type="radio" id="month1" name="month" value="days" checked="checked"/><label for="month1">Tage</label>
+			<input type="radio" id="month2" name="month" value="months" /><label for="month2">Monate</label>
+		</div>
 		<div id="buttonset" >
 			<button id="back">Zurück</button>
 			<button id="date">Heute</button>

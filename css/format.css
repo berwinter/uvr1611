@@ -164,6 +164,24 @@ div.hover > div.icon, div.active > div.icon {
 	position:absolute;
 }
 
+#period {
+	right: 150px;
+	position:absolute;
+}
+
+#grouping {
+	right: 150px;
+	position:absolute;
+}
+
+#period > label{
+	margin-top:2px;
+}
+
+#grouping > label{
+	margin-top:2px;
+}
+
 #overlay {
     width: 100%;
     height: 100%;

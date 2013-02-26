@@ -25,6 +25,18 @@ if(isset($_GET["id"])) {
 	$chartId = $_GET["id"];
 }
 
+// get period
+$period = 0;
+if(isset($_GET["period"]) && $_GET["period"] == "week") {
+	$period = 6;
+}
+
+// get grouping
+$grouping = "days";
+if(isset($_GET["grouping"])) {
+	$grouping = $_GET["grouping"];
+}
+
 // connect to database
 $database = Database::getInstance();
 
