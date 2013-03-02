@@ -193,3 +193,38 @@ div.hover > div.icon, div.active > div.icon {
 	opacity: 0.75;
 	display: none;
 }
+
+table.chartinfo {
+	width: 800px;
+	table-layout: fixed;
+	margin: 80px auto 10px;
+	color: #222;
+	font-size: 1.2em;
+	border-collapse:collapse;
+}
+
+table.chartinfo tr {
+	border-top: solid 1px #DDD;
+	border-bottom: solid 1px #DDD;
+}
+
+table.chartinfo > thead > tr {
+	background-color: #EEE;
+	height: 30px;
+}
+
+table.chartinfo > tbody > tr {
+	height: 60px;
+}
+
+table.chartinfo > tbody > tr > td {
+	text-align: center;
+}
+
+table.chartinfo div.value {
+	font-weight: bold;
+}
+
+table.chartinfo div.timestamp {
+	font-size: 0.8em;
+}

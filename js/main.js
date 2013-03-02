@@ -36,12 +36,14 @@ var menu = {
 							item["container"] = $pages.find("#chart_container");
 							item["load"] = lineChart.fetch;
 							item["page"] = "analogChart.php"
+							item["table"] = new Table(item);
 					  		break;
 						case 'power':
 							$item.find("div.icon").addClass("chart");
 							item["container"] = $pages.find("#chart_container");
 							item["load"] = lineChart.fetch;
-							item["page"] = "powerChart.php"
+							item["page"] = "powerChart.php";
+							item["table"] = new Table(item);
 					  		break;
 					}
 					$item.data(item);
@@ -144,6 +146,7 @@ var menu = {
 	},
 	showContent: function()
 	{
+		$("#pages > table.chartinfo").detach();
 		$("#pages").children().hide();
 		menu.selectedItem["container"].show();
 		
@@ -161,6 +164,7 @@ var menu = {
 				toolbar.showDateNavigation();
 				toolbar.showPeriod();
 				menu.selectedItem.load();
+				menu.selectedItem.table.getTable().appendTo("#pages");
 				break;
 		}
 	}

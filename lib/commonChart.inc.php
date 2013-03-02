@@ -43,14 +43,21 @@ $database = Database::getInstance();
 // check if required date is today and last update is older than 10 minutes
 // -> so we need to fetch new values
 if($date == date("Y-m-d") && ($database->lastDataset() + 600) < time()) {
-	$uvr = Uvr1611::getInstance();
-	while($uvr->getCount()) {
-		// fetch a set of dataframes and insert them into the database
-		$data = $uvr->fetchData();
-		while ($frame = current($data)) {
-			$database->insterDataset($frame, key($data));
-			next($data);
+	try {
+		$uvr = Uvr1611::getInstance();
+		while($uvr->getCount()) {
+			// fetch a set of dataframes and insert them into the database
+			$data = $uvr->fetchData();
+			while ($frame = current($data)) {
+				$database->insterDataset($frame, key($data));
+				next($data);
+			}
+		}
+		$uvr->endRead();
+	}
+	catch (Exception $e) {
+		if($e->getMessage() != "Another process is accessing the bl-net!") {
+			return "{'error:'".$e->getMessage()."'}";
 		}
 	}
-	$uvr->endRead();
 }
