@@ -35,182 +35,57 @@ class Database
 	 */
 	private function __construct()
 	{
-		$this->config = Config::getInstance()->mysql;
-		$this->mysqli = new mysqli($this->config->server,
-								   $this->config->user,
-								   $this->config->password,
-								   $this->config->database);
+		$this->config = Config::getInstance();
+		$this->mysqli = new mysqli($this->config->mysql->server,
+								   $this->config->mysql->user,
+								   $this->config->mysql->password,
+								   $this->config->mysql->database);
 		$this->mysqli->set_charset("utf8");
 	}
 	
 	/**
-	 * Inserts a Dataset from the Parser into the database
+	 * Inserts all dataset into the database once
+	 * @param Array $data
+	 */
+	public function insertData($data)
+	{
+		$insert = "INSERT IGNORE INTO t_data (date, frame,"
+		         ."analog1, analog2, analog3, analog4, analog5, analog6, analog7, analog8,"
+		         ."analog9, analog10, analog11, analog12, analog13, analog14, analog15, analog16,"
+		         ."digital1, digital2, digital3, digital4, digital5, digital6, digital7, digital8,"
+		         ."digital9, digital10, digital11, digital12, digital13, digital14, digital15, digital16,"
+		         ."speed1, speed2, speed3, speed4,"
+                 ."power1, power2, energy1, energy2)  VALUES ";
+		
+		$values = Array();
+		foreach ($data as $dataset) {
+			while ($frame = current($dataset)) {
+				$values[] = $this->getValuesFormDataset($frame, key($dataset));
+				next($dataset);
+			}
+		}
+		
+		$this->mysqli->query($insert.join(',',$values));
+	}
+	
+	/**
+	 * returns a string containing the values from a dataset
 	 * @param Parser $data
 	 * @param string $frame
 	 */
-	public function insterDataset($data, $frame)
+	private function getValuesFormDataset($data, $frame)
 	{
-		// create dataset with date
-		$id = $this->insertDate($data->date);
-		
-		// analog values
-		for($i=1; $i<=16; $i++) {
-			$name = "analog".$i;
-			$this->insertAnalog($data->$name, $id, $name, $frame);
-		}
-		
-		// digital values and speeds
-		// digital1 -> speed1
-		// digital2 -> speed2
-		// digital6 -> speed3
-		// digital7 -> speed4
-		for($i=1; $i<=16; $i++) {
-			$name = "digital".$i;
-			$speed = NULL;
-			switch($i) {
-				case 1:
-					$speed = $data->speed1;
-					break;
-				case 2:
-					$speed = $data->speed2;
-					break;
-				case 6:
-					$speed = $data->speed3;
-					break;
-				case 7:
-					$speed = $data->speed4;
-					break;
-			}
-			
-			$this->insertDigital($data->$name, $id, $name, $frame, $speed);
-		}
-		
-		// energy values
-		for($i=1; $i<=2; $i++) {
-			$name = "energy".$i;
-			$this->insertEnergy($data->$name, $id, $name, $frame);
-		}
-		
-		// power values
-		for($i=1; $i<=2; $i++) {
-			$name = "power".$i;
-			$this->insertPower($data->$name, $id, $name, $frame);
-		}
-	}
-	
-	/**
-	 * Inserts a new dataset with given date in the database and
-	 * returns the id of the new dataset
-	 * @param Date $date
-	 * @return id
-	 */
-	private function insertDate($date)
-	{
-		// insert dataset
-		$statement = $this->mysqli->prepare("INSERT IGNORE INTO t_datasets (date) ".
-										    "VALUES (?);");
-		$statement->bind_param('s', $date);
-		$statement->execute();
-		$statement->close();
-		
-		// get id back
-		$statement = $this->mysqli->prepare("SELECT id FROM t_datasets ".
-										    "WHERE date = ?;");
-		$statement->bind_param('s', $date);
-		$statement->bind_result($id);
-		$statement->execute();
-		$statement->fetch();
-		return $id;
-	}
-	
-	/**
-	 * Inserts an analog value to a dataset id
-	 * @param float $value
-	 * @param int $id
-	 * @param string $name
-	 * @param string $frame
-	 */
-	private function insertAnalog($value, $id, $name, $frame)
-	{
-		$statement = $this->mysqli->prepare("REPLACE INTO t_analogs ".
-											"(dataset, value, frame, type)".
-										    "VALUES (?,?,?,?);");
-		$statement->bind_param('idss', $id, $value, $frame, $name);
-	
-		$statement->execute();
-		$statement->close();
-	}
-	
-	/**
-	 * Inserts a digital value to a dataset id and 
-	 * if exists add a speed value to digital
-	 * @param int $value
-	 * @param int $id
-	 * @param string $name
-	 * @param string $frame
-	 * @param int $speed
-	 */
-	private function insertDigital($value, $id, $name, $frame, $speed=NULL)
-	{
-		$statement = $this->mysqli->prepare("REPLACE INTO t_digitals ".
-											"(dataset, value, frame, type)".
-											"VALUES (?,?,?,?);");
-		$statement->bind_param('iiss', $id, $value, $frame, $name);
-		$statement->execute();
-		
-		if(isset($speed)) {
-			$this->insertSpeed($statement->insert_id, $speed);
-		}
-		$statement->close();
-	}
-	
-	/**
-	 * Inserts a speed value to a digital 
-	 * @param int $value
-	 * @param int $id
-	 */
-	private function insertSpeed($value, $id)
-	{
-		$statement = $this->mysqli->prepare("REPLACE INTO t_speeds ".
-											"(digital, value) ".
-											"VALUES (?,?);");
-		$statement->bind_param('ii', $value, $id);
-		$statement->execute();
-		$statement->close();
-	}
-	
-	/**
-	 * Inserts an energy value to a dataset id
-	 * @param float $value
-	 * @param int $id
-	 * @param string $name
-	 * @param string $frame
-	 */
-	private function insertEnergy($value, $id, $name, $frame)
-	{
-		$statement = $this->mysqli->prepare("REPLACE INTO t_energies ".
-				                            "(dataset, value, frame, type) ".
-											"VALUES (?,?,?,?);");
-		$statement->bind_param('idss', $id, $value, $frame, $name);
-		$statement->execute();
-		$statement->close();
-	}
-	
-	/**
-	 * Inserts a power value to a dataset id
-	 * @param float $value
-	 * @param int $id
-	 * @param string $name
-	 * @param string $frame
-	 */
-	private function insertPower($value, $id, $name, $frame)
-	{
-		$statement = $this->mysqli->prepare("REPLACE INTO t_powers ".
-											"(dataset, value, frame, type) ".
-											"VALUES (?,?,?,?);");
-		$statement->bind_param('idss', $id, $value, $frame, $name);
-		$statement->execute();
-		$statement->close();
+		return "('$data->date', '$frame',"
+		      ." $data->analog1, $data->analog2, $data->analog3, $data->analog4,"
+		      ." $data->analog5, $data->analog6, $data->analog7, $data->analog8,"
+		      ." $data->analog9, $data->analog10, $data->analog11, $data->analog12,"
+		      ." $data->analog13, $data->analog14, $data->analog15, $data->analog16,"
+		      ." $data->digital1, $data->digital2, $data->digital3, $data->digital4,"
+		      ." $data->digital5, $data->digital6, $data->digital7, $data->digital8,"
+		      ." $data->digital9, $data->digital10, $data->digital11, $data->digital12,"
+		      ." $data->digital13, $data->digital14, $data->digital15, $data->digital16,"
+		      ." $data->speed1, $data->speed2, $data->speed3, $data->speed4,"
+		      ." $data->power1, $data->power2, $data->energy1, $data->energy2)";
 	}
 	
 	/**
@@ -223,10 +98,8 @@ class Database
 	public function queryAnalog($date, $chartId, $period)
 	{
 		// get the columns of a chart
-		$statement = $this->mysqli->prepare("SELECT frame, type FROM t_names ".
-											"INNER JOIN t_names_of_charts ".
-											"ON (t_names.id = t_names_of_charts.name_id) ".
-											"WHERE t_names_of_charts.chart_id=?;");
+		$statement = $this->mysqli->prepare("SELECT frame, type FROM t_names_of_charts ".
+											"WHERE chart_id=? ORDER BY t_names_of_charts.order ASC;");
 		$statement->bind_param('i', $chartId);
 		
 		$statement->execute();
@@ -239,32 +112,28 @@ class Database
 		// build chart query
 		while($statement->fetch()) {
 			$columnNames[] = sprintf("c%d",$i);
-			$columns[] = sprintf("FORMAT(d%02d.value,1) AS c%d",$i,$i);
-			$joins[] = sprintf("INNER JOIN t_analogs AS d%02d ".
-							   "ON (t_datasets.id = d%02d.dataset ".
-							   "AND d%02d.frame = \"%s\" AND d%02d.type = \"%s\")",
-							    $i, $i, $i, $frame, $i, $name);
+			$columns[] = sprintf("FORMAT(%s,1) AS c%d",$name,$i);
 			$i++;
 		}
 
 		$sql = "SELECT date, ";
 		$sql .= join(", ",$columnNames);
-		$sql .= " FROM (SELECT @row := @row+1 AS rownum, UNIX_TIMESTAMP(t_datasets.date) AS date, ";
+		$sql .= " FROM (SELECT @row := @row+1 AS rownum, UNIX_TIMESTAMP(t_data.date) AS date, ";
 		$sql .= join(", ", $columns);
-		$sql .= " FROM (SELECT @row :=0) r, t_datasets ";
-		$sql .= join(" ", $joins);
-		$sql .= sprintf(" WHERE t_datasets.date > DATE_SUB(\"%s\", INTERVAL %d DAY) ".
-						"AND t_datasets.date < DATE_ADD(\"%s\", INTERVAL 1 DAY))".
+		$sql .= " FROM (SELECT @row :=0) r, t_data ";
+		$sql .= sprintf(" WHERE t_data.frame = \"%s\" AND t_data.date > DATE_SUB(\"%s\", INTERVAL %d DAY) ".
+						"AND t_data.date < DATE_ADD(\"%s\", INTERVAL 1 DAY))".
 						"ranked WHERE rownum %%%d =1;",
-						$date, $period, $date, ($period+1)*2);
-		
+						$frame, $date, $period, $date, ($period+1)*$this->config->app->reduction);
 		$statement->close();
 		
 		// fetch chart data
-		$result = $this->mysqli->query($sql);
 		$rows = array();
-		while($r = $result->fetch_array(MYSQLI_NUM)) {
-			$rows[] = $r;
+		if(	$result = $this->mysqli->query($sql)) {
+			while($r = $result->fetch_array(MYSQLI_NUM)) {
+				$rows[] = $r;
+			}
+			$result->close();
 		}
 		return $rows;
 	}
@@ -279,10 +148,8 @@ class Database
 	public function queryPower($date, $chartId, $period)
 	{
 		// get the columns of a chart
-		$statement = $this->mysqli->prepare("SELECT frame, type FROM t_names ".
-											"INNER JOIN t_names_of_charts ".
-											"ON (t_names.id = t_names_of_charts.name_id) ".
-											"WHERE t_names_of_charts.chart_id=?;");
+		$statement = $this->mysqli->prepare("SELECT frame, type FROM t_names_of_charts ".
+											"WHERE chart_id=? ORDER BY t_names_of_charts.order ASC;");
 		$statement->bind_param('i', $chartId);
 		$statement->execute();
 		$statement->bind_result($frame, $name);
@@ -294,31 +161,28 @@ class Database
 		// build chart query
 		while($statement->fetch()) {
 			$columnNames[] = sprintf("c%d",$i);
-			$columns[] = sprintf("FORMAT(d%02d.value,3) AS c%d",$i,$i);
-			$joins[] = sprintf("INNER JOIN t_powers AS d%02d ".
-							   "ON (t_datasets.id = d%02d.dataset ".
-							   "AND d%02d.frame = \"%s\" AND d%02d.type = \"%s\")",
-							   $i, $i, $i, $frame, $i, $name);
+			$columns[] = sprintf("FORMAT(%s,1) AS c%d",$name,$i);
 			$i++;
 		}
-		
+
 		$sql = "SELECT date, ";
 		$sql .= join(", ",$columnNames);
-		$sql .= " FROM (SELECT @row := @row+1 AS rownum, UNIX_TIMESTAMP(t_datasets.date) AS date, ";
+		$sql .= " FROM (SELECT @row := @row+1 AS rownum, UNIX_TIMESTAMP(t_data.date) AS date, ";
 		$sql .= join(", ", $columns);
-		$sql .= " FROM (SELECT @row :=0) r, t_datasets ";
-		$sql .= join(" ", $joins);
-		$sql .= sprintf(" WHERE t_datasets.date > DATE_SUB(\"%s\", INTERVAL %d DAY) ".
-						"AND t_datasets.date < DATE_ADD(\"%s\", INTERVAL 1 DAY))".
+		$sql .= " FROM (SELECT @row :=0) r, t_data ";
+		$sql .= sprintf(" WHERE t_data.frame = \"%s\" AND t_data.date > DATE_SUB(\"%s\", INTERVAL %d DAY) ".
+						"AND t_data.date < DATE_ADD(\"%s\", INTERVAL 1 DAY))".
 						"ranked WHERE rownum %%%d =1;",
-						$date, $period, $date, ($period+1)*2);
+						$frame, $date, $period, $date, ($period+1)*$this->config->app->reduction);
 		$statement->close();
 		
 		// fetch chart data
-		$result = $this->mysqli->query($sql);
 		$rows = array();
-		while($r = $result->fetch_array(MYSQLI_NUM)) {
-			$rows[] = $r;
+		if($result = $this->mysqli->query($sql)) {
+			while($r = $result->fetch_array(MYSQLI_NUM)) {
+				$rows[] = $r;
+			}
+			$result->close();
 		}
 		return $rows;
 	}
@@ -333,10 +197,8 @@ class Database
 	public function queryEnergy($date, $chartId, $grouping)
 	{
 		// get the columns of a chart
-		$statement = $this->mysqli->prepare("SELECT frame, type FROM t_names ".
-											"INNER JOIN t_names_of_charts ".
-											"ON (t_names.id = t_names_of_charts.name_id) ".
-											"WHERE t_names_of_charts.chart_id=?;");
+		$statement = $this->mysqli->prepare("SELECT frame, type FROM t_names_of_charts ".
+											"WHERE chart_id=? ORDER BY t_names_of_charts.order ASC;");
 		$statement->bind_param('i', $chartId);
 		$statement->execute();
 		$statement->bind_result($frame, $name);
@@ -346,14 +208,14 @@ class Database
 		$i = 1;
 		// build chart query
 		while($statement->fetch()) {
-			$columns[] = sprintf("FORMAT(d%02dmax.value-d%02dmin.value,1) AS c%d",
-								 $i, $i, $i);
-			$joins[] = sprintf("INNER JOIN t_energies AS d%02dmin ".
-							   "ON (tmp.minId = d%02dmin.dataset AND d%02dmin.frame = \"%s\" ".
-							   "AND d%02dmin.type = \"%s\")", $i, $i, $i, $frame, $i, $name);
-			$joins[] = sprintf("INNER JOIN t_energies AS d%02dmax ".
-							   "ON (tmp.maxId = d%02dmax.dataset AND d%02dmax.frame = \"%s\" ".
-							   "AND d%02dmax.type = \"%s\")", $i, $i, $i, $frame, $i, $name);
+			$columns[] = sprintf("FORMAT(d%02dmax.%s-d%02dmin.%s,1) AS c%d",
+								 $i, $name, $i, $name, $i);
+			$joins[] = sprintf("INNER JOIN t_data AS d%02dmin ".
+							   "ON (tmp.min = d%02dmin.date AND d%02dmin.frame = \"%s\")",
+					           $i, $i, $i, $frame);
+			$joins[] = sprintf("INNER JOIN t_data AS d%02dmax ".
+							   "ON (tmp.max = d%02dmax.date AND d%02dmax.frame = \"%s\")",
+							   $i, $i, $i, $frame, $i, $name);
 			$i++;
 		}
 		
@@ -369,22 +231,23 @@ class Database
 		}
 		$sql = "SELECT DATE_FORMAT(tmp.date, '".$format."') AS date, ";
 		$sql .= join(", ", $columns);
-		$sql .= sprintf(" FROM (SELECT t_datasets.date AS date,".
-						"MIN(t_datasets.id) AS minId, MAX(t_datasets.id) AS maxId ".  
-    			    	"FROM t_datasets ".
-    					"WHERE t_datasets.date < DATE_ADD(\"%s\",INTERVAL 1 DAY) ".
-						"AND t_datasets.date > DATE_SUB(\"%s\", INTERVAL %s) ".
-						"GROUP BY %s) AS tmp ", $date, $date,
+		$sql .= sprintf(" FROM (SELECT date,".
+						"MIN(date) AS min, MAX(date) AS max ".  
+    			    	"FROM t_data ".
+    					"WHERE t_data.date < DATE_ADD(\"%s\",INTERVAL 1 DAY) ".
+						"AND t_data.date > DATE_SUB(\"%s\", INTERVAL %s) ".
+						"GROUP BY %s  ORDER BY date ASC) AS tmp ", $date, $date,
 						$interval, $groupby);
 		$sql .= join(" ", $joins);
 
 		$statement->close();
-		
 		// fetch chart data
-		$result = $this->mysqli->query($sql);
 		$rows = array();
-		while($r = $result->fetch_array(MYSQLI_NUM)) {
-			$rows[] = $r;
+		if($result = $this->mysqli->query($sql)) {
+			while($r = $result->fetch_array(MYSQLI_NUM)) {
+				$rows[] = $r;
+			}
+			$result->close();
 		}
 		return $rows;
 	}
@@ -395,8 +258,9 @@ class Database
 	 */
 	public function lastDataset()
 	{
-		$result = $this->mysqli->query("SELECT MAX(date) FROM t_datasets;");
+		$result = $this->mysqli->query("SELECT MAX(date) FROM t_data;");
 		$last = $result->fetch_array();
+		$result->close();
 		return strtotime($last[0]);
 	}
 	
@@ -435,10 +299,11 @@ class Database
 		// get chart configuration 
 		for($i=0; $i < count($rows["menu"]); $i++) {
 			if($rows["menu"][$i]["type"] != "schema") {
-				$statement = $this->mysqli->prepare("SELECT name FROM t_names ".
+				$statement = $this->mysqli->prepare("SELECT t_names.name FROM t_names ".
 													"INNER JOIN t_names_of_charts ".
-													"ON (t_names.id = t_names_of_charts.name_id) ".
-													"WHERE t_names_of_charts.chart_id=?;");
+													"ON (t_names.type = t_names_of_charts.type ".
+		   			                                "AND t_names.frame = t_names_of_charts.frame) ".
+													"WHERE t_names_of_charts.chart_id=? ORDER BY t_names_of_charts.order ASC;");
 				
 				$statement->bind_param('i', $rows["menu"][$i]["id"]);
 				

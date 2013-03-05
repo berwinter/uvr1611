@@ -125,7 +125,7 @@ class Parser
 	private static function convertSpeed($value)
 	{
 		if($value & self::SPEED_ACTIVE) {
-			return NULL;
+			return "NULL";
 		}
 		else {
 			return ($value & self::SPEED_MASK);
@@ -146,7 +146,7 @@ class Parser
 			return ($value/10);
 		}
 		else{
-			return NULL;
+			return "NULL";
 		}
 	}
 	
@@ -164,7 +164,7 @@ class Parser
 			return ($value/2560);
 		}
 		else {
-			return NULL;
+			return "NULL";
 		}
 	}
 }

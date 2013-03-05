@@ -46,8 +46,8 @@ class Uvr1611
 	 * Privates
 	 */
 	private $config;
-	private $sock;
-	private $count=0;
+	private $sock = null;
+	private $count=-1;
 	private $address=0;
 	private $mode;
 	private $addressInc = 64;
@@ -71,6 +71,7 @@ class Uvr1611
 	 */
 	public function getLatest()
 	{
+		$this->connect();
 		$this->getCount();
 		create_pid();
 		// build command
@@ -82,16 +83,20 @@ class Uvr1611
 			if($this->checksum($data)) {
 				$binary = unpack("C*",$data);
 				if($binary[1] == self::WAIT_TIME) {
+					$this->disconnect();
 					// wait some seconds for data
 					sleep($binary[2]);
+					$this->connect();
 				}
 				else {	
 					close_pid();
+					$this->disconnect();
 					return $this->splitLatest($data);
 				}
 			}
 		}
 		close_pid();
+		$this->disconnect();
 		throw new Exception("Could not get latest data!");
 	}
 	
@@ -100,6 +105,7 @@ class Uvr1611
 	 */
 	public function endRead()
 	{
+		$this->connect();
 		create_pid();
 		// send end read command
 		if($this->query(self::END_READ, 1) != self::END_READ) {
@@ -111,9 +117,10 @@ class Uvr1611
 				throw new Exception("Could not reset memory.");
 			}
 		}
-		$this->count = 0;
+		$this->count = -1;
 		$this->address = 0;
 		close_pid();
+		$this->disconnect();
 	}
 	
 	
@@ -125,6 +132,7 @@ class Uvr1611
 	public function fetchData()
 	{
 		if($this->count > 0) {
+			$this->connect();
 			create_pid();
 			
 			// build address for bootloader
@@ -156,7 +164,8 @@ class Uvr1611
 	 */
 	public function getCount()
 	{
-		if($this->count == 0) {
+		if($this->count == -1) {
+			$this->connect();
 			create_pid();
 			$data = $this->query(self::GET_HEADER, 21);
 			
@@ -220,7 +229,9 @@ class Uvr1611
 	 */
 	private function checkMode()
 	{
+		$this->connect();
 		$this->mode = $this->query(self::GET_MODE, 1);
+		$this->disconnect();
 
 		switch($this->mode) {
 			case self::CAN_MODE:
@@ -234,20 +245,23 @@ class Uvr1611
 	/**
 	 * Connect via TCP to the bootloader
 	 */
-	private function connect()
+	public function connect()
 	{
-		$this->sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-		socket_connect($this->sock,
-					   $this->config->address,
-					   $this->config->port);
+		if($this->sock == null) {
+			$this->sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+			socket_connect($this->sock,
+						   $this->config->address,
+						   $this->config->port);
+		}
 	}
 	
 	/**
 	 * Disconnect from the bootloader
 	 */
-	private function disconnect()
+	public function disconnect()
 	{
 		socket_close($this->sock);
+		$this->sock = null;
 	}
 	
 	/**
@@ -282,7 +296,6 @@ class Uvr1611
 	 */
 	private function query($cmd, $length)
 	{
-		$this->connect();
 		// send command
 		if(strlen($cmd) == socket_write($this->sock, $cmd, strlen($cmd))) {
 			$data = "";
@@ -293,7 +306,6 @@ class Uvr1611
 			}
 			while(strlen($return)>32 && strlen($data) < $length);
 			
-			$this->disconnect();
 			return $data;
 		}
 

@@ -42,18 +42,17 @@ $database = Database::getInstance();
 
 // check if required date is today and last update is older than 10 minutes
 // -> so we need to fetch new values
-if($date == date("Y-m-d") && ($database->lastDataset() + 600) < time()) {
+if($date == date("Y-m-d") && ($database->lastDataset() + Config::getInstance()->app->chartcache) < time()) {
 	try {
 		$uvr = Uvr1611::getInstance();
+		$data = Array();
 		while($uvr->getCount()) {
 			// fetch a set of dataframes and insert them into the database
-			$data = $uvr->fetchData();
-			while ($frame = current($data)) {
-				$database->insterDataset($frame, key($data));
-				next($data);
-			}
+			$data[] = $uvr->fetchData();
 		}
 		$uvr->endRead();
+		// insert all data into database
+		$database->insertData($data);
 	}
 	catch (Exception $e) {
 		if($e->getMessage() != "Another process is accessing the bl-net!") {

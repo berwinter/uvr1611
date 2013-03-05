@@ -205,7 +205,7 @@ var actualValues =
 					case "MWH":
 						return converter.mwh(data[value.frame][value.type]).toFixed(fractions.length);
 					case "KWH":
-						return converter.kwh(data[value.frame][value.type]).toFixed(fractions.length);
+						return converter.kwh(data[value.frame][value.type]);
 					default:
 						return data[value.frame][value.type].toFixed(fractions.length);
 				}
@@ -227,7 +227,7 @@ var converter = {
 	},
 	mwh: function(value)
 	{
-		return value/1000;
+		return Math.floor(value/1000);
 	},
 	kwh: function(value)
 	{
