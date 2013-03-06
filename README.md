@@ -89,7 +89,11 @@ Screenshots
 
 ![Temperaturdiagramme](./doc/linien.png)
 
+![Temperaturdiagramme (Tabelle)](./doc/linien2.png)
+
 ![Ertäge](./doc/balken.png)
+
+![Ertäge (Monate)](./doc/balken2.png)
 
 Kontakt
 ------
