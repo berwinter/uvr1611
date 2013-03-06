@@ -2,7 +2,7 @@ Achtung!
 ------
 
 In der aktuellen Version hat sich die Datenbank Struktur geändert. Für die Migration alter Datensätze stehen im Ordner SQL Skripts zur Verfpgung.
-*Vor der Migration unbedingt ein Backup der Daten anlegen!*
+**Vor der Migration unbedingt ein Backup der Daten anlegen!**
 Zuerst die `table_migration.sql` ausführen um die Änderungen an den Tabellen durchzuführen und anschließend `data_migration.sql` zum Übertragen der Daten in die neuen Tabellen (Dies kann einige Minuten dauern). Eventuell muss nach der Migration die Tabelle `t_names_of_charts` angepasst werden.
 
 UVR1611 Datalogger Pro
