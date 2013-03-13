@@ -20,7 +20,7 @@ Die Features sind:
 * Zoomen in den Diagrammen
 * Übersichtstabellen zu den Diagrammen
 
-<!--Ein Beispiel der Anwendung befindet sich hier: [Demo](http://berwinter.dyndns.org/uvr1611/)-->
+Ein Beispiel der Anwendung befindet sich hier: [Demo](http://berwinter.dyndns.org/uvr1611/)
 
 Installation
 ------
