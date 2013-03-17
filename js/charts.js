@@ -71,10 +71,14 @@ var lineChart = {
 				if(table[j-1].min.value == null || this.json[i][j] < table[j-1].min.value) {
 					table[j-1].min.value = this.json[i][j];
 					table[j-1].min.time = this.json[i][0];	
+					table[j-1].min.row = i;	
+					table[j-1].min.column = j;
 				}
 				if(table[j-1].max.value == null || this.json[i][j] > table[j-1].max.value) {
 					table[j-1].max.value = this.json[i][j];
 					table[j-1].max.time = this.json[i][0];
+					table[j-1].max.row = i;	
+					table[j-1].max.column = j;
 				}
 				table[j-1].avg.value += this.json[i][j];
 			}

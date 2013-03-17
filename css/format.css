@@ -32,25 +32,6 @@ body {
 	padding: 10px 20px;
 }
 
-#browser h1 {
-	font-size:1.5em;
-}
-
-#browser {
-	font-size: 1.1em;
-	color: #444;
-}
-
-#browser a {
-	color: #444;
-}
-
-#browser ul {
-	padding-left:20px;
-	color: #444;
-	list-style-type: none;
-}
-
 #indicator {
 	top: 24px;
 	left: 19px;
@@ -219,6 +200,10 @@ table.chartinfo > tbody > tr {
 
 table.chartinfo > tbody > tr > td {
 	text-align: center;
+}
+
+table.chartinfo > tbody > tr > td.pointer {
+	cursor: pointer;
 }
 
 table.chartinfo div.value {

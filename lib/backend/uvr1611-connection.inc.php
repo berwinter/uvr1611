@@ -74,29 +74,35 @@ class Uvr1611
 		$this->connect();
 		$this->getCount();
 		create_pid();
-		// build command
-		$cmd = pack("C2",self::GET_LATEST,1);
-		// try 4 times to get values
-		for($i=0; $i<self::MAX_RETRYS; $i++) {
-			$data = $this->query($cmd, $this->actualSize);
-			
-			if($this->checksum($data)) {
-				$binary = unpack("C*",$data);
-				if($binary[1] == self::WAIT_TIME) {
-					$this->disconnect();
-					// wait some seconds for data
-					sleep($binary[2]);
-					$this->connect();
-				}
-				else {	
-					close_pid();
-					$this->disconnect();
-					return $this->splitLatest($data);
+		$latest = "";
+		// for all can frames
+		for($j=0; $j<$this->canFrames; $j++) {
+			// build command
+			$cmd = pack("C2",self::GET_LATEST,1);
+			// try 4 times to get values
+			for($i=0; $i<self::MAX_RETRYS; $i++) {
+				$data = $this->query($cmd, $this->actualSize);
+				
+				if($this->checksum($data)) {
+					$binary = unpack("C*",$data);
+					if($binary[1] == self::WAIT_TIME) {
+						$this->disconnect();
+						// wait some seconds for data
+						sleep($binary[2]);
+						$this->connect();
+					}
+					else {	
+						$latest .= $data;
+						break;
+					}
 				}
 			}
 		}
 		close_pid();
 		$this->disconnect();
+		if(strlen($data)>0) {
+			return $this->splitLatest($data);
+		}
 		throw new Exception("Could not get latest data!");
 	}
 	
@@ -185,6 +191,7 @@ class Uvr1611
 						$binary = unpack("C5/Cdevice1/C3startaddress/C3endaddress/Cchecksum",
 										 $data);
 						$this->addressInc = 64;
+						$this->canFrames = 1;
 						$this->actualSize = 57;
 						$this->fetchSize = 65;
 						break;
@@ -192,6 +199,7 @@ class Uvr1611
 						$binary = unpack("C5/Cdevice1/Cdevice2/C3startaddress/C3endaddress/Cchecksum",
 										 $data);
 						$this->addressInc = 128;
+						$this->canFrames = 1;
 						$this->actualSize = 113;
 						$this->fetchSize = 126;
 						break;
@@ -349,7 +357,7 @@ class Uvr1611
 		switch($this->mode) {
 			case self::CAN_MODE:
 				for($i=0;$i<$this->canFrames;$i++) {
-					$frames["frame".($i+1)] = new Parser(substr($data, 1+self::LATEST_SIZE*$i, self::LATEST_SIZE));
+					$frames["frame".($i+1)] = new Parser(substr($data, 1+(1+self::LATEST_SIZE)*$i, self::LATEST_SIZE));
 				}
 				break;
 			case self::DL_MODE:

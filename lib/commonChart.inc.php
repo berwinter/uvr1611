@@ -53,6 +53,7 @@ if($date == date("Y-m-d") && ($database->lastDataset() + Config::getInstance()->
 		$uvr->endRead();
 		// insert all data into database
 		$database->insertData($data);
+		$database->updateTables();
 	}
 	catch (Exception $e) {
 		if($e->getMessage() != "Another process is accessing the bl-net!") {

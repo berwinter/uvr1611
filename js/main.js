@@ -64,31 +64,13 @@ var menu = {
 				$(document).ready(function() {
 					$("#menu").append($menu.children());
 					$("#pages").append($pages.children());
+					menu.display();
 					lineChart.init();
 					barChart.init();
 					menu.handle();
 				});
 		    }
 		});
-	},
-	checkBrowser: function()
-	{
-		if(($.browser.chrome && $.browser.version.slice(0,2)>6) ||
-		   ($.browser.webkit && $.browser.version.slice(0,3)>533) ||
-		   ($.browser.mozilla && $.browser.version.slice(0,3)>=2.0) ||
-		   ($.browser.msie && $.browser.version.slice(0,2)>7) ||
-		   ($.browser.opera && $.browser.version.slice(0,4)>11.5) )
-		{
-			$(document).ready(menu.display);
-		}
-		else
-		{		
-			$(document).ready(function() {
-				$("#browser a").click(function() {		
-					menu.display();
-				});
-			});
-		}
 	},
 	display: function()
 	{
@@ -211,6 +193,7 @@ var actualValues =
 				}
 
 			}));
+			
 		}
 	}
 }
@@ -236,7 +219,6 @@ var converter = {
 }
 
 google.load('visualization', '1', {'packages':['corechart']});
-menu.checkBrowser();
 menu.init();
 
 $(document).ready(function() {
