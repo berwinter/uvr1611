@@ -93,6 +93,15 @@ div.hover > div.icon, div.active > div.icon {
 	position: absolute;
 }
 
+#contact {
+	position:absolute;
+	right:20px;
+	top:10px;
+}
+#contact > a{
+	color: #444;
+}
+
 .schema {
 	text-align: center;
 }
