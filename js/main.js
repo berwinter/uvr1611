@@ -30,6 +30,7 @@ var menu = {
 							$item.find("div.icon").addClass("chart");
 							item["container"] = $pages.find("#energy_container");
 							item["load"] = barChart.fetch;
+							item["table"] = new EnergyTable(item);
 					  		break;
 						case 'line':
 							$item.find("div.icon").addClass("chart");
@@ -141,6 +142,7 @@ var menu = {
 				toolbar.showDateNavigation();
 				toolbar.showGrouping();
 				menu.selectedItem.load();
+				menu.selectedItem.table.getTable().appendTo("#pages");
 				break;
 			default:
 				toolbar.showDateNavigation();

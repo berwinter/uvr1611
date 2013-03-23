@@ -191,7 +191,7 @@ table.chartinfo tr {
 
 table.chartinfo > thead > tr {
 	background-color: #EEE;
-	height: 30px;
+	height: 35px;
 }
 
 table.chartinfo > tbody > tr {
@@ -200,6 +200,11 @@ table.chartinfo > tbody > tr {
 
 table.chartinfo > tbody > tr > td {
 	text-align: center;
+}
+
+table.chartinfo > tbody > tr > td.header {
+	text-align: left;
+	padding-left: 10px;
 }
 
 table.chartinfo > tbody > tr > td.pointer {

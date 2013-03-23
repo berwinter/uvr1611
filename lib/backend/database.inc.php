@@ -257,7 +257,55 @@ class Database
 			}
 			$result->close();
 		}
-		return $rows;
+		
+		$data = array();
+		$data["rows"] = $rows; 
+		$sql = "SELECT FORMAT(MAX(energy1),1), FORMAT(SUM(energy1),1), FORMAT(AVG(energy1),2), FORMAT(MAX(energy2),1), FORMAT(SUM(energy2),1), FORMAT(AVG(energy2),2), frame FROM t_energies GROUP BY frame;";
+		if($result = $this->mysqli->query($sql)) {
+			while($r = $result->fetch_array(MYSQLI_NUM)) {
+				$data["statistics"][$r[6]]["energy1"] = array("max" => $r[0],
+														      "sum" => $r[1],
+															  "avg" => $r[2]);
+				$data["statistics"][$r[6]]["energy2"] = array("max" => $r[3],
+															  "sum" => $r[4],
+						                                      "avg" => $r[5]);
+			}
+			$result->close();
+		}
+		$sql = "SELECT FORMAT(MAX(energy1),1), FORMAT(SUM(energy1),1), FORMAT(AVG(energy1),2), FORMAT(MAX(energy2),1), FORMAT(SUM(energy2),1), FORMAT(AVG(energy2),2), frame FROM t_energies GROUP BY frame;";
+		if($result = $this->mysqli->query($sql)) {
+			while($r = $result->fetch_array(MYSQLI_NUM)) {
+				$data["statistics"][$r[6]]["energy1"] = array("max" => $r[0],
+						                                      "sum" => $r[1],
+						                                      "avg" => $r[2]);
+				$data["statistics"][$r[6]]["energy2"] = array("max" => $r[3],
+						                                      "sum" => $r[4],
+						                                      "avg" => $r[5]);
+			}
+			$result->close();
+		}
+		$sql = "SELECT FORMAT(AVG(energy1),2), FORMAT(SUM(energy1),1), FORMAT(AVG(energy2),2), FORMAT(SUM(energy2),1), frame FROM t_energies WHERE MONTH(date) IN (10, 11, 12, 1, 2, 3) GROUP BY frame;";
+		if($result = $this->mysqli->query($sql)) {
+			while($r = $result->fetch_array(MYSQLI_NUM)) {
+				$data["statistics"][$r[4]]["energy1"]["winter"] = array("avg" => $r[0],
+													          			"sum" => $r[1]);
+				$data["statistics"][$r[4]]["energy2"]["winter"] = array("avg" => $r[2],
+															 			"sum" => $r[3]);
+			}
+			$result->close();
+		}
+		$sql = "SELECT FORMAT(AVG(energy1),2), FORMAT(SUM(energy1),1), FORMAT(AVG(energy2),2), FORMAT(SUM(energy2),1), frame FROM t_energies WHERE MONTH(date) IN (4, 5, 6, 7, 8, 9) GROUP BY frame;";
+		if($result = $this->mysqli->query($sql)) {
+			while($r = $result->fetch_array(MYSQLI_NUM)) {
+				$data["statistics"][$r[4]]["energy1"]["summer"] = array("avg" => $r[0],
+																		"sum" => $r[1]);
+				$data["statistics"][$r[4]]["energy2"]["summer"] = array("avg" => $r[2],
+																		"sum" => $r[3]);
+			}
+			$result->close();
+		}
+		
+		return $data;
 	}
 	
 	/**
@@ -307,7 +355,7 @@ class Database
 		// get chart configuration 
 		for($i=0; $i < count($rows["menu"]); $i++) {
 			if($rows["menu"][$i]["type"] != "schema") {
-				$statement = $this->mysqli->prepare("SELECT t_names.name FROM t_names ".
+				$statement = $this->mysqli->prepare("SELECT t_names.name, t_names.frame, t_names.type FROM t_names ".
 													"INNER JOIN t_names_of_charts ".
 													"ON (t_names.type = t_names_of_charts.type ".
 		   			                                "AND t_names.frame = t_names_of_charts.frame) ".
@@ -316,12 +364,14 @@ class Database
 				$statement->bind_param('i', $rows["menu"][$i]["id"]);
 				
 				$statement->execute();
-				$statement->bind_result($name);
+				$statement->bind_result($name, $frame, $type);
 				
 				$columns = array();
 				
 				while($statement->fetch()) {
-					$columns[] = $name;
+					$columns[] = array("name" => $name,
+									  "frame" => $frame,
+									  "type" => $type);
 				}
 				$statement->close();
 				$rows["menu"][$i]["columns"] = $columns;

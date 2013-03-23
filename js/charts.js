@@ -58,7 +58,7 @@ var lineChart = {
 		this.data.addColumn('datetime', 'Time');
 		var cols = menu.selectedItem["columns"];
 		for (var i in cols) {
-			this.data.addColumn('number', cols[i]);
+			this.data.addColumn('number', cols[i].name);
 			table[i] = {min:{value:null},max:{value:null},avg:{value:0}};
 
 		}
@@ -178,13 +178,16 @@ var barChart = {
 		data.addColumn('string', 'Date');
 		
 		var cols = menu.selectedItem["columns"];
+		var table = {};
 		
 		for (var i in cols)
 		{
-			data.addColumn('number', cols[i]);
+			data.addColumn('number', cols[i].name);
+			table[i] = this.json.statistics[cols[i].frame][cols[i].type];
 		}
 		
-		data.addRows(this.json);
+		menu.selectedItem.table.fill(table, this.options.vAxis.format);
+		data.addRows(this.json.rows);
 		this.chart.draw(data, this.options);
 	}
 }
