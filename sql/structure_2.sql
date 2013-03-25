@@ -93,3 +93,109 @@ CREATE TABLE `t_names_of_charts` (
   `order` int(11) DEFAULT NULL,
   PRIMARY KEY (`chart_id`,`type`,`frame`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `t_energies`;
+CREATE TABLE `t_energies` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` datetime NOT NULL,
+  `frame` enum('frame1','frame2','frame3','frame4','frame5','frame6','frame7','frame8') NOT NULL,
+  `energy1` decimal(10,1) DEFAULT NULL,
+  `energy2` decimal(10,1) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQUE` (`date`,`frame`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED
+
+DROP TABLE IF EXISTS `t_max`;
+CREATE TABLE `t_max` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` datetime NOT NULL,
+  `frame` enum('frame1','frame2','frame3','frame4','frame5','frame6','frame7','frame8') NOT NULL,
+  `analog1` float DEFAULT NULL,
+  `analog2` float DEFAULT NULL,
+  `analog3` float DEFAULT NULL,
+  `analog4` float DEFAULT NULL,
+  `analog5` float DEFAULT NULL,
+  `analog6` float DEFAULT NULL,
+  `analog7` float DEFAULT NULL,
+  `analog8` float DEFAULT NULL,
+  `analog9` float DEFAULT NULL,
+  `analog10` float DEFAULT NULL,
+  `analog11` float DEFAULT NULL,
+  `analog12` float DEFAULT NULL,
+  `analog13` float DEFAULT NULL,
+  `analog14` float DEFAULT NULL,
+  `analog15` float DEFAULT NULL,
+  `analog16` float DEFAULT NULL,
+  `speed1` int(2) DEFAULT NULL,
+  `speed2` int(2) DEFAULT NULL,
+  `speed3` int(2) DEFAULT NULL,
+  `speed4` int(2) DEFAULT NULL,
+  `power1` float DEFAULT NULL,
+  `power2` float DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQUE` (`date`,`frame`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED
+
+DROP TABLE IF EXISTS `t_min`;
+CREATE TABLE `t_min` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` datetime NOT NULL,
+  `frame` enum('frame1','frame2','frame3','frame4','frame5','frame6','frame7','frame8') NOT NULL,
+  `analog1` float DEFAULT NULL,
+  `analog2` float DEFAULT NULL,
+  `analog3` float DEFAULT NULL,
+  `analog4` float DEFAULT NULL,
+  `analog5` float DEFAULT NULL,
+  `analog6` float DEFAULT NULL,
+  `analog7` float DEFAULT NULL,
+  `analog8` float DEFAULT NULL,
+  `analog9` float DEFAULT NULL,
+  `analog10` float DEFAULT NULL,
+  `analog11` float DEFAULT NULL,
+  `analog12` float DEFAULT NULL,
+  `analog13` float DEFAULT NULL,
+  `analog14` float DEFAULT NULL,
+  `analog15` float DEFAULT NULL,
+  `analog16` float DEFAULT NULL,
+  `speed1` int(2) DEFAULT NULL,
+  `speed2` int(2) DEFAULT NULL,
+  `speed3` int(2) DEFAULT NULL,
+  `speed4` int(2) DEFAULT NULL,
+  `power1` float DEFAULT NULL,
+  `power2` float DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQUE` (`date`,`frame`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED
+
+DROP VIEW IF EXISTS `v_energies`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_energies` AS select cast(`v_minmaxdate`.`date` as date) AS `date`,(`max`.`energy1` - `min`.`energy1`) AS `energy1`,(`max`.`energy2` - `min`.`energy2`) AS `energy2`,`v_minmaxdate`.`frame` AS `frame` from ((`v_minmaxdate` left join `t_data` `min` on(((`min`.`date` = `v_minmaxdate`.`min`) and (`min`.`frame` = `v_minmaxdate`.`frame`)))) left join `t_data` `max` on(((`max`.`date` = `v_minmaxdate`.`max`) and (`max`.`frame` = `v_minmaxdate`.`frame`))))
+
+DROP VIEW IF EXISTS `v_max`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_max` AS select cast(`t_data`.`date` as date) AS `date`,max(`t_data`.`analog1`) AS `analog1`,max(`t_data`.`analog2`) AS `analog2`,max(`t_data`.`analog3`) AS `analog3`,max(`t_data`.`analog4`) AS `analog4`,max(`t_data`.`analog5`) AS `analog5`,max(`t_data`.`analog6`) AS `analog6`,max(`t_data`.`analog7`) AS `analog7`,max(`t_data`.`analog8`) AS `analog8`,max(`t_data`.`analog9`) AS `analog9`,max(`t_data`.`analog10`) AS `analog10`,max(`t_data`.`analog11`) AS `analog11`,max(`t_data`.`analog12`) AS `analog12`,max(`t_data`.`analog13`) AS `analog13`,max(`t_data`.`analog14`) AS `analog14`,max(`t_data`.`analog15`) AS `analog15`,max(`t_data`.`analog16`) AS `analog16`,max(`t_data`.`speed1`) AS `speed1`,max(`t_data`.`speed2`) AS `speed2`,max(`t_data`.`speed3`) AS `speed3`,max(`t_data`.`speed4`) AS `speed4`,max(`t_data`.`power1`) AS `power1`,max(`t_data`.`power2`) AS `power2`,`t_data`.`frame` AS `frame` from `t_data` where ((`t_data`.`date` >= cast((select max(`t_max`.`date`) from `t_max`) as date)) or ((select count(0) from `t_max`) = 0)) group by cast(`t_data`.`date` as date),`t_data`.`frame` 
+
+DROP VIEW IF EXISTS `v_min`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_min` AS select cast(`t_data`.`date` as date) AS `date`,min(`t_data`.`analog1`) AS `analog1`,min(`t_data`.`analog2`) AS `analog2`,min(`t_data`.`analog3`) AS `analog3`,min(`t_data`.`analog4`) AS `analog4`,min(`t_data`.`analog5`) AS `analog5`,min(`t_data`.`analog6`) AS `analog6`,min(`t_data`.`analog7`) AS `analog7`,min(`t_data`.`analog8`) AS `analog8`,min(`t_data`.`analog9`) AS `analog9`,min(`t_data`.`analog10`) AS `analog10`,min(`t_data`.`analog11`) AS `analog11`,min(`t_data`.`analog12`) AS `analog12`,min(`t_data`.`analog13`) AS `analog13`,min(`t_data`.`analog14`) AS `analog14`,min(`t_data`.`analog15`) AS `analog15`,min(`t_data`.`analog16`) AS `analog16`,min(`t_data`.`speed1`) AS `speed1`,min(`t_data`.`speed2`) AS `speed2`,min(`t_data`.`speed3`) AS `speed3`,min(`t_data`.`speed4`) AS `speed4`,min(`t_data`.`power1`) AS `power1`,min(`t_data`.`power2`) AS `power2`,`t_data`.`frame` AS `frame` from `t_data` where ((`t_data`.`date` >= cast((select max(`t_min`.`date`) from `t_min`) as date)) or ((select count(0) from `t_min`) = 0)) group by cast(`t_data`.`date` as date),`t_data`.`frame`
+
+DROP VIEW IF EXISTS `v_minmaxdate`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_minmaxdate` AS select `t_data`.`date` AS `date`,min(`t_data`.`date`) AS `min`,max(`t_data`.`date`) AS `max`,`t_data`.`frame` AS `frame` from `t_data` where ((`t_data`.`date` >= cast((select max(`t_energies`.`date`) from `t_energies`) as date)) or ((select count(0) from `t_energies`) = 0)) group by cast(`t_data`.`date` as date)
+
+DROP PROCEDURE IF EXISTS `p_energies`;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `p_energies`()
+BEGIN
+REPLACE INTO t_energies (date, energy1, energy2, frame) SELECT * FROM v_energies; 
+END
+
+DROP PROCEDURE IF EXISTS `p_minmax`;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `p_minmax`()
+BEGIN
+REPLACE INTO t_min (date, analog1, analog2, analog3, analog4, analog5, analog6, analog7, analog8,
+analog9, analog10, analog11, analog12, analog13, analog14, analog15, analog16, speed1, speed2, speed3, speed4, power1, power2, frame) SELECT * FROM v_min;
+REPLACE INTO t_max (date, analog1, analog2, analog3, analog4, analog5, analog6, analog7, analog8,
+analog9, analog10, analog11, analog12, analog13, analog14, analog15, analog16, speed1, speed2, speed3, speed4, power1, power2, frame) SELECT * FROM v_max;
+END
+
+
+
+
+
+

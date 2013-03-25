@@ -114,6 +114,15 @@ var lineChart = {
 			lineChart.zoomed = true;
 			lineChart.chart.draw(lineChart.data, lineChart.options);
 		}
+		else if(lineChart.chart.getSelection().length && !lineChart.chart.getSelection()[0].row)
+		{
+			var line = lineChart.chart.getSelection()[0].column-1;
+			minmaxChart.fetch(line);
+			toolbar.showBackToChart();
+			menu.selectedItem.table.getTable().hide();
+			$("#minmax_chart").show();
+			$("#line_chart").hide();
+		}
 	},
 	clickHandler: function(e) {
 		if(e.targetID == "chartarea" && lineChart.zoomed) {
@@ -191,3 +200,70 @@ var barChart = {
 		this.chart.draw(data, this.options);
 	}
 }
+
+var minmaxChart = {
+		options: {
+			height: 500,
+			vAxis: {minValue: 0},
+			hAxis: {format: 'dd.MM'},
+			animation: {
+				duration: 1000,
+	  			easing: 'out'
+			},
+			chartArea: {width: '80%', height: '80%'},
+			legend: {position: 'bottom'}
+		},
+		init: function()
+		{
+			this.chart = new google.visualization.LineChart(document.getElementById('minmax_chart'));
+		},
+		fetch: function(line)
+		{
+			$.ajax({
+				url: "minmaxChart.php",
+				data: {
+					date: (toolbar.date.getFullYear() + "-" + (toolbar.date.getMonth() + 1) + "-" + toolbar.date.getDate()),
+					type: menu.selectedItem.columns[line].type,
+					frame: menu.selectedItem.columns[line].frame
+				},
+				dataType:"json",
+				timeout: 120000,
+				success: function(jsonData) {
+					if($("#content").is(":animated")) {
+						$("#content").one('complete', function() {
+							minmaxChart.json = jsonData;
+							minmaxChart.draw(line);
+						});
+					}
+					else {
+						minmaxChart.json = jsonData;
+						minmaxChart.draw(line);
+					}
+				},
+				complete: function(xhr,status) {
+					$("#overlay").hide();
+				},
+				beforeSend: function(xhr,settings) {
+					$("#overlay").show();
+				}
+			});
+		},
+		draw: function(line)
+		{
+			var table = [];
+			this.data = new google.visualization.DataTable();
+			// add columns
+			this.data.addColumn('datetime', 'Time');
+			this.data.addColumn('number', 'Minimum '+menu.selectedItem.columns[line].name);
+			this.data.addColumn('number', 'Maximum '+menu.selectedItem.columns[line].name);
+			// format date
+			for ( var i = 0; i < this.json.length; i++ ) { 
+				this.json[i][0] = new Date(this.json[i][0]*1000);
+			}
+			
+			this.data.addRows(this.json);	
+			// set unit
+			this.options.vAxis.format = menu.selectedItem["unit"];		
+			this.chart.draw(this.data, this.options);
+		}
+	}

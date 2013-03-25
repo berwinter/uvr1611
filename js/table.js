@@ -19,6 +19,16 @@ function Table(item)
 		$('#container').scrollTop(0);
 	});
 	
+	$("tbody tr td:nth-child(1)",$table).click(function() {
+		var line = $("tbody tr",$table).index($(this).parent());;
+		minmaxChart.fetch(line);
+		toolbar.showBackToChart();
+		menu.selectedItem.table.getTable().hide();
+		$("#minmax_chart").show();
+		$("#line_chart").hide();
+	});
+
+	
 	this.fill = function(data, vFormat)
 	{
 		var dateFormatter = new google.visualization.DateFormat({pattern: "dd.MM"});

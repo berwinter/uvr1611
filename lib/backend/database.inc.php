@@ -202,6 +202,32 @@ class Database
 	}
 	
 	/**
+	 * Query the power chart with given id and date
+	 * @param Date $date
+	 * @param string $frame
+	 * @param string $type
+	 * @return Array
+	 */
+	public function queryMinmax($date, $frame, $type)
+	{
+	
+		$sql = "SELECT UNIX_TIMESTAMP(t_max.date) AS date, t_min.$type AS min, t_max.$type AS max ".
+			   "FROM t_max INNER JOIN t_min ON (t_max.date = t_min.date AND t_max.frame = t_min.frame) ".
+			   "WHERE t_max.frame=\"$frame\" AND t_max.date < DATE_ADD(\"$date\", INTERVAL 1 DAY) ".
+			   "AND t_max.date > DATE_SUB(\"$date\", INTERVAL 30 DAY);";
+	
+		// fetch chart data
+		$rows = array();
+		if($result = $this->mysqli->query($sql)) {
+			while($r = $result->fetch_array(MYSQLI_NUM)) {
+				$rows[] = $r;
+			}
+			$result->close();
+		}
+		return $rows;
+	}
+	
+	/**
 	 * Query the energy chart with given id and date
 	 * @param Date $date
 	 * @param int $chartId

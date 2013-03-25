@@ -154,6 +154,13 @@ div.hover > div.icon, div.active > div.icon {
 	position:absolute;
 }
 
+#backToChart {
+	margin-top:2px;
+	left: 10px;
+	display:block;
+	position:absolute;
+}
+
 #period {
 	right: 150px;
 	position:absolute;

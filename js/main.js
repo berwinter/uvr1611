@@ -10,7 +10,8 @@ var menu = {
 		    	actualValues.values = jsonData.values;
 		    	menu.items = jsonData.menu;
 				var $menu = $("<div></div>");
-				var $pages = $("<div><div id=\"chart_container\"><div id=\"line_chart\"></div></div><div id=\"energy_container\"><div id=\"bar_chart\"></div></div></div>");
+				var $pages = $("<div><div id=\"chart_container\"><div id=\"line_chart\"></div><div id=\"minmax_chart\"></div></div><div id=\"energy_container\"><div id=\"bar_chart\"></div></div></div>");
+				$pages.find("#minmax_chart").hide();
 				
 				for (var i in menu.items)
 				{
@@ -68,6 +69,7 @@ var menu = {
 					menu.display();
 					lineChart.init();
 					barChart.init();
+					minmaxChart.init();
 					menu.handle();
 				});
 		    }
