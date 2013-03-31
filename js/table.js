@@ -75,11 +75,15 @@ function EnergyTable(item)
 		{
 			$table.find('tbody > tr:eq(0) > td > div.value:eq('+i+')').text(numberFormatter.formatValue(data[i].max));
 			$table.find('tbody > tr:eq(1) > td > div.value:eq('+i+')').text(numberFormatter.formatValue(data[i].avg));
-			//$table.find('tbody > tr:eq(2) > td > div.value:eq('+i+')').text(numberFormatter.formatValue(data[i].summer.avg));
-			$table.find('tbody > tr:eq(3) > td > div.value:eq('+i+')').text(numberFormatter.formatValue(data[i].winter.avg));
+			if(data[i].summer)
+				$table.find('tbody > tr:eq(2) > td > div.value:eq('+i+')').text(numberFormatter.formatValue(data[i].summer.avg));
+			if(data[i].winter)
+				$table.find('tbody > tr:eq(3) > td > div.value:eq('+i+')').text(numberFormatter.formatValue(data[i].winter.avg));
 			$table.find('tbody > tr:eq(4) > td > div.value:eq('+i+')').text(numberFormatter.formatValue(data[i].sum));
-			//$table.find('tbody > tr:eq(5) > td > div.value:eq('+i+')').text(numberFormatter.formatValue(data[i].sumer.sum));
-			$table.find('tbody > tr:eq(6) > td > div.value:eq('+i+')').text(numberFormatter.formatValue(data[i].winter.sum));
+			if(data[i].summer)
+				$table.find('tbody > tr:eq(5) > td > div.value:eq('+i+')').text(numberFormatter.formatValue(data[i].sumer.sum));
+			if(data[i].winter)
+				$table.find('tbody > tr:eq(6) > td > div.value:eq('+i+')').text(numberFormatter.formatValue(data[i].winter.sum));
 		}
 	}
 	this.getTable = function()
