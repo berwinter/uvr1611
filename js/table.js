@@ -81,7 +81,7 @@ function EnergyTable(item)
 				$table.find('tbody > tr:eq(3) > td > div.value:eq('+i+')').text(numberFormatter.formatValue(data[i].winter.avg));
 			$table.find('tbody > tr:eq(4) > td > div.value:eq('+i+')').text(numberFormatter.formatValue(data[i].sum));
 			if(data[i].summer)
-				$table.find('tbody > tr:eq(5) > td > div.value:eq('+i+')').text(numberFormatter.formatValue(data[i].sumer.sum));
+				$table.find('tbody > tr:eq(5) > td > div.value:eq('+i+')').text(numberFormatter.formatValue(data[i].summer.sum));
 			if(data[i].winter)
 				$table.find('tbody > tr:eq(6) > td > div.value:eq('+i+')').text(numberFormatter.formatValue(data[i].winter.sum));
 		}
