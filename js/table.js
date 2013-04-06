@@ -6,7 +6,7 @@ function Table(item)
 	
 	var data = [];
 	for(var i in item.columns) {
-		data[i] = {name: item.columns[i].name, color: lineChart.options.color[i]};
+		data[i] = {name: item.columns[i].name, color: lineChart.options.colors[i]};
 	}
 	
 	for(var i in data)
@@ -58,7 +58,7 @@ function EnergyTable(item)
 	
 	var data = [];
 	for(var i in item.columns) {
-		data[i] = {name: item.columns[i].name, color: lineChart.options.color[i]};
+		data[i] = {name: item.columns[i].name, color: barChart.options.colors[i]};
 	}
 	
 	var $head = $("<tr><th/></tr>");

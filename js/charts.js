@@ -9,7 +9,7 @@ var lineChart = {
 		},
 		chartArea: {width: '80%', height: '80%'},
 		legend: {position: 'bottom'},
-		color: ['#3366cc','#dc3912','#ff9900','#109618','#990099']
+		colors: ['#3366cc','#dc3912','#ff9900','#109618','#990099']
 	},
 	zoomed: false,
 	init: function()
@@ -144,7 +144,8 @@ var barChart = {
 			easing: 'out'
 		},
 		chartArea: {width: '80%', height: '80%'},
-		legend: {position: 'bottom'}
+		legend: {position: 'bottom'},
+		colors: ['#3366cc','#dc3912','#ff9900','#109618','#990099']
 	},
 	init: function()
 	{
