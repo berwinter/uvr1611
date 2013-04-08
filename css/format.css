@@ -87,13 +87,13 @@ div.hover > div.icon, div.active > div.icon {
 	left:50%;
 	margin-left:-210px;
 	margin-top:-210px;
-	background: url(../images/logo.png) no-repeat transparent;
 	width:400px;
 	height:80px;
 	position: absolute;
 }
 
 #contact {
+	color: #444;
 	position:absolute;
 	right:20px;
 	top:10px;

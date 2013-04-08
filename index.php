@@ -1,4 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?php 
+	include_once 'lib/config.inc.php';
+	$config = Config::getInstance();
+	$email = "";
+	try {
+		$email = $config->app->email;
+	}
+	catch(Exception $ex) {}
+	$name = "";
+	try {
+		$name = $config->app->name;
+	}
+	catch(Exception $ex) {}
+	echo '<?xml version="1.0" encoding="UTF-8"?>';
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
@@ -18,8 +32,25 @@
   </head>
 
   <body>
-	<div id="contact"><a href="https://github.com/berwinter/uvr1611" target="_blank">GitHub</a> <a href="mailto:bertram.winter@gmail.com">Kontakt</a></div>
-	<div id="logo"></div>
+	<div id="contact"><?php include("VERSION"); ?> <a href="https://github.com/berwinter/uvr1611" target="_blank">GitHub</a> <a href="mailto:<?php echo $email; ?>">Kontakt</a></div>
+		<svg id="logo" xmlns="http://www.w3.org/2000/svg"  width="280" height="60">
+		  <g transform="translate(0,-992.36218)">
+		    <text style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#666666;fill-opacity:1;stroke:none" x="0.49456322" y="1004.2011">
+		    	<tspan x="0.49456322" y="1004.2011" style="font-size:10px;font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#666666;font-family:Arial">
+		    		UVR<tspan style="font-size:12px;font-weight:normal;fill:#666666;">1611</tspan>
+		    	</tspan>
+		    </text>
+		    <text style="font-size:28px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#666666;fill-opacity:1;stroke:none;" x="-1.1482943" y="1033.807">
+		    	<tspan x="-1.1482943" y="1033.807" style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#666666;font-family:Arial">
+		    		<tspan style="font-size:32px;fill:#666666">Data Logger</tspan>
+		    		<tspan style="font-size:28px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#666666;font-family:Arial"> Pro</tspan>
+		    	</tspan>
+		    </text>
+		    <text x="-0.13813959" y="1049.5406">
+		    	<tspan x="-0.13813959" y="1049.5406" style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#666666;font-family:Arial"><?php echo $name;?></tspan>
+		    </text>
+		  </g>
+		</svg>
 	<div id="content">
 	<div id="overlay"></div>
 	<div id="toolbar">

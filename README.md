@@ -27,7 +27,7 @@ Für die Anwendung wird ein Webserver mit PHP und ein MySQL Datenbank-Server ben
 
 Danach kann die Anwendung in den Ordner `/var/www/` kopiert werden. Zum erstellen der Datenbankstruktur kann das Skript `sql/structure.sql` importiert werden. 
 
-Die Anwendung benütigt zur Laufzeit Schreibrechte für den Ordner `/tmp/`.
+Die Anwendung benötigt zur Laufzeit Schreibrechte für den Ordner `/tmp/`.
 
 
 Konfiguration
@@ -47,6 +47,8 @@ Die Konfiguration des Datenloggers befindet sich in der Datei `config/config.ini
 	reset = false
 	
 	[app]
+	name = "Solar/Heizungs Datenauswertung"
+	email = bertram.winter@gmail.com
 	chartcache = 600
 	latestcache = 60
 	reduction = 2
@@ -67,21 +69,37 @@ Anpassen der Anwendung
 Die Anpassung der Anwendung erfolgt vollständig über die Datenbank:
 (Im Ordner `sql/example-data` befinden sich Beispieldaten der einzelnen Tabellen zum Importieren.)
 
+Bevor die Tabellen importiert werden, empfiehlt es sich, dass Schema/Schema und Schema/Kollektoren ggf. an die eigenen Verhältnisse anzupassen, indem diese Dateien mit einem entsprechenden Grafik Programm bearbeitet werden. Das Freeware Programm Inkscape für PC und Mac eignet sich sehr gut, weil das Festlegen der ID’s besonders einfach ist. Die ID’s werden später in der Tabelle `t_schema` benötigt und nachstehend wird kurz gezeigt, wie diese festgelegt werden.
+Nachdem die Grafik angepasst wurde, setzt man mit dem Texttool an den Stellen im Diagramm, wo später z.B. die Temperatur angezeigt werden soll ein `? ° C`, klickt mit der rechten Maustaste auf dieses Objekt und es öffnet sich das nachstehende erste Fenster. Dort wird *Object Properties* angeklickt und das rechte Fenster erscheint. In diesem Fenster legt man mit einer freien Bezeichnung die *ID* und das *Label* fest. Im Beispiel ist die ID `vl2_temp` und das Label `#vl2_temp`. Der Label Eintrag wird später in der Tabelle `t_schema` unter `path` eingetragen.
+
+![Inkscape](./doc/objectid.png)
+
+Sind alle ID’s festgelegt, wird diese Datei unter im Ordner `images` gespeichert.
+
 #### t_menu ####
+
+In dieser Tabelle wird die Haupteingangsseite festgelegt. `name` und `order` sind frei festlegbar, wobei `order` die Reihenfolge der einzelnen Darstellungen in der Haupt-Menu Anzeige festlegt.
+Werden einzelne Bereiche nicht benötigt, können diese Reihen einfach in der Tabelle gelöscht werden.
 
 ![Hauptmenü](./doc/t_menu.png)
 
 #### t_names ####
 
+In der Spalte `type` wird die aktuelle Belegung der 16 analogen UVR Sensoren Eingänge eingetragen. Unter `name` kann man angeben, welcher Eingang hier geschaltet ist. Nicht benötigte Eingänge werden wieder einfach reihenweise gelöscht.
+
 ![Senornamen](./doc/t_names.png)
 
 #### t_names_of_charts ####
 
+In dieser Tabelle wird festgelegt, welche Diagramme erzeugt werden sollen. Dabei wird mit der `chart_id` festgelegt, in welchem Chart welche Größen angezeigt werden sollen. Mit `order` wird bestimmt an welcher Stelle im Chart und der darunter liegenden Tabelle ein Wert angezeigt werden soll.
+Soll ein Wert in mehreren Charts angezeigt werden, so muss dieser Wert entsprechend oft in `t_names_of_charts` aufgeführt werden. Im nachstehenden Beispiel ist das z.B. die Grösse `analog5`. Dieser Wert wird sowohl im Chart 2 des Hauptmenues an Stelle 1, als auch im Chart 3 an Stelle 3 angezeigt
+
 ![Verknüpfung zwischen Sensoren und Diagrammen](./doc/t_names_of_charts.png)
 
 #### t_schema ####
+Hier werden die Label-Einträge - wie vorstehend - erläutert eingetragen. Auch die Pumpen, Mischer und Ventil Einstellungen können hier festgelegt werden. Im nachstehenden Beispiel sind dies die digital-Einträge unter `type`. Im Schema erscheinen diese Einträge dann mit ihren aktuellen Zustand `EIN` oder `AUS`.
 
-Die angezeigten Werte im Schema können in der Tabelle `t_schema` angepasst werden. Dazu musst der Pfad des `t_span` Elements in der SVG Grafik angebenen werden, welches den aktuellen Wert enthalten soll. Als Formatierung kann die Anzahl der Kommastellen angegenem werden (zB.: #.## für 2 Kommastellen). Für die digitalen Ausgänge kann die Funktion `DIGITAL()` verwendet werden um EIN bzw. AUS im Schema anzuzeigen. Für die Darstellung der Erträge stehen die Funktionen `MWH()` und `KWH()` zur Verfügung.
+Als Formatierung kann die Anzahl der Kommastellen angegenem werden (zB.: #.## für 2 Kommastellen). Für die digitalen Ausgänge kann die Funktion `DIGITAL()` verwendet werden um EIN bzw. AUS im Schema anzuzeigen. Für die Darstellung der Erträge stehen die Funktionen `MWH()` und `KWH()` zur Verfügung. Für Ventile und Mischer gibt es due Funktionen `MISCHER_AUF()`, `MISCHER_ZU()` und `VENTIL()`.
 
 ![Anzeige der aktuellen Werte im Schema](./doc/t_schema.png)
 

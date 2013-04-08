@@ -40,7 +40,7 @@ class Parser
 
 		// unpack binary string
 		$package = unpack("v16analog/Sdigital/C4speed/Cactive".
-						  "/Vpower1/Venergy1/Vpower2/Venergy2",$data);
+						  "/Vpower1/vkWh1/vMWh1/Vpower2/vkWh2/vMWh2",$data);
 		
 		// 16 Analog channels
 		for($i=1; $i<=16; $i++) {
@@ -63,7 +63,8 @@ class Parser
 		// 2 energy values
 		for($i=1; $i<=2; $i++) {
 			$key = ("energy".$i);
-			$this->$key = self::convertEnergy($package["energy".$i],
+			$this->$key = self::convertEnergy($package["MWh".$i],
+											  $package["kWh".$i],
 											  $package["active"], $i);
 		}
 		
@@ -140,10 +141,10 @@ class Parser
 	 * @param int $position
 	 * @return number|NULL
 	 */
-	private static function convertEnergy($value, $active, $position)
+	private static function convertEnergy($MWh, $kWh, $active, $position)
 	{
 		if($active & $position) {
-			return ($value/10);
+			return ($MWh*1000 + $kWh/10);
 		}
 		else{
 			return "NULL";

@@ -184,14 +184,20 @@ var actualValues =
 	{
 		for(var i in actualValues.values) {
 			var value = actualValues.values[i];
-			$(value.path).text(value.format.replace(/((DIGITAL|MWH|KWH)\()?#\.?(#*)\)?/g, function(number,tmp,modifier,fractions) {
+			$(value.path).text(value.format.replace(/((DIGITAL|MWH|KWH|MISCHER_AUF|MISCHER_ZU|VENTIL)\()?#\.?(#*)\)?/g, function(number,tmp,modifier,fractions) {
 				switch(modifier) {
+					case "MISCHER_AUF":
+						return converter.mixerOn(data[value.frame][value.type]);
+					case "MISCHER_ZU":
+						return converter.mixerOff(data[value.frame][value.type]);
+					case "VENTIL":
+						return converter.valve(data[value.frame][value.type]);
 					case "DIGITAL":
 						return converter.digital(data[value.frame][value.type]);
 					case "MWH":
-						return converter.mwh(data[value.frame][value.type]).toFixed(fractions.length);
+						return converter.mwh(data[value.frame][value.type]);
 					case "KWH":
-						return converter.kwh(data[value.frame][value.type]);
+						return converter.kwh(data[value.frame][value.type]).toFixed(fractions.length);
 					default:
 						return data[value.frame][value.type].toFixed(fractions.length);
 				}
@@ -219,7 +225,28 @@ var converter = {
 	kwh: function(value)
 	{
 		return value%1000;
-	}
+	},
+	mixerOn: function(value)
+	{
+		if(value == 1) {
+			return 'AUF';
+		}
+	},
+	mixerOff: function(value)
+	{
+		if(value == 1) {
+			return 'ZU';
+		}
+	},
+	valve: function(value)
+	{
+		if(value == 1) {
+			return 'ZU';
+		}
+		else {
+			return 'OFFEN';
+		}
+	},
 }
 
 google.load('visualization', '1', {'packages':['corechart']});
