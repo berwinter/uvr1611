@@ -92,7 +92,7 @@ In der Spalte `type` wird die aktuelle Belegung der 16 analogen UVR Sensoren Ein
 #### t_names_of_charts ####
 
 In dieser Tabelle wird festgelegt, welche Diagramme erzeugt werden sollen. Dabei wird mit der `chart_id` festgelegt, in welchem Chart welche Größen angezeigt werden sollen. Mit `order` wird bestimmt an welcher Stelle im Chart und der darunter liegenden Tabelle ein Wert angezeigt werden soll.
-Soll ein Wert in mehreren Charts angezeigt werden, so muss dieser Wert entsprechend oft in `t_names_of_charts` aufgeführt werden. Im nachstehenden Beispiel ist das z.B. die Grösse `analog5`. Dieser Wert wird sowohl im Chart 2 des Hauptmenues an Stelle 1, als auch im Chart 3 an Stelle 3 angezeigt
+Soll ein Wert in mehreren Charts angezeigt werden, so muss dieser Wert entsprechend oft in `t_names_of_charts` aufgeführt werden. Im nachstehenden Beispiel ist das z.B. die Größe `analog12`. Dieser Wert wird sowohl im Chart 2 des Hauptmenues, als auch im Chart 4 angezeigt
 
 ![Verknüpfung zwischen Sensoren und Diagrammen](./doc/t_names_of_charts.png)
 
