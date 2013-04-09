@@ -1,5 +1,5 @@
 <?php 
-	include_once 'lib/config.inc.php';
+	include_once("lib/config.inc.php");
 	$config = Config::getInstance();
 	$email = "";
 	try {
