@@ -76,9 +76,9 @@ class Uvr1611
 		create_pid();
 		$latest = "";
 		// for all can frames
-		for($j=0; $j<$this->canFrames; $j++) {
+		for($j=1; $j<=$this->canFrames; $j++) {
 			// build command
-			$cmd = pack("C2",self::GET_LATEST,1);
+			$cmd = pack("C2",self::GET_LATEST,$j);
 			// try 4 times to get values
 			for($i=0; $i<self::MAX_RETRYS; $i++) {
 				$data = $this->query($cmd, $this->actualSize);
@@ -93,7 +93,7 @@ class Uvr1611
 					}
 					else {	
 						$latest .= $data;
-						break;
+						$i = self::MAX_RETRYS;
 					}
 				}
 			}

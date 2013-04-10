@@ -231,20 +231,22 @@ var converter = {
 		if(value == 1) {
 			return 'AUF';
 		}
+		return '';
 	},
 	mixerOff: function(value)
 	{
 		if(value == 1) {
 			return 'ZU';
 		}
+		return '';
 	},
 	valve: function(value)
 	{
 		if(value == 1) {
-			return 'ZU';
+			return 'OFFEN';
 		}
 		else {
-			return 'OFFEN';
+			return 'ZU';
 		}
 	},
 }
