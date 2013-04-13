@@ -184,7 +184,7 @@ var actualValues =
 	{
 		for(var i in actualValues.values) {
 			var value = actualValues.values[i];
-			$(value.path).text(value.format.replace(/((DIGITAL|MWH|KWH|MISCHER_AUF|MISCHER_ZU|VENTIL)\()?#\.?(#*)\)?/g, function(number,tmp,modifier,fractions) {
+			$(value.path).text(value.format.replace(/((DIGITAL|MWH|KWH|MISCHER_AUF|MISCHER_ZU|VENTIL|DREHZAHL)\()?#\.?(#*)\)?/g, function(number,tmp,modifier,fractions) {
 				switch(modifier) {
 					case "MISCHER_AUF":
 						return converter.mixerOn(data[value.frame][value.type]);
@@ -198,6 +198,8 @@ var actualValues =
 						return converter.mwh(data[value.frame][value.type]);
 					case "KWH":
 						return converter.kwh(data[value.frame][value.type]).toFixed(fractions.length);
+					case "DREHZAHL":
+						return converter.speed(data[value.frame][value.type]);
 					default:
 						return data[value.frame][value.type].toFixed(fractions.length);
 				}
@@ -240,6 +242,10 @@ var converter = {
 		}
 		return '';
 	},
+	speed: function(value)
+	{
+		return (value/30*100).toFixed()+"%";
+	},
 	valve: function(value)
 	{
 		if(value == 1) {
@@ -248,7 +254,7 @@ var converter = {
 		else {
 			return 'ZU';
 		}
-	},
+	}
 }
 
 google.load('visualization', '1', {'packages':['corechart']});

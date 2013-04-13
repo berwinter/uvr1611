@@ -19,6 +19,15 @@ class Parser
 	const DIGITAL_OFF = 0;
 	const SPEED_ACTIVE = 0x80;
 	const SPEED_MASK = 0x1F;
+	const TYPE_MASK = 0x7000;
+	const TYPE_NONE = 0x0000;
+	const TYPE_DIGITAL = 0x1000;
+	const TYPE_TEMP = 0x2000;
+	const TYPE_VOLUME = 0x3000;
+	const TYPE_RADIATION = 0x4000;
+	const TYPE_RAS = 0x7000;
+	const RAS_POSITIVE_MASK = 0x000001FF;
+	const RAS_NEGATIVE_MASK = 0xFFFFFE00;
 	
 	/**
 	 * Constructor
@@ -94,11 +103,37 @@ class Parser
 	 */
 	private static function convertAnalog($value)
 	{
+		// calculate result value
 		if($value & self::SIGN_BIT) {
-			return (($value | self::NEGATIVE_VALUE_MASK)/10);
+			$result = $value | self::NEGATIVE_VALUE_MASK;
 		}
 		else {
-			return (($value & self::POSITIVE_VALUE_MASK)/10);
+			$result = $value & self::POSITIVE_VALUE_MASK;
+		}
+		// choose type
+		switch($value & self::TYPE_MASK)
+		{
+			case self::TYPE_RADIATION:
+			case self::TYPE_NONE:
+				return $result;
+			case self::TYPE_TEMP:
+				return $result/10;
+			case self::TYPE_VOLUME:
+				return $result*4;
+			case self::TYPE_DIGITAL:
+				if($value & self::SIGN_BIT) {
+					return 1;
+				}
+				else {
+					return 0;
+				}
+			case self::TYPE_RAS:
+				if($value & self::SIGN_BIT) {
+					return (($value | self::RAS_NEGATIVE_MASK)/10);
+				}
+				else {
+					return (($value & self::RAS_POSITIVE_MASK)/10);
+				}
 		}
 	}
 	

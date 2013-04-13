@@ -100,8 +100,8 @@ class Uvr1611
 		}
 		close_pid();
 		$this->disconnect();
-		if(strlen($data)>0) {
-			return $this->splitLatest($data);
+		if(strlen($latest)>0) {
+			return $this->splitLatest($latest);
 		}
 		throw new Exception("Could not get latest data!");
 	}

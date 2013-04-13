@@ -125,7 +125,7 @@ class Database
 		while($statement->fetch()) {
 			$columnNames[] = "c$i";
 			$columns[] = "$frame.$name AS c$i";
-			$joins[$frame]   = "INNER JOIN t_data AS $frame ON ($frame.id = datasets.id AND $frame.frame=\"$frame\")";
+			$joins[$frame]   = "INNER JOIN t_data AS $frame ON ($frame.date = datasets.date AND $frame.frame=\"$frame\")";
 			$i++;
 		}
 
@@ -137,7 +137,7 @@ class Database
 		$sql .= join(" ", $joins);
 		$sql .= " WHERE datasets.date > DATE_SUB(\"$date\", INTERVAL $period DAY) ".
 				"AND datasets.date < DATE_ADD(\"$date\", INTERVAL 1 DAY))".
-				"ranked WHERE rownum %$reduction =1;";
+				"ranked WHERE rownum %$reduction =1 GROUP BY date;";
 		$statement->close();
 		// fetch chart data
 		$rows = array();
@@ -176,7 +176,7 @@ class Database
 		while($statement->fetch()) {
 			$columnNames[] = "c$i";
 			$columns[] = "$frame.$name AS c$i";
-			$joins[$frame]   = "INNER JOIN t_data AS $frame ON ($frame.id = datasets.id AND $frame.frame=\"$frame\")";
+			$joins[$frame]   = "INNER JOIN t_data AS $frame ON ($frame.date = datasets.date AND $frame.frame=\"$frame\")";
 			$i++;
 		}
 
@@ -188,7 +188,7 @@ class Database
 		$sql .= join(" ", $joins);
 		$sql .= " WHERE datasets.date > DATE_SUB(\"$date\", INTERVAL $period DAY) ".
 				"AND datasets.date < DATE_ADD(\"$date\", INTERVAL 1 DAY))".
-				"ranked WHERE rownum %$reduction =1;";
+				"ranked WHERE rownum %$reduction =1 GROUP BY date;";
 		
 		// fetch chart data
 		$rows = array();
@@ -263,7 +263,7 @@ class Database
 		// build chart query
 		while($statement->fetch()) {
 			$columns[] = "$sum($frame.$name) AS c$i";
-			$joins[$frame] = "INNER JOIN t_energies AS $frame ON ($frame.id = datasets.id AND $frame.frame=\"$frame\")";
+			$joins[$frame] = "INNER JOIN t_energies AS $frame ON ($frame.date = datasets.date AND $frame.frame=\"$frame\")";
 			$i++;
 		}
 		
@@ -273,7 +273,7 @@ class Database
 		$sql .= join(" ", $joins);
     	$sql .= " WHERE datasets.date < DATE_ADD(\"$date\",INTERVAL 1 DAY) ".
 				"AND datasets.date > DATE_SUB(\"$date\", INTERVAL $interval) ".
-				"$groupby ORDER BY datasets.date ASC;";
+				"$groupby GROUP BY date ORDER BY datasets.date ASC;";
 		$statement->close();
 		// fetch chart data
 		$rows = array();
