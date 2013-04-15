@@ -113,9 +113,6 @@ class Parser
 		// choose type
 		switch($value & self::TYPE_MASK)
 		{
-			case self::TYPE_RADIATION:
-			case self::TYPE_NONE:
-				return $result;
 			case self::TYPE_TEMP:
 				return $result/10;
 			case self::TYPE_VOLUME:
@@ -134,6 +131,10 @@ class Parser
 				else {
 					return (($value & self::RAS_POSITIVE_MASK)/10);
 				}
+			case self::TYPE_RADIATION:
+			case self::TYPE_NONE:
+			default:
+				return $result;
 		}
 	}
 	
