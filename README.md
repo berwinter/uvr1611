@@ -18,8 +18,9 @@ Ein Beispiel der Anwendung befindet sich hier: [Demo](http://berwinter.dyndns.or
 
 Downloads
 ------
-[Stable (v81)](https://github.com/berwinter/uvr1611/archive/v80.zip)
-[Development](https://github.com/berwinter/uvr1611/archive/master.zip)
+
+* [Stable (v81)](https://github.com/berwinter/uvr1611/archive/v80.zip)
+* [Development](https://github.com/berwinter/uvr1611/archive/master.zip)
 
 Vorteile der Anwendung
 ------
