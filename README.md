@@ -16,6 +16,11 @@ Die Features sind:
 
 Ein Beispiel der Anwendung befindet sich hier: [Demo](http://berwinter.dyndns.org/uvr1611/)
 
+Downloads
+------
+[Stable (v81)](https://github.com/berwinter/uvr1611/archive/v80.zip)
+[Development](https://github.com/berwinter/uvr1611/archive/master.zip)
+
 Vorteile der Anwendung
 ------
 
