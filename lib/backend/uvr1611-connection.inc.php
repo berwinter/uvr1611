@@ -93,7 +93,7 @@ class Uvr1611
 					}
 					else {	
 						$latest .= $data;
-						$i = self::MAX_RETRYS;
+						break;
 					}
 				}
 			}
