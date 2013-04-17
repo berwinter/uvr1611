@@ -392,12 +392,22 @@ class Database
 				$statement->execute();
 				$statement->bind_result($name, $frame, $type);
 				
-				$columns = array();
-				
+				$columns = array("analog" => array(),"digital" => array());
+				$j=1;
 				while($statement->fetch()) {
-					$columns[] = array("name" => $name,
-									  "frame" => $frame,
-									  "type" => $type);
+					if(!strncmp($type,"digital",strlen("digital"))) {
+						$columns["digital"][] = array("name" => $name,
+													  "frame" => $frame,
+													  "index" => $j,
+													  "type" => $type);
+					}
+					else {
+						$columns["analog"][] = array("name" => $name,
+													 "frame" => $frame,
+													 "index" => $j,
+													 "type" => $type);
+					}
+					$j++;
 				}
 				$statement->close();
 				$rows["menu"][$i]["columns"] = $columns;

@@ -110,6 +110,7 @@ div.hover > div.icon, div.active > div.icon {
 	margin:auto;
 	min-width:800px;
 	max-width:1200px;
+	padding-top:20px;
 }
 #container {
 	width:100%;

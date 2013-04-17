@@ -11,9 +11,22 @@ var lineChart = {
 		legend: {position: 'bottom'},
 		colors: ['#3366cc','#dc3912','#ff9900','#109618','#990099']
 	},
+	digitalOptions: {
+		vAxis: {minValue: 0, textPosition: 'none'},
+		hAxis: {textPosition: 'none'},
+		animation: {
+			duration: 1000,
+  			easing: 'out'
+		},
+		chartArea: {width: '80%', height: '50%'},
+		legend: {position: 'bottom'},
+		tooltip: {trigger: 'none'},
+		colors: ['#3366cc','#dc3912','#ff9900','#109618','#990099']
+	},
 	zoomed: false,
 	init: function()
 	{
+		this.digitalChart = new google.visualization.LineChart(document.getElementById('step_chart'));
 		this.chart = new google.visualization.LineChart(document.getElementById('line_chart'));
 		google.visualization.events.addListener(this.chart, 'click', this.clickHandler);
 		google.visualization.events.addListener(this.chart, 'select', this.selectHandler);
@@ -53,66 +66,103 @@ var lineChart = {
 	draw: function()
 	{
 		var table = [];
-		this.data = new google.visualization.DataTable();
+		this.data = {};
+		this.data.analog = new google.visualization.DataTable();
+		this.data.digital = new google.visualization.DataTable();
 		// add columns
-		this.data.addColumn('datetime', 'Time');
+		this.data.analog.addColumn('datetime', 'Time');
+		this.data.digital.addColumn('datetime', 'Time');
 		var cols = menu.selectedItem["columns"];
-		for (var i in cols) {
-			this.data.addColumn('number', cols[i].name);
-			table[i] = {min:{value:null},max:{value:null},avg:{value:0}};
-
-		}
-		// format date
-		for ( var i = 0; i < this.json.length; i++ ) { 
-			this.json[i][0] = new Date(this.json[i][0]*1000);
-			
-			// find min max
-			for(var j=1; j < this.json[i].length; j++) {
-				if(table[j-1].min.value == null || this.json[i][j] < table[j-1].min.value) {
-					table[j-1].min.value = this.json[i][j];
-					table[j-1].min.time = this.json[i][0];	
-					table[j-1].min.row = i;	
-					table[j-1].min.column = j;
-				}
-				if(table[j-1].max.value == null || this.json[i][j] > table[j-1].max.value) {
-					table[j-1].max.value = this.json[i][j];
-					table[j-1].max.time = this.json[i][0];
-					table[j-1].max.row = i;	
-					table[j-1].max.column = j;
-				}
-				table[j-1].avg.value += this.json[i][j];
-			}
-		}
-		// calc avg
-		for (var i in cols) {
-			table[i].avg.value /= this.json.length;
-		}
-
-		// add data
-		this.data.addRows(this.json);	
-		// set unit
-		this.options.vAxis.format = menu.selectedItem["unit"];		
-		this.options.hAxis.format = toolbar.getPeriod() == "day" ? "HH:mm": "dd.MM";
 		
+		this.json.digital = [];
+		this.json.analog = [];
+		
+		for ( var i = 0; i < this.json.length; i++ ) { 
+			this.json.digital[i] = [];
+			this.json.analog[i] = [];
+			this.json.digital[i][0] = new Date(this.json[i][0]*1000);
+			this.json.analog[i][0] = new Date(this.json[i][0]*1000);
+		}
+		
+		for (var i in cols.analog) {
+			this.data.analog.addColumn('number', cols.analog[i].name);
+			var tableRow = {min:{value:null},max:{value:null},avg:{value:0}};
+			for (var j = 0; j < this.json.length; j++ ) { 
+				var value = this.json[j][cols.analog[i].index];
+				this.json.analog[j].push(value);
+				if(tableRow.min.value == null || value < tableRow.min.value) {
+					tableRow.min.value = value;
+					tableRow.min.time = this.json.analog[j][0];	
+					tableRow.min.row = j;	
+					tableRow.min.column = this.json.analog[j].length-1;
+				}
+				if(tableRow.max.value == null || value > tableRow.max.value) {
+					tableRow.max.value = value;
+					tableRow.max.time = this.json.analog[j][0];
+					tableRow.max.row = j;	
+					tableRow.max.column = this.json.analog[j].length-1;
+				}
+				tableRow.avg.value += value;
+			}
+			tableRow.avg.value /= this.json.length;
+			table.push(tableRow);
+		}
+		for (var i in cols.digital) {
+			this.data.digital.addColumn('number', cols.digital[i].name);
+			for ( var j = 0; j < this.json.length; j++ ) { 
+				var value = this.json[j][cols.digital[i].index];
+				this.json.digital[j].push(value*0.7+(this.json.digital[j].length-1)*1);
+			}
+		}		
 		// check if there is data
-		if(this.json[0]){
+		if(this.json.analog[0] && this.json.analog[0][1] != null){
+			$("#line_chart").show();
+			// add data
+			this.data.analog.addRows(this.json.analog);	
+			// set unit
+			this.options.vAxis.format = menu.selectedItem["unit"];		
+			this.options.hAxis.format = toolbar.getPeriod() == "day" ? "HH:mm": "dd.MM";
 			// set viewbox
-			this.options.hAxis.viewWindow = {min:this.json[0][0], max:this.json[this.json.length-1][0]};
+			this.options.hAxis.viewWindow = {min:this.json.analog[0][0], max:this.json.analog[this.json.analog.length-1][0]};
 			// fill table with information
 			menu.selectedItem.table.fill(table, this.options.vAxis.format);
+			this.chart.draw(this.data.analog, this.options);
 		}
+		else {
+			$("#line_chart").hide();
+		}
+		if(this.json.digital[0] && this.json.digital[0][1] != null){
+			$("#step_chart").show();
+			this.data.digital.addRows(this.json.digital);	
+			this.digitalOptions.hAxis.viewWindow = {min:this.json.digital[0][0], max:this.json.digital[this.json.digital.length-1][0]};
+			this.digitalOptions.height = this.json.digital[0].length*40;
+			this.digitalOptions.vAxis.gridlines = {count:this.json.digital[0].length};
+			this.digitalOptions.vAxis.maxValue = (this.json.digital[0].length-1)*1;
+			this.digitalChart.draw(this.data.digital, this.digitalOptions);
+		}
+		else {
+			$("#step_chart").hide();
+		}
+		
 		this.zoomed = false;
-		this.chart.draw(this.data, this.options);
+
 	},
 	selectHandler: function() {
 		if(lineChart.chart.getSelection().length && lineChart.chart.getSelection()[0].row) {
 			var row = lineChart.chart.getSelection()[0].row;
 			var offset = toolbar.getPeriod() == "day" ? 1800000: 43200000;
-			lineChart.options.hAxis.format = toolbar.getPeriod() == "day" ? "HH:mm": "dd.MM HH:mm";
-			lineChart.options.hAxis.viewWindow.min = new Date(lineChart.json[row][0].getTime()-offset);
-			lineChart.options.hAxis.viewWindow.max = new Date(lineChart.json[row][0].getTime()+offset);
+			if(lineChart.json.analog[0] && lineChart.json.analog[0][1] != null){
+				lineChart.options.hAxis.format = toolbar.getPeriod() == "day" ? "HH:mm": "dd.MM HH:mm";
+				lineChart.options.hAxis.viewWindow.min = new Date(lineChart.json.analog[row][0].getTime()-offset);
+				lineChart.options.hAxis.viewWindow.max = new Date(lineChart.json.analog[row][0].getTime()+offset);
+				lineChart.chart.draw(lineChart.data.analog, lineChart.options);
+			}
+			if(lineChart.json.digital[0] && lineChart.json.digital[0][1] != null){
+				lineChart.digitalOptions.hAxis.viewWindow.min = new Date(lineChart.json.analog[row][0].getTime()-offset);
+				lineChart.digitalOptions.hAxis.viewWindow.max = new Date(lineChart.json.analog[row][0].getTime()+offset);
+				lineChart.digitalChart.draw(lineChart.data.digital, lineChart.digitalOptions);
+			}
 			lineChart.zoomed = true;
-			lineChart.chart.draw(lineChart.data, lineChart.options);
 		}
 		else if(lineChart.chart.getSelection().length && !lineChart.chart.getSelection()[0].row)
 		{
@@ -122,15 +172,23 @@ var lineChart = {
 			menu.selectedItem.table.getTable().hide();
 			$("#minmax_chart").show();
 			$("#line_chart").hide();
+			$("#step_chart").hide();
 		}
 	},
 	clickHandler: function(e) {
 		if(e.targetID == "chartarea" && lineChart.zoomed) {
-			lineChart.options.hAxis.format = toolbar.getPeriod() == "day" ? "HH:mm": "dd.MM";
-			lineChart.options.hAxis.viewWindow.min = lineChart.json[0][0];
-			lineChart.options.hAxis.viewWindow.max = lineChart.json[lineChart.json.length-1][0];
+			if(lineChart.json.analog[0] && lineChart.json.analog[0][1] != null){
+				lineChart.options.hAxis.format = toolbar.getPeriod() == "day" ? "HH:mm": "dd.MM";
+				lineChart.options.hAxis.viewWindow.min = lineChart.json.analog[0][0];
+				lineChart.options.hAxis.viewWindow.max = lineChart.json.analog[lineChart.json.analog.length-1][0];
+				lineChart.chart.draw(lineChart.data.analog, lineChart.options);
+			}
+			if(lineChart.json.digital[0] && lineChart.json.digital[0][1] != null){
+				lineChart.digitalOptions.hAxis.viewWindow.min = lineChart.json.analog[0][0];
+				lineChart.digitalOptions.hAxis.viewWindow.max = lineChart.json.analog[lineChart.json.analog.length-1][0];
+				lineChart.digitalChart.draw(lineChart.data.digital, lineChart.digitalOptions);
+			}
 			lineChart.zoomed = false;
-			lineChart.chart.draw(lineChart.data, lineChart.options);
 		}
 	}
 }
@@ -187,7 +245,7 @@ var barChart = {
 		var data = new google.visualization.DataTable();
 		data.addColumn('string', 'Date');
 		
-		var cols = menu.selectedItem["columns"];
+		var cols = menu.selectedItem["columns"].analog;
 		var table = {};
 		
 		for (var i in cols)
@@ -212,20 +270,21 @@ var minmaxChart = {
 	  			easing: 'out'
 			},
 			chartArea: {width: '80%', height: '80%'},
-			legend: {position: 'bottom'}
+			legend: {position: 'bottom'},
+			curveType: 'function'
 		},
 		init: function()
 		{
 			this.chart = new google.visualization.LineChart(document.getElementById('minmax_chart'));
 		},
 		fetch: function(line)
-		{
+		{		
 			$.ajax({
 				url: "minmaxChart.php",
 				data: {
 					date: (toolbar.date.getFullYear() + "-" + (toolbar.date.getMonth() + 1) + "-" + toolbar.date.getDate()),
-					type: menu.selectedItem.columns[line].type,
-					frame: menu.selectedItem.columns[line].frame
+					type: menu.selectedItem.columns.analog[line].type,
+					frame: menu.selectedItem.columns.analog[line].frame
 				},
 				dataType:"json",
 				timeout: 120000,
@@ -255,8 +314,8 @@ var minmaxChart = {
 			this.data = new google.visualization.DataTable();
 			// add columns
 			this.data.addColumn('datetime', 'Time');
-			this.data.addColumn('number', 'Minimum '+menu.selectedItem.columns[line].name);
-			this.data.addColumn('number', 'Maximum '+menu.selectedItem.columns[line].name);
+			this.data.addColumn('number', 'Minimum '+menu.selectedItem.columns.analog[line].name);
+			this.data.addColumn('number', 'Maximum '+menu.selectedItem.columns.analog[line].name);
 			// format date
 			for ( var i = 0; i < this.json.length; i++ ) { 
 				this.json[i][0] = new Date(this.json[i][0]*1000);

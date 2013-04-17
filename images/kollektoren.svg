@@ -1279,7 +1279,7 @@
            id="path76"
            style="stroke:#007fff" />
         <path
-           d="m 137.12,870.34 h 61.744 V 733.22 h 514.8 v 20.849 h -8.0187"
+           d="m 137.12,846.34 61.744,0 0,-113.12 514.8,0 0,20.849 -8.0187,0"
            id="path78"
            style="stroke:#007fff" />
         <path
@@ -2236,26 +2236,29 @@
        transform="translate(-268.68,546.2)"
        id="g430"
        style="stroke:#000000">
-      <path
-         d="m 354.42,342.23 h 10.363"
-         id="path432"
-         style="fill:none;stroke-width:5.17280006;stroke-linecap:round" />
-      <path
-         d="m 314.16,434.84 c 0,2.2316 -1.809,4.0406 -4.0406,4.0406 -2.2316,0 -4.0406,-1.809 -4.0406,-4.0406 0,-2.2316 1.809,-4.0406 4.0406,-4.0406 2.2316,0 4.0406,1.809 4.0406,4.0406 z"
-         transform="translate(43.748,-92.677)"
-         id="path434"
-         style="fill:#ff9000;stroke-linejoin:round" />
+      <g
+         transform="matrix(-1,0,0,1,768.6962,-4)"
+         id="g4039">
+        <path
+           d="m 354.42,324.23 h 10.363"
+           id="path432"
+           style="fill:none;stroke-width:5.17280006;stroke-linecap:round" />
+        <path
+           d="m 357.908,324.163 c 0,2.2316 -1.809,4.0406 -4.0406,4.0406 -2.2316,0 -4.0406,-1.809 -4.0406,-4.0406 0,-2.2316 1.809,-4.0406 4.0406,-4.0406 2.2316,0 4.0406,1.809 4.0406,4.0406 z"
+           id="path434"
+           style="fill:#ff9000;stroke-linejoin:round" />
+      </g>
     </g>
     <text
-       x="74.005455"
-       y="894.07812"
+       x="169.14023"
+       y="904.07812"
        id="solarvl_temp"
        xml:space="preserve"
-       style="font-size:18px;font-style:oblique;text-align:end;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#333333;font-family:Arial"><tspan
-         x="74.005455"
-         y="894.07812"
+       style="font-size:18px;font-style:oblique;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#333333;font-family:Arial"><tspan
+         x="182.00546"
+         y="904.07812"
          id="tspan437"
-         style="font-size:14px;fill:#333333">? °C</tspan></text>
+         style="font-size:14px;text-align:center;text-anchor:middle;fill:#333333">? °C</tspan></text>
     <g
        transform="matrix(-1,0,0,1,500.23,546.2)"
        id="g439"
@@ -2274,15 +2277,15 @@
       </g>
     </g>
     <text
-       x="193.39044"
-       y="904.43121"
+       x="154.52521"
+       y="871.78528"
        id="solarrl_temp"
        xml:space="preserve"
-       style="font-size:18px;font-style:oblique;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#333333;font-family:Arial"><tspan
-         x="180.52521"
-         y="904.43121"
+       style="font-size:18px;font-style:oblique;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#333333;font-family:Arial"><tspan
+         x="154.52521"
+         y="871.78528"
          id="tspan446"
-         style="font-size:14px;text-align:center;text-anchor:middle;fill:#333333">? °C</tspan></text>
+         style="font-size:14px;text-align:start;text-anchor:start;fill:#333333">? °C</tspan></text>
     <g
        transform="translate(-56.843,550.19)"
        id="g448"
@@ -2305,23 +2308,22 @@
        id="g454"
        style="stroke:#000000;stroke-width:0.89999998;stroke-linecap:round;stroke-linejoin:bevel">
       <path
-         d="m 271.73,334.83 c 0,6.4158 -5.201,11.617 -11.617,11.617 -6.4158,0 -11.617,-5.201 -11.617,-11.617 0,-6.4158 5.201,-11.617 11.617,-11.617 6.4158,0 11.617,5.201 11.617,11.617 z"
-         transform="translate(111.43,45.714)"
+         d="m 362.2498,380.544 c 0,6.4158 -5.201,11.617 -11.617,11.617 -6.4158,0 -11.617,-5.201 -11.617,-11.617 0,-6.4158 5.201,-11.617 11.617,-11.617 6.4158,0 11.617,5.201 11.617,11.617 z"
          id="path456"
-         style="fill:#ffffff" />
+         style="fill:#ffffff;stroke-width:0.89999998" />
       <path
-         d="m 255.77,324.35 v 11.541 11.541 l -9.9945,-5.7703 -9.9945,-5.7703 9.9945,-5.7703 z"
-         transform="matrix(0.86038,0,0,0.86038,157.22,91.553)"
-         id="path458" />
+         d="m 356.36919,370.61725 v 9.92965 9.92964 l -8.59907,-4.96465 -8.59907,-4.96465 8.59907,-4.96465 z"
+         id="path458"
+         style="stroke-width:0.774342" />
     </g>
     <text
        x="217.14796"
-       y="833.11572"
+       y="813.11572"
        id="roehren_pumpe"
        xml:space="preserve"
        style="font-size:14.99699974px;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#333333;font-family:Arial"><tspan
          x="217.14796"
-         y="833.11572"
+         y="813.11572"
          id="tspan461"
          style="font-size:14px;fill:#333333">?</tspan></text>
     <g
@@ -2329,23 +2331,22 @@
        id="g463"
        style="stroke:#000000;stroke-width:0.89999998;stroke-linecap:round;stroke-linejoin:bevel">
       <path
-         d="m 271.73,334.83 c 0,6.4158 -5.201,11.617 -11.617,11.617 -6.4158,0 -11.617,-5.201 -11.617,-11.617 0,-6.4158 5.201,-11.617 11.617,-11.617 6.4158,0 11.617,5.201 11.617,11.617 z"
-         transform="translate(111.43,45.714)"
+         d="m 362.2498,380.544 c 0,6.4158 -5.201,11.617 -11.617,11.617 -6.4158,0 -11.617,-5.201 -11.617,-11.617 0,-6.4158 5.201,-11.617 11.617,-11.617 6.4158,0 11.617,5.201 11.617,11.617 z"
          id="path465"
-         style="fill:#ffffff" />
+         style="fill:#ffffff;stroke-width:0.89999998" />
       <path
-         d="m 255.77,324.35 v 11.541 11.541 l -9.9945,-5.7703 -9.9945,-5.7703 9.9945,-5.7703 z"
-         transform="matrix(0.86038,0,0,0.86038,157.22,91.553)"
-         id="path467" />
+         d="m 356.36919,370.61725 v 9.92965 9.92964 l -8.59907,-4.96465 -8.59907,-4.96465 8.59907,-4.96465 z"
+         id="path467"
+         style="stroke-width:0.774342" />
     </g>
     <text
        x="153.17155"
-       y="833.11572"
+       y="813.11572"
        id="flach_pumpe"
        xml:space="preserve"
        style="font-size:14.99699974px;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#333333;font-family:Arial"><tspan
          x="153.17155"
-         y="833.11572"
+         y="813.11572"
          id="tspan470"
          style="font-size:14px;fill:#333333">?</tspan></text>
     <text
@@ -2480,42 +2481,42 @@
        style="font-size:12px;text-align:center;text-anchor:middle;fill:#333333">?</tspan></text>
   <text
      x="212.00095"
-     y="400.0242"
+     y="380.0242"
      id="roehren_drehzahl"
      xml:space="preserve"
      style="font-size:12px;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#333333;font-family:Arial"><tspan
        x="212.00095"
-       y="400.0242"
+       y="380.0242"
        id="tspan461-7"
        style="font-size:12px;fill:#333333">?</tspan></text>
   <text
      x="212.00095"
-     y="414.75296"
+     y="394.75296"
      id="roehren_volumen"
      xml:space="preserve"
      style="font-size:12px;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#333333;font-family:Arial"><tspan
        x="212.00095"
-       y="414.75296"
+       y="394.75296"
        id="tspan461-9"
        style="font-size:12px;fill:#333333">?</tspan></text>
   <text
      x="148.44162"
-     y="399.69583"
+     y="379.69583"
      id="flach_drehzahl"
      xml:space="preserve"
      style="font-size:12px;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#333333;font-family:Arial"><tspan
        x="148.44162"
-       y="399.69583"
+       y="379.69583"
        id="tspan470-8"
        style="font-size:12px;fill:#333333">?</tspan></text>
   <text
      x="148.44162"
-     y="412.42459"
+     y="392.42459"
      id="flach_volumen"
      xml:space="preserve"
      style="font-size:12px;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#333333;font-family:Arial"><tspan
        x="148.44162"
-       y="412.42459"
+       y="392.42459"
        id="tspan470-84"
        style="font-size:12px;fill:#333333">?</tspan></text>
   <text

@@ -5,12 +5,11 @@ function Table(item)
 	$table.addClass("chartinfo");
 	
 	var data = [];
-	for(var i in item.columns) {
-		data[i] = {name: item.columns[i].name, color: lineChart.options.colors[i]};
+	for(var i in item.columns.analog) {
+		data[i] = {name: item.columns.analog[i].name, color: lineChart.options.colors[i]};
 	}
 	
-	for(var i in data)
-	{
+	for(var i in data) {
 		$table.find('tbody').append('<tr><td><svg xmlns="http://www.w3.org/2000/svg" height="15" width="200"><g><text text-anchor="start" x="21" y="12.75" font-family="Arial" font-size="15" stroke="none" stroke-width="0" fill="#222222">'+data[i].name+'</text><rect width="15" height="15" stroke="none" stroke-width="0" fill="'+data[i].color+'"/></g></svg></td><td class="pointer"><div class="value"></div><div class="timestamp"></div></td><td class="pointer"><div class="value"></div><div class="timestamp"></div></td><td><div class="value"></div></td></tr>');
 	}
 	
@@ -57,8 +56,8 @@ function EnergyTable(item)
 	$table.addClass("chartinfo");
 	
 	var data = [];
-	for(var i in item.columns) {
-		data[i] = {name: item.columns[i].name, color: barChart.options.colors[i]};
+	for(var i in item.columns.analog) {
+		data[i] = {name: item.columns.analog[i].name, color: barChart.options.colors[i]};
 	}
 	
 	var $head = $("<tr><th/></tr>");

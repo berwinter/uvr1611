@@ -42,6 +42,8 @@ var toolbar = {
 			toolbar.showPeriod();
 			menu.selectedItem.table.getTable().show();
 			$("#minmax_chart").hide();
+			if(menu.selectedItem.columns.digital.length)
+				$("#step_chart").show();
 			$("#line_chart").show();
 		});
 		
