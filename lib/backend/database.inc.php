@@ -256,7 +256,7 @@ class Database
 		else {
 			$format = "%d. %b";
 			$interval = "10 DAY";
-			$groupby = "";
+			$groupby = "GROUP BY datasets.date";
 			$sum = "";
 		}
 		
@@ -273,7 +273,7 @@ class Database
 		$sql .= join(" ", $joins);
     	$sql .= " WHERE datasets.date < DATE_ADD(\"$date\",INTERVAL 1 DAY) ".
 				"AND datasets.date > DATE_SUB(\"$date\", INTERVAL $interval) ".
-				"$groupby GROUP BY date ORDER BY datasets.date ASC;";
+				"$groupby ORDER BY datasets.date ASC;";
 		$statement->close();
 		// fetch chart data
 		$rows = array();
