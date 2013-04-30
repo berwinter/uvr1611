@@ -74,6 +74,9 @@ Damit die Daten automatisch vom BL-Net geholt werden, kann ein cron-Job mit folg
 	#!/bin/bash
 
 	wget 'http://localhost/uvr1611/analogChart.php' -O /dev/null
+	
+Die Einrichtung des vorstehenden Beispiels  ist abhängig vom Betriebssystem des Servers und muss u.U. entsprechend angepasst werden. 
+Sollten die Daten auch weiterhin über Winsol ausgelesen werden ist zu beachten, dass bei der Löschung des Datenspeichers (aktiviert über Winsol und/oder Cron-Job) ggf. Datenverluste auftreten können. Hier muss ausprobiert werden, welche Einstellungen am besten geeignet sind.
 
 Anpassen der Anwendung
 ------
@@ -118,6 +121,11 @@ Als Formatierung kann die Anzahl der Kommastellen angegeben werden (zB.: #.## f�
 Für die Darstellung der Erträge stehen die Funktionen `MWH()` und `KWH()` zur Verfügung. 
 
 ![Anzeige der aktuellen Werte im Schema](./doc/t_schema.png)
+
+Darstellung der Pumpen- und Mischerzustände
+------
+
+Ab Version v0.90 lassen sich jetzt auch die Pumpen-, Mischer- und Ventilzustände im Diagramm darstellen, wenn diese entsprechend in den Tabellen `t_schema` und `t_names_of_charts` definiert worden sind. Die grafische Darstellung erfolgt in einem eigenen Diagramm oberhalb der "üblichen" Charts, wenn nicht komplett separat in `t_menu` als Graf/Chart definiert.
 
 Screenshots
 ------
