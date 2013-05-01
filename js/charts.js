@@ -20,7 +20,6 @@ var lineChart = {
 		},
 		chartArea: {width: '80%', height: '50%'},
 		legend: {position: 'bottom'},
-		tooltip: {trigger: 'none'},
 		colors: ['#3366cc','#dc3912','#ff9900','#109618','#990099']
 	},
 	zoomed: false,
@@ -107,11 +106,17 @@ var lineChart = {
 			tableRow.avg.value /= this.json.length;
 			table.push(tableRow);
 		}
+		var rowMarker = [];
 		for (var i in cols.digital) {
 			this.data.digital.addColumn('number', cols.digital[i].name);
+			var lastValue;
 			for ( var j = 0; j < this.json.length; j++ ) { 
 				var value = this.json[j][cols.digital[i].index];
-				this.json.digital[j].push(value*0.7+(this.json.digital[j].length-1)*1);
+				this.json.digital[j].push({v:value*0.7+(this.json.digital[j].length-1)*1, f:(value?"EIN":"AUS")});
+				if(value != lastValue & j>0) {
+					rowMarker[j] = true;
+					lastValue = value;
+				}
 			}
 		}		
 		// check if there is data
@@ -133,7 +138,16 @@ var lineChart = {
 		}
 		if(this.json.digital[0] && this.json.digital[0][1] != null){
 			$("#step_chart").show();
-			this.data.digital.addRows(this.json.digital);	
+			this.data.digital.addRows(this.json.digital);
+			for(var i in rowMarker) {
+				if(i>0){
+					var temp1 = this.json.digital[i];
+					var temp2 = this.json.digital[i-1];
+					temp2[0] = new Date(temp1[0]-1);
+					this.data.digital.addRow(temp2);
+				}
+			}
+			this.data.digital.sort([{column: 0}]);
 			this.digitalOptions.hAxis.viewWindow = {min:this.json.digital[0][0], max:this.json.digital[this.json.digital.length-1][0]};
 			this.digitalOptions.height = this.json.digital[0].length*40;
 			this.digitalOptions.vAxis.gridlines = {count:this.json.digital[0].length};

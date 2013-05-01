@@ -46,9 +46,14 @@ if($date == date("Y-m-d") && ($database->lastDataset() + Config::getInstance()->
 	try {
 		$uvr = Uvr1611::getInstance();
 		$data = Array();
+		$lastDatabaseValue = $database->lastDataset();
 		while($uvr->getCount()) {
 			// fetch a set of dataframes and insert them into the database
-			$data[] = $uvr->fetchData();
+			$value = $uvr->fetchData();
+			if(strtotime($value["frame1"]->date) < $lastDatabaseValue) {
+				break;
+			}
+			$data[] = $value;
 		}
 		$uvr->endRead();
 		// insert all data into database

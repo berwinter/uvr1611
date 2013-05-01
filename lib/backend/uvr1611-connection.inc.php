@@ -51,6 +51,7 @@ class Uvr1611
 	private $address=0;
 	private $mode;
 	private $addressInc = 64;
+	private $addressEnd;
 	private $actualSize = 57;
 	private $fetchSize = 65;
 	private $canFrames = 1;
@@ -154,7 +155,9 @@ class Uvr1611
 			
 			if($this->checksum($data)) {
 				// increment address
-				$this->address += $this->addressInc;
+				$this->address -= $this->addressInc;
+				if($this->address < 0)
+					$this->address = $this->addressEnd;
 				$this->count--;
 				close_pid();
 				return $this->splitDatasets($data);
@@ -205,6 +208,8 @@ class Uvr1611
 						break;
 				}
 				
+				$this->addressEnd = floor(0x07FFFFF/$this->addressInc)*$this->addressInc;
+				
 				// check if address is valid (!= 0xFFFFFF)
 				if($binary["startaddress3"] != 0xFF ||
 				   $binary["startaddress2"] != 0xFF ||
@@ -220,10 +225,17 @@ class Uvr1611
 					$endaddress = ($binary["endaddress3"] << 15)
 							    + ($binary["endaddress2"] << 7)
 							    + $binary["endaddress1"];
-					// calculate count
-					$this->count = (($endaddress - $startaddress)
-								 / $this->addressInc) + 1;
-					$this->address = $startaddress;
+					if($endaddress > $startaddress) {
+						// calculate count
+						$this->count = (($endaddress - $startaddress)
+						             / $this->addressInc) + 1;
+					}
+					else {
+						// calculate count
+						$this->count = (($endaddress - $startaddress)
+									 / $this->addressInc) + 1;
+					}
+					$this->address = $endaddress;
 				}
 			}
 			close_pid();
