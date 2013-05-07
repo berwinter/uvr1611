@@ -208,7 +208,8 @@ class Uvr1611
 						break;
 				}
 				
-				$this->addressEnd = floor(0x07FFFFF/$this->addressInc)*$this->addressInc;
+				$this->addressEnd = floor(0x07FFFF/$this->addressInc)*$this->addressInc;
+				
 				
 				// check if address is valid (!= 0xFFFFFF)
 				if($binary["startaddress3"] != 0xFF ||
@@ -225,6 +226,7 @@ class Uvr1611
 					$endaddress = ($binary["endaddress3"] << 15)
 							    + ($binary["endaddress2"] << 7)
 							    + $binary["endaddress1"];
+					
 					if($endaddress > $startaddress) {
 						// calculate count
 						$this->count = (($endaddress - $startaddress)
@@ -232,9 +234,10 @@ class Uvr1611
 					}
 					else {
 						// calculate count
-						$this->count = (($endaddress - $startaddress)
-									 / $this->addressInc) + 1;
+						$this->count = (($this->addressEnd + $startaddress - $endaddress)
+									 / $this->addressInc);
 					}
+
 					$this->address = $endaddress;
 				}
 			}

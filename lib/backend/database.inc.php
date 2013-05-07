@@ -244,37 +244,43 @@ class Database
 		$statement->bind_result($frame, $name);
 	
 		$columns = array();
+		$sums = array();
 		$joins = array();
 		$i = 1;
 		
-		if($grouping=="months") {
-			$format = "%b 20%y";
-			$interval = "1 YEAR";
-			$groupby = "GROUP BY MONTH(datasets.date),YEAR(datasets.date)";
-			$sum = "SUM";
-		}
-		else {
-			$format = "%d. %b";
-			$interval = "10 DAY";
-			$groupby = "GROUP BY datasets.date";
-			$sum = "";
-		}
 		
 		// build chart query
 		while($statement->fetch()) {
-			$columns[] = "$sum($frame.$name) AS c$i";
+			$sums[] = "SUM(c$i)";
+			$columns[] = "$frame.$name AS c$i";
 			$joins[$frame] = "INNER JOIN t_energies AS $frame ON ($frame.date = datasets.date AND $frame.frame=\"$frame\")";
 			$i++;
 		}
-		
-		$sql = "SELECT DATE_FORMAT(datasets.date, '".$format."') AS date, ";
-		$sql .= join(", ", $columns);
-		$sql .= " FROM t_energies AS datasets ";
-		$sql .= join(" ", $joins);
-    	$sql .= " WHERE datasets.date < DATE_ADD(\"$date\",INTERVAL 1 DAY) ".
-				"AND datasets.date > DATE_SUB(\"$date\", INTERVAL $interval) ".
-				"$groupby ORDER BY datasets.date ASC;";
+
+		if($grouping=="months") {
+			$sql = "SELECT DATE_FORMAT(temp.date, '%b 20%y') AS date, ";
+			$sql .= join(", ", $sums);
+			$sql .= " FROM (";
+			$sql .= "SELECT datasets.date, ";
+			$sql .= join(", ", $columns);
+			$sql .= " FROM t_energies AS datasets ";
+			$sql .= join(" ", $joins);
+			$sql .= " WHERE datasets.date < DATE_ADD(\"$date\",INTERVAL 1 DAY) ".
+					"AND datasets.date > DATE_SUB(\"$date\", INTERVAL 1 YEAR) ".
+					"GROUP BY datasets.date";
+			$sql .= ") AS temp GROUP BY MONTH(temp.date), YEAR(temp.date) ORDER BY temp.date ASC;";
+		}
+		else {
+			$sql = "SELECT DATE_FORMAT(datasets.date, '%d. %b') AS date, ";
+			$sql .= join(", ", $columns);
+			$sql .= " FROM t_energies AS datasets ";
+			$sql .= join(" ", $joins);
+			$sql .= " WHERE datasets.date < DATE_ADD(\"$date\",INTERVAL 1 DAY) ".
+					"AND datasets.date > DATE_SUB(\"$date\", INTERVAL 10 DAY) ".
+					"GROUP BY datasets.date ORDER BY datasets.date ASC;";
+		}
 		$statement->close();
+
 		// fetch chart data
 		$rows = array();
 		if($result = $this->mysqli->query($sql)) {
