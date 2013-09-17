@@ -10,6 +10,10 @@
 include_once("lib/config.inc.php");
 include_once("lib/backend/parser.inc.php");
 
+include_once("myPikoGetData.php");
+include_once("pikoDatainterface.php");
+include_once("lib/backend/piko-connection.inc.php");
+
 class Uvr1611
 {
 	/**
@@ -56,6 +60,7 @@ class Uvr1611
 	private $fetchSize = 65;
 	private $canFrames = 1;
 
+	private $myAData = array();
 	/**
 	 * Constructor
 	 */
@@ -102,7 +107,34 @@ class Uvr1611
 		close_pid();
 		$this->disconnect();
 		if(strlen($latest)>0) {
-			return $this->splitLatest($latest);
+			$gdata = $this->splitLatest($latest);
+			//return $this->splitLatest($latest); //original
+			/*
+			get data with datainterface
+			*/
+			/* it work's
+				but very much entrys when latest.php was startet
+				ToDo: make a function in Piko5 where a array with only the wanted entrys are returned 
+				eg: getPikoArrData()
+			*/
+//			$piko = Piko5::getInstance();
+//			$myAData = $piko->getArrValues();
+			
+			//doesn't work at the moment
+    		//$myAData = getPikoActValues();
+			/*				
+				test - get data from website
+			*/			
+ 			$myAData = getPikoArrData();			
+			/* must be convertet to string, 
+			   otherwise in the schema the values will not be shown
+			   also frame must be deletet, for the same reason */
+			$frame = $myAData["frame"];
+//			$gdata["frame3"] = $myAData;			
+//			unset($myAData["frame"]);//delete key 'frame'	
+			$gdata[$frame] = $myAData;
+			
+			return $gdata;
 		}
 		throw new Exception("Could not get latest data!");
 	}

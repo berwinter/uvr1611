@@ -182,9 +182,10 @@ var actualValues =
 	},
 	display: function(data)
 	{
+	try{
 		for(var i in actualValues.values) {
 			var value = actualValues.values[i];
-			$(value.path).text(value.format.replace(/((DIGITAL|MWH|KWH|MISCHER_AUF|MISCHER_ZU|VENTIL|DREHZAHL)\()?#\.?(#*)\)?/g, function(number,tmp,modifier,fractions) {
+			$(value.path).text(value.format.replace(/((DIGITAL|MWH|KWH|MISCHER_AUF|MISCHER_ZU|VENTIL|DREHZAHL|STATUS)\()?#\.?(#*)\)?/g, function(number,tmp,modifier,fractions) {
 				switch(modifier) {
 					case "MISCHER_AUF":
 						return converter.mixerOn(data[value.frame][value.type]);
@@ -200,6 +201,8 @@ var actualValues =
 						return converter.kwh(data[value.frame][value.type]).toFixed(fractions.length);
 					case "DREHZAHL":
 						return converter.speed(data[value.frame][value.type]);
+					case "STATUS":
+						return converter.state(data[value.frame][value.type]);
 					default:
 						return data[value.frame][value.type].toFixed(fractions.length);
 				}
@@ -207,6 +210,14 @@ var actualValues =
 			}));
 			
 		}
+	} catch (err){
+	;
+//		txt="There was an error on this page.\n\n";
+//		txt+="Error description: " + err.message + "\n\n";
+//		txt+="Click OK to continue.\n\n";
+//		alert(txt);
+	}
+	
 	}
 }
 
@@ -254,7 +265,11 @@ var converter = {
 		else {
 			return 'ZU';
 		}
-	}
+	},
+	state: function(value)
+	{
+		return value;
+	}	
 }
 
 google.load('visualization', '1', {'packages':['corechart']});

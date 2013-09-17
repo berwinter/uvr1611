@@ -235,3 +235,13 @@ table.chartinfo div.value {
 table.chartinfo div.timestamp {
 	font-size: 0.8em;
 }
+
+#mymain {
+	position:absolute;
+	right:200px;
+	top:10px;
+}
+#mymain > a{
+	color: #444;
+}
+
