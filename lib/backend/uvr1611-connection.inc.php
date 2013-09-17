@@ -10,8 +10,8 @@
 include_once("lib/config.inc.php");
 include_once("lib/backend/parser.inc.php");
 
-include_once("myPikoGetData.php");
-include_once("pikoDatainterface.php");
+//include_once("myPikoGetData.php");
+//include_once("pikoDatainterface.php");
 include_once("lib/backend/piko-connection.inc.php");
 
 class Uvr1611
@@ -108,7 +108,7 @@ class Uvr1611
 		$this->disconnect();
 		if(strlen($latest)>0) {
 			$gdata = $this->splitLatest($latest);
-			//return $this->splitLatest($latest); //original
+//			return $this->splitLatest($latest); //original
 			/*
 			get data with datainterface
 			*/
@@ -117,21 +117,24 @@ class Uvr1611
 				ToDo: make a function in Piko5 where a array with only the wanted entrys are returned 
 				eg: getPikoArrData()
 			*/
-//			$piko = Piko5::getInstance();
-//			$myAData = $piko->getArrValues();
 			
 			//doesn't work at the moment
     		//$myAData = getPikoActValues();
 			/*				
 				test - get data from website
 			*/			
- 			$myAData = getPikoArrData();			
+ //			$myAData = getPikoArrData();			
 			/* must be convertet to string, 
 			   otherwise in the schema the values will not be shown
 			   also frame must be deletet, for the same reason */
-			$frame = $myAData["frame"];
 //			$gdata["frame3"] = $myAData;			
 //			unset($myAData["frame"]);//delete key 'frame'	
+
+			$piko = Piko5::getInstance();
+			$piko->fetchData();
+			$myAData = $piko-> getArrValues();			
+
+			$frame = $myAData["frame"];
 			$gdata[$frame] = $myAData;
 			
 			return $gdata;

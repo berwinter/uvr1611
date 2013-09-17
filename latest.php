@@ -12,8 +12,9 @@ if(!$data)
 	$uvr = Uvr1611::getInstance();
 	$data = json_encode($uvr->getLatest());
 	save_cache($data,"uvr1611_latest");
+} else {
+	echo "no new Data\n";
 }
-
 echo $data;
 
 

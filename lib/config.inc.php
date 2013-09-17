@@ -13,7 +13,7 @@ class Config
 	/**
 	 * Config location constant
 	 */
-    const DEFAULT_CONFIG_FILE = 'config/config.ini';
+    const DEFAULT_CONFIG_FILE = "config/config.ini";
  
     /**
      * Singleton Interface

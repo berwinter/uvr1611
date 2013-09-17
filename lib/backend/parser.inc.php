@@ -32,6 +32,8 @@ class Parser
 	const RAS_NORMAL   = 0x200;
 	const RAS_LOWERING = 0x400;
 	const RAS_STANDBY  = 0x600;
+
+	const DEBUG = 0;
 	
 	/**
 	 * Constructor
@@ -113,21 +115,32 @@ class Parser
 	 */
 	private static function convertAnalog($value)
 	{
+		
+	if (self::DEBUG > 1){
+		echo "convertAnalog:" .$value;
+		echo "\n";
+		}
+		
 		// calculate result value
 		if($value & self::SIGN_BIT) {
 			$result = $value | self::NEGATIVE_VALUE_MASK;
+			if (self::DEBUG >1) echo "negative value\n";
 		}
 		else {
 			$result = $value & self::POSITIVE_VALUE_MASK;
+			if (self::DEBUG >1) echo "positive value\n";			
 		}
 		// choose type
 		switch($value & self::TYPE_MASK)
 		{
 			case self::TYPE_TEMP:
+				if (self::DEBUG >1) echo "TYPE_TEMP\n";
 				return $result/10;
 			case self::TYPE_VOLUME:
+				if (self::DEBUG >1) echo "TYPE_VOLUME\n";			
 				return $result*4;
 			case self::TYPE_DIGITAL:
+				if (self::DEBUG >1) echo "TYPE_DIGITAL\n";			
 				if($value & self::SIGN_BIT) {
 					return 1;
 				}
@@ -135,10 +148,18 @@ class Parser
 					return 0;
 				}
 			case self::TYPE_RAS:
+				if (self::DEBUG >1) echo "TYPE_RAS\n";	
 				if($value & self::SIGN_BIT) {
+					$convValue = ($value | self::RAS_NEGATIVE_MASK)/10;
+					if (self::DEBUG ==1) echo "RAS_NEGATIVE_MASK: ".$convValue."\n";
+				//	return $convValue;
 					return (($value | self::RAS_NEGATIVE_MASK)/10);
 				}
 				else {
+					$convValue = ($value & self::RAS_POSITIVE_MASK)/10;					
+					if (self::DEBUG ==1) echo "RAS_POSITIVE_MASK - value: ".$value."\n";					
+					if (self::DEBUG ==1) echo "RAS_POSITIVE_MASK: ".$convValue."\n";
+//					return $convValue;					
 					return (($value & self::RAS_POSITIVE_MASK)/10);
 				}
 			case self::TYPE_RADIATION:
