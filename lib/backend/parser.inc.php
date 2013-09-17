@@ -29,6 +29,10 @@ class Parser
 	const RAS_POSITIVE_MASK = 0x000001FF;
 	const RAS_NEGATIVE_MASK = 0xFFFFFE00;
 	
+	const RAS_NORMAL   = 0x200;
+	const RAS_LOWERING = 0x400;
+	const RAS_STANDBY  = 0x600;
+	
 	/**
 	 * Constructor
 	 * Parses thourgh the dataset and add values as properties
@@ -83,6 +87,12 @@ class Parser
 			$this->$key = self::convertPower($package["power".$i],
 					                         $package["active"], $i);
 		}
+	
+	// 16 Analog channels check RAS-Mode
+		for($i=1; $i<=16; $i++) {
+			$key = ("RASMode".$i);
+			$this->$key = self::convertRASMode($package["analog".$i]);
+		}	
 	
 	}
 	
@@ -204,4 +214,33 @@ class Parser
 			return "NULL";
 		}
 	}
+	
+	/**
+	 * check if the input is a RAS and get the textual mode off the RAS
+	 * @param int $value
+	 * @return string
+	 	const RAS_NORMAL   = 0x200;
+	const RAS_LOWERING = 0x400;
+	const RAS_STANDBY  = 0x600;
+	 */
+	private static function convertRASMode($value)
+	{
+		// choose type
+		switch($value & self::TYPE_MASK)
+		{
+			case self::TYPE_RAS:
+				if($value & self::RAS_NORMAL) {
+					return ("Normal");
+				} else if ($value & self::RAS_LOWERING) {
+					return ("Absenken");
+				} else if ($value & self::RAS_STANDBY) {
+					return ("StandBy");
+				} else {
+					return ("Uhr");
+				}
+			default:
+				return "not used";
+		}
+	}
+	
 }
