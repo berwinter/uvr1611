@@ -33,7 +33,7 @@ class Parser
 	const RAS_LOWERING = 0x400;
 	const RAS_STANDBY  = 0x600;
 
-	const DEBUG = 0;
+	const DEBUG = 1;
 	
 	/**
 	 * Constructor
@@ -250,12 +250,12 @@ class Parser
 		switch($value & self::TYPE_MASK)
 		{
 			case self::TYPE_RAS:
-				if($value & self::RAS_NORMAL) {
-					return ("Normal");
-				} else if ($value & self::RAS_LOWERING) {
-					return ("Absenken");
-				} else if ($value & self::RAS_STANDBY) {
+				if (($value & self::RAS_STANDBY) == self::RAS_STANDBY) {
 					return ("StandBy");
+				} else if (($value & self::RAS_LOWERING) == self::RAS_LOWERING) {
+					return ("Absenken");
+				} else if(($value & self::RAS_NORMAL) == self::RAS_NORMAL) {
+					return ("Normal");
 				} else {
 					return ("Uhr");
 				}
