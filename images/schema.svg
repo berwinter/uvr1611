@@ -141,7 +141,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1"
      inkscape:cx="206.28107"
-     inkscape:cy="60.81438"
+     inkscape:cy="260.81438"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -157,8 +157,8 @@
      inkscape:snap-midpoints="false"
      inkscape:bbox-nodes="false"
      inkscape:snap-nodes="false"
-     inkscape:window-width="1680"
-     inkscape:window-height="994"
+     inkscape:window-width="1600"
+     inkscape:window-height="1144"
      inkscape:window-x="-4"
      inkscape:window-y="-4"
      inkscape:window-maximized="1"
@@ -1268,5 +1268,77 @@
          id="tspan6331-7-6-2"
          x="368.07993"
          y="451.31049">?</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="131.90025"
+       y="126.36468"
+       id="text6147-17"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan6149-4"
+         x="131.90025"
+         y="126.36468">Modus:</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:oblique;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Sans Oblique"
+       x="188.61607"
+       y="125.81048"
+       id="RASMode4_Bad"
+       sodipodi:linespacing="125%"
+       inkscape:label="#RASMode4_Bad"><title
+         id="title3236">Modus Temperaturregelung Bad (E4)</title><tspan
+         sodipodi:role="line"
+         id="tspan6149-7-9-3-9"
+         x="188.61607"
+         y="125.81048">?</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="284.62729"
+       y="126.00555"
+       id="text6147-17-4"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan6149-4-8"
+         x="284.62729"
+         y="126.00555">Modus:</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:oblique;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Sans Oblique"
+       x="341.34311"
+       y="125.45135"
+       id="RASMode6_EG"
+       sodipodi:linespacing="125%"
+       inkscape:label="#RASMode6_EG"><title
+         id="title3236-2">Modus Temperaturregelung Erdgeschoss (E6)</title><tspan
+         sodipodi:role="line"
+         id="tspan6149-7-9-3-9-4"
+         x="341.34311"
+         y="125.45135">?</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="440.62729"
+       y="126.00555"
+       id="text6147-17-4-5"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan6149-4-8-5"
+         x="440.62729"
+         y="126.00555">Modus:</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:oblique;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Sans Oblique"
+       x="497.34311"
+       y="125.45135"
+       id="RASMode8_OG"
+       sodipodi:linespacing="125%"
+       inkscape:label="#RASMode8_OG"><title
+         id="title3236-2-7">Modus Temperaturregelung Obergeschoss (E8)</title><tspan
+         sodipodi:role="line"
+         id="tspan6149-7-9-3-9-4-1"
+         x="497.34311"
+         y="125.45135">?</tspan></text>
   </g>
 </svg>
