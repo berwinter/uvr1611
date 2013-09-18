@@ -33,7 +33,7 @@ class Parser
 	const RAS_LOWERING = 0x400;
 	const RAS_STANDBY  = 0x600;
 
-	const DEBUG = 1;
+	const DEBUG = 0;
 	
 	/**
 	 * Constructor
