@@ -7,6 +7,12 @@
  * @copyright  Copyright (c) Bertram Winter bertram.winter@gmail.com
  * @license    GPLv3 License
  */
+ 
+include_once("lib/config.inc.php");
+/* when it is too slow, Config must be a value from the constructor 
+* --> changes also in uvr1611-connection.inc.php necessary
+*/
+ 
 class Parser
 {
 	/**
@@ -42,6 +48,15 @@ class Parser
 	 */
 	public function __construct($data)
 	{
+		$configRASMode = Config::getInstance()->RASMode;
+		if (self::DEBUG ==1) {
+			echo "configRASMode: ";		
+			echo "normal= ".$configRASMode->normal.", ";
+			echo "standby= ".$configRASMode->standby.", ";
+			echo "lowering= ".$configRASMode->lowering.", ";
+			echo "timer= ".$configRASMode->timer.", ";
+			echo "notUsed= ".$configRASMode->notUsed."\n";
+		}
 		// check if dataset contains time information
 		// (fetched from bootloader storage)
 		if(strlen($data) == 61) {
@@ -93,7 +108,7 @@ class Parser
 	// 16 Analog channels check RAS-Mode
 		for($i=1; $i<=16; $i++) {
 			$key = ("RASMode".$i);
-			$this->$key = self::convertRASMode($package["analog".$i]);
+			$this->$key = self::convertRASMode($package["analog".$i], $configRASMode);
 		}	
 	
 	}
@@ -238,29 +253,43 @@ class Parser
 	
 	/**
 	 * check if the input is a RAS and get the textual mode off the RAS
-	 * @param int $value
+	 * @param int $value, class $config
 	 * @return string
 	 	const RAS_NORMAL   = 0x200;
 	const RAS_LOWERING = 0x400;
 	const RAS_STANDBY  = 0x600;
 	 */
-	private static function convertRASMode($value)
+	private static function convertRASMode($value, &$config)
 	{
+		if (self::DEBUG ==2) {
+			echo "configRASMode: ";		
+			echo "normal= ".$config->normal.", ";
+			echo "standby= ".$config->standby.", ";
+			echo "lowering= ".$config->lowering.", ";
+			echo "timer= ".$config->timer.", ";
+			echo "notUsed= ".$config->notUsed."\n";
+	
+			echo "RASMODE value = ".$value." , ";	
+		}
 		// choose type
 		switch($value & self::TYPE_MASK)
 		{
 			case self::TYPE_RAS:
 				if (($value & self::RAS_STANDBY) == self::RAS_STANDBY) {
-					return ("StandBy");
+					if (self::DEBUG ==1) echo "standby = ".$config->standby."\n";			
+					return $config->standby;
 				} else if (($value & self::RAS_LOWERING) == self::RAS_LOWERING) {
-					return ("Absenken");
+					if (self::DEBUG ==1) echo "lowering = ".$config->lowering."\n";			
+					return $config->lowering;
 				} else if(($value & self::RAS_NORMAL) == self::RAS_NORMAL) {
-					return ("Normal");
+					if (self::DEBUG ==1) echo "Normal = ".$config->normal."\n";			
+					return $config->normal;	
 				} else {
-					return ("Uhr");
+					if (self::DEBUG ==1) echo "timer = ".$config->timer."\n";			
+					return $config->timer;
 				}
 			default:
-				return "not used";
+				return $config->notUsed;											
 		}
 	}
 	
