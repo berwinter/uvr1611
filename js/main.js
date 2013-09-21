@@ -201,13 +201,16 @@ var actualValues =
 					case "DREHZAHL":
 						return converter.speed(data[value.frame][value.type]);
 					case "ANIMATION":
-						if(data[value.frame][value.type] == 1)
+						for(var i in $(value.path))
 						{
-							$(value.path)[0].beginElement();
-						}
-						else
-						{
-							$(value.path)[0].endElement();	
+							if(data[value.frame][value.type] == 1)
+							{
+								$(value.path)[i].beginElement();
+							}
+							else
+							{
+								$(value.path)[i].endElement();	
+							}
 						}
 						return null;
 					default:
