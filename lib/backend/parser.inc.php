@@ -48,7 +48,7 @@ class Parser
 		}
 
 		// unpack binary string
-		$package = unpack("v16analog/Sdigital/C4speed/Cactive".
+		$package = unpack("v16analog/vdigital/C4speed/Cactive".
 						  "/Vpower1/vkWh1/vMWh1/Vpower2/vkWh2/vMWh2",$data);
 		
 		// 16 Analog channels
