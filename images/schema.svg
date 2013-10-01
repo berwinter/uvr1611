@@ -866,24 +866,24 @@
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        x="130.2336"
-       y="146.46396"
+       y="125.0"
        id="text6147"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6149"
          x="130.2336"
-         y="146.46396">Heizkörper</tspan></text>
+         y="125.0">Heizkörper</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        x="438.202"
-       y="145.43466"
+       y="125.0"
        id="text6147-1"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6149-5"
          x="438.202"
-         y="145.43466">Obergeschoss</tspan></text>
+         y="125.0">Obergeschoss</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
@@ -937,39 +937,52 @@
          y="91.770119">? °C</tspan></text>
     <text
        xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
+       x="346.78598"
+       y="320.0"
+       id="vl_hzkr1"
+       sodipodi:linespacing="125%"><title
+         id="title3175-7">Vorlauftemperatur Heizkreis 1</title><tspan
+         sodipodi:role="line"
+         id="tspan6174-4"
+         x="346.78598"
+         y="320.0"
+         style="font-size:14px;font-style:oblique;-inkscape-font-specification:Sans Oblique">? °C</tspan></text>		 
+    <text
+       xml:space="preserve"
        style="font-size:14px;font-style:normal;font-weight:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
        x="469.26535"
-       y="317.38879"
+       y="320.0"
        id="vl_hzkr2"
        sodipodi:linespacing="125%"><title
          id="title3411">Vorlauftemperatur Heizkreis 2</title><tspan
          sodipodi:role="line"
          id="tspan6149-8-0-5"
          x="469.26535"
-         y="317.38879"
+         y="320.0"
          style="font-size:14px;font-style:oblique;text-align:start;text-anchor:start;-inkscape-font-specification:Sans Oblique">? °C</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-weight:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
        x="607.65826"
-       y="317.38879"
+       y="320.0"
        id="vl_hzkr3"
        sodipodi:linespacing="125%"><title
          id="title3413">Vorlauftemperatur Heizkreis 3</title><tspan
          sodipodi:role="line"
          id="tspan6149-8-0-5-7"
          x="607.65826"
-         y="317.38879"
+         y="320.0"
          style="font-size:14px;font-style:oblique;text-align:start;text-anchor:start;-inkscape-font-specification:Sans Oblique">? °C</tspan></text>
     <text
        sodipodi:linespacing="125%"
        id="hz_pump_hzkr2"
-       y="343.74664"
+       y="343.0"
        x="466.67914"
        style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
        xml:space="preserve"><title
          id="title3405">Pumpe Heizkreis 2</title><tspan
-         y="343.74664"
+         y="343.0"
          x="466.67914"
          id="tspan6365"
          sodipodi:role="line">?</tspan></text>
@@ -977,14 +990,14 @@
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
        x="606.50055"
-       y="343.74664"
+       y="343.0"
        id="hz_pump_hzkr3"
        sodipodi:linespacing="125%"><title
          id="title3409">Pumpe Heizkreis 3</title><tspan
          sodipodi:role="line"
          id="tspan6378"
          x="606.50055"
-         y="343.74664">?</tspan></text>
+         y="343.0">?</tspan></text>
     <path
        style="fill:none"
        d="m 168.56142,486.37888 c 0.7299,-116.94639 1.11726,-142.5 2.16015,-142.5 0.6768,0 0.91738,1.04899 0.91738,4 0,3.178 0.21354,4 1.0391,4 0.93315,0 1.00021,3.78944 0.65772,37.16666 -0.20976,20.44167 -0.56387,65.59167 -0.7869,100.33334 l -0.40552,63.16666 -1.99745,0 -1.99744,0 0.41296,-66.16666 0,0 z"
@@ -1097,13 +1110,13 @@
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        x="283.98212"
-       y="145.73576"
+       y="125.0"
        id="text6147-3"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6149-2"
          x="283.98212"
-         y="145.73576">Erdgeschoss</tspan></text>
+         y="125.0">Erdgeschoss</tspan></text>
     <g
        transform="matrix(0,1.1479863,-1.1479863,0,764.16605,-87.790206)"
        id="g5953-0-2">
@@ -1138,12 +1151,12 @@
     <text
        sodipodi:linespacing="125%"
        id="hz_pump_hzkr1"
-       y="345.90668"
+       y="343.0"
        x="347.57993"
        style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
        xml:space="preserve"><title
          id="title3407">Pumpe Heizkreis 1</title><tspan
-         y="345.90668"
+         y="343.0"
          x="347.57993"
          id="tspan6365-5"
          sodipodi:role="line">?</tspan></text>
@@ -1175,54 +1188,41 @@
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
-       x="346.78598"
-       y="320.72504"
-       id="vl_hzkr1"
-       sodipodi:linespacing="125%"><title
-         id="title3175-7">Vorlauftemperatur Heizkreis 1</title><tspan
-         sodipodi:role="line"
-         id="tspan6174-4"
-         x="346.78598"
-         y="320.72504"
-         style="font-size:14px;font-style:oblique;-inkscape-font-specification:Sans Oblique">? °C</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
        x="203.45265"
-       y="145.39169"
+       y="125.0"
        id="temp_Bad"
        sodipodi:linespacing="125%"><title
          id="title3175-4">Temperatur in der Garage</title><tspan
          sodipodi:role="line"
          id="tspan6174-5"
          x="203.45265"
-         y="145.39169"
+         y="125.0"
          style="font-size:14px;font-style:oblique;-inkscape-font-specification:Sans Oblique">? °C</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
        x="370.78601"
-       y="146.72502"
+       y="125.0"
        id="temp_EG"
        sodipodi:linespacing="125%"><title
          id="title3175-4-1">Temperatur im Wohnzimmer</title><tspan
          sodipodi:role="line"
          id="tspan6174-5-7"
          x="370.78601"
-         y="146.72502"
+         y="125.0"
          style="font-size:14px;font-style:oblique;-inkscape-font-specification:Sans Oblique">? °C</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
        x="534.78601"
-       y="146.05835"
+       y="125.0"
        id="temp_OG"
        sodipodi:linespacing="125%"><title
          id="title3175-4-1-1">Temperatur im Vorraum OG</title><tspan
          sodipodi:role="line"
          id="tspan6174-5-7-5"
          x="534.78601"
-         y="146.05835"
+         y="125.0"
          style="font-size:14px;font-style:oblique;-inkscape-font-specification:Sans Oblique">? °C</tspan></text>
     <path
        style="fill:none;stroke:#0066ff;stroke-width:4.96415137999999970;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -1272,18 +1272,18 @@
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        x="130.30025"
-       y="126.36468"
+       y="145.0"
        id="text6147-17"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6149-4"
          x="130.30025"
-         y="126.36468">Modus:</tspan></text>
+         y="145.0">Modus:</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:oblique;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Sans Oblique"
        x="187.01607"
-       y="125.81048"
+       y="145.0"
        id="RASMode4_Bad"
        sodipodi:linespacing="125%"
        inkscape:label="#RASMode4_Bad"><title
@@ -1291,23 +1291,23 @@
          sodipodi:role="line"
          id="tspan6149-7-9-3-9"
          x="187.01607"
-         y="125.81048">?</tspan></text>
+         y="145.0">?</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        x="284.22729"
-       y="126.00555"
+       y="145.0"
        id="text6147-17-4"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6149-4-8"
          x="284.22729"
-         y="126.00555">Modus:</tspan></text>
+         y="145.0">Modus:</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:oblique;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Sans Oblique"
        x="340.94312"
-       y="125.45135"
+       y="145.0"
        id="RASMode6_EG"
        sodipodi:linespacing="125%"
        inkscape:label="#RASMode6_EG"><title
@@ -1315,23 +1315,23 @@
          sodipodi:role="line"
          id="tspan6149-7-9-3-9-4"
          x="340.94312"
-         y="125.45135">?</tspan></text>
+         y="145.0">?</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        x="438.62729"
-       y="126.00555"
+       y="145.0"
        id="text6147-17-4-5"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6149-4-8-5"
          x="438.62729"
-         y="126.00555">Modus:</tspan></text>
+         y="145.0">Modus:</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:oblique;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Sans Oblique"
        x="495.34311"
-       y="125.45135"
+       y="145.0"
        id="RASMode8_OG"
        sodipodi:linespacing="125%"
        inkscape:label="#RASMode8_OG"><title
@@ -1339,6 +1339,6 @@
          sodipodi:role="line"
          id="tspan6149-7-9-3-9-4-1"
          x="495.34311"
-         y="125.45135">?</tspan></text>
+         y="145.0">?</tspan></text>
   </g>
 </svg>

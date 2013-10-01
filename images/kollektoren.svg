@@ -2212,16 +2212,16 @@
          sodipodi:role="line"
          id="tspan5248"
          x="79.196716"
-         y="471.57867"
+         y="470.0"
          style="font-size:16px;font-weight:bold;-inkscape-font-specification:Sans Bold">Kollektoren</tspan><tspan
          sodipodi:role="line"
          x="79.196716"
-         y="489.90753"
+         y="490.0"
          id="tspan5250"
          style="font-size:14px">Aktuell:</tspan><tspan
          sodipodi:role="line"
          x="79.196716"
-         y="507.40753"
+         y="508.0"
          id="tspan5252"
          style="font-size:14px">Gesamt:</tspan></text>
     <g
@@ -2813,7 +2813,7 @@
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
        x="387.15137"
-       y="768.45837"
+       y="768.0"
        id="Solar_P1"
        sodipodi:linespacing="125%"
        inkscape:transform-center-x="3.2333984"
@@ -2822,12 +2822,12 @@
          sodipodi:role="line"
          id="tspan6331-7-6-2"
          x="387.15137"
-         y="768.45837">?</tspan></text>
+         y="768.0">?</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
        x="487.65137"
-       y="767.95837"
+       y="768.0"
        id="Solar_P2"
        sodipodi:linespacing="125%"
        inkscape:transform-center-x="3.2333984"
@@ -2836,12 +2836,12 @@
          sodipodi:role="line"
          id="tspan6331-7-6-6"
          x="487.65137"
-         y="767.95837">?</tspan></text>
+         y="768.0">?</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
        x="591.15137"
-       y="767.95837"
+       y="768.0"
        id="Solar_P3"
        sodipodi:linespacing="125%"
        inkscape:transform-center-x="3.2333984"
@@ -2850,7 +2850,7 @@
          sodipodi:role="line"
          id="tspan6331-7-6-7"
          x="591.15137"
-         y="767.95837">?</tspan></text>
+         y="768.0">?</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
@@ -3191,18 +3191,18 @@
          sodipodi:role="line"
          id="tspan5248-5"
          x="143.52197"
-         y="471.2923"
+         y="490.0"
          style="font-size:16px;font-weight:bold;-inkscape-font-specification:Sans Bold" /><tspan
          sodipodi:role="line"
          x="143.52197"
-         y="489.62115"
+         y="490.0"
          id="tspan5252-2"
          style="font-size:14px">?</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
        x="209.75137"
-       y="489.72952"
+       y="490.0"
        id="Solar_gesamt"
        sodipodi:linespacing="125%"
        inkscape:label="#Solar_gesamt"><title
@@ -3210,18 +3210,18 @@
          sodipodi:role="line"
          id="tspan5248-5-6"
          x="209.75137"
-         y="489.72952"
+         y="490.0"
          style="font-size:16px;font-weight:bold;-inkscape-font-specification:Sans Bold" /><tspan
          sodipodi:role="line"
          x="209.75137"
-         y="508.05838"
+         y="508.0"
          id="tspan5252-2-0"
          style="font-size:14px">?</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial"
        x="209.75137"
-       y="471.12952"
+       y="490.0"
        id="Solar_tagesenergie"
        sodipodi:linespacing="125%"
        inkscape:label="#Solar_tagesenergie"><title
@@ -3233,7 +3233,7 @@
          style="font-size:16px;font-weight:bold;-inkscape-font-specification:Sans Bold" /><tspan
          sodipodi:role="line"
          x="209.75137"
-         y="489.45837"
+         y="490.0"
          id="tspan5252-2-0-0"
          style="font-size:14px">?</tspan></text>
     <text
