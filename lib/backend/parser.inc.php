@@ -14,7 +14,6 @@ class Parser
 	 */
 	const SIGN_BIT = 0x8000;
 	const POSITIVE_VALUE_MASK = 0x00000FFF;
-	const NEGATIVE_VALUE_MASK = 0xFFFFF000;
 	const DIGITAL_ON = 1;
 	const DIGITAL_OFF = 0;
 	const SPEED_ACTIVE = 0x80;
@@ -27,7 +26,6 @@ class Parser
 	const TYPE_RADIATION = 0x4000;
 	const TYPE_RAS = 0x7000;
 	const RAS_POSITIVE_MASK = 0x000001FF;
-	const RAS_NEGATIVE_MASK = 0xFFFFFE00;
 	
 	/**
 	 * Constructor
@@ -104,12 +102,11 @@ class Parser
 	private static function convertAnalog($value)
 	{
 		// calculate result value
+		$result = $value & self::POSITIVE_VALUE_MASK;
 		if($value & self::SIGN_BIT) {
-			$result = $value | self::NEGATIVE_VALUE_MASK;
+			$result = -(($result ^ POSITIVE_VALUE_MASK)+1);
 		}
-		else {
-			$result = $value & self::POSITIVE_VALUE_MASK;
-		}
+		
 		// choose type
 		switch($value & self::TYPE_MASK)
 		{
@@ -125,11 +122,9 @@ class Parser
 					return 0;
 				}
 			case self::TYPE_RAS:
+				$result = $value & self::RAS_POSITIVE_MASK;
 				if($value & self::SIGN_BIT) {
-					return (($value | self::RAS_NEGATIVE_MASK)/10);
-				}
-				else {
-					return (($value & self::RAS_POSITIVE_MASK)/10);
+					return (-(($result ^ self::RAS_POSITIVE_MASK)+1)/10);
 				}
 			case self::TYPE_RADIATION:
 			case self::TYPE_NONE:
