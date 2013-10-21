@@ -56,6 +56,10 @@ if($date == date("Y-m-d") && ($database->lastDataset() + Config::getInstance()->
 				break;
 			}
 			$data[] = $value;
+			if(count($data) == 64) {
+				$database->insertData($data);
+				$data = Array();
+			}
 		}
 		$uvr->endRead();
 		// insert all data into database
