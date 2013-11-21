@@ -81,5 +81,5 @@ if($date == date("Y-m-d") && ($database->lastDataset() + Config::getInstance()->
 	}
 } 
 else {
-	$logfile->writeLog("commonChart.inc.php - no entry in Database --> too timegap too small\n");
+	$logfile->writeLog("commonChart.inc.php - no entry in Database --> timegap too small\n");
 }

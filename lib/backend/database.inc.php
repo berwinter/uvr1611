@@ -29,6 +29,7 @@ class Database
 	 */
 	private $config;
 	private $mysqli;
+	private $logfile;
 	
 	/**
 	 * Constructor
@@ -44,7 +45,7 @@ class Database
 		$this->mysqli->set_charset("utf8");
 		
 		//get instance off logger
-		$logfile = LogFile::getInstance();		
+		$this->logfile = LogFile::getInstance();		
 	}
 	
 	/**
@@ -71,15 +72,14 @@ class Database
 			}
 		}
 		
-		$result = $this->mysqli->query($insert.join(',',$values));
-		
-		if ($result == TRUE) 
+		$result = $this->mysqli->query($insert.join(',',$values));		
+		if ($result === TRUE) 
 		{
-			$logfile->writeLog("database.inc.php - insert in Database successfully\n");			
+			$this->logfile->writeLog("database.inc.php - insert in Database successfully\n");			
 		}
 		else 	
 		{
-			$logfile->writeLog("database.inc.php - insert in Database DENIED\n");					
+			$this->logfile->writeLog("database.inc.php - insert in Database DENIED\n");					
 		}
 	}
 	
