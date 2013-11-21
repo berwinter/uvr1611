@@ -7,8 +7,8 @@
  * @copyright  Copyright (c) Bertram Winter bertram.winter@gmail.com
  * @license    GPLv3 License
  */
-include_once("lib/config.inc.php");
-include_once("lib/backend/logfile.php");
+include_once("/var/www/myUvr1611DataLogger/lib/config.inc.php");
+include_once("/var/www/myUvr1611DataLogger/lib/backend/logfile.php");
 
 class Database
 {
@@ -23,14 +23,14 @@ class Database
 		}
 		return self::$instance;
 	}
-	
+
 	/**
 	 * Privates
 	 */
 	private $config;
 	private $mysqli;
 	private $logfile;
-	
+
 	/**
 	 * Constructor
 	 * Uses Config class to set up a MySQL connection
@@ -43,11 +43,11 @@ class Database
 								   $this->config->mysql->password,
 								   $this->config->mysql->database);
 		$this->mysqli->set_charset("utf8");
-		
+
 		//get instance off logger
-		$this->logfile = LogFile::getInstance();		
+		$this->logfile = LogFile::getInstance();
 	}
-	
+
 	/**
 	 * Inserts all dataset into the database once
 	 * @param Array $data
@@ -63,7 +63,7 @@ class Database
                  ."power1, power2, energy1, energy2,"
 				 ."RASMode1, RASMode2, RASMode3, RASMode4, RASMode5, RASMode6, RASMode7, RASMode8,"
 				 ."RASMode9, RASMode10, RASMode11, RASMode12, RASMode13, RASMode14, RASMode15, RASMode16)  VALUES ";
-		
+
 		$values = Array();
 		foreach ($data as $dataset) {
 			while ($frame = current($dataset)) {
@@ -71,18 +71,19 @@ class Database
 				next($dataset);
 			}
 		}
-		
-		$result = $this->mysqli->query($insert.join(',',$values));		
+
+		$result = $this->mysqli->query($insert.join(',',$values));
 		if ($result === TRUE) 
 		{
-			$this->logfile->writeLog("database.inc.php - insert in Database successfully\n");			
+			$this->logfile->writeLog("database.inc.php - insert in Database successfully\n");
 		}
-		else 	
+		else
 		{
-			$this->logfile->writeLog("database.inc.php - insert in Database DENIED\n");					
+			$this->logfile->writeLog("database.inc.php - insert in Database DENIED\n");
+			$this->logfile->writeLog("database.inc.php - Error: ".$this->mysqli->error."\n");
 		}
 	}
-	
+
 	/**
 	 * Udpates tables
 	 */
@@ -91,8 +92,7 @@ class Database
 		$this->mysqli->query("CALL p_minmax;");
 		$this->mysqli->query("CALL p_energies;");
 	}
-	
-	
+
 	/**
 	 * returns a string containing the values from a dataset
 	 * @param Parser $data
@@ -111,12 +111,12 @@ class Database
 		      ." $data->digital13, $data->digital14, $data->digital15, $data->digital16,"
 		      ." $data->speed1, $data->speed2, $data->speed3, $data->speed4,"
 		      ." $data->power1, $data->power2, $data->energy1, $data->energy2,"
-			  ." $data->RASMode1, $data->RASMode2, $data->RASMode3, $data->RASMode4,"
-			  ." $data->RASMode5, $data->RASMode6, $data->RASMode7, $data->RASMode8,"
-			  ." $data->RASMode9, $data->RASMode10, $data->RASMode11, $data->RASMode12,"
-			  ." $data->RASMode13, $data->RASMode14, $data->RASMode15, $data->RASMode16)";
+			  ." '$data->RASMode1',  '$data->RASMode2',  '$data->RASMode3',  '$data->RASMode4',"
+			  ." '$data->RASMode5',  '$data->RASMode6',  '$data->RASMode7',  '$data->RASMode8',"
+			  ." '$data->RASMode9',  '$data->RASMode10', '$data->RASMode11', '$data->RASMode12',"
+			  ." '$data->RASMode13', '$data->RASMode14', '$data->RASMode15', '$data->RASMode16')";
 	}
-	
+
 	/**
 	 * Query the analog chart with given id and date
 	 * @param Date $date
@@ -130,12 +130,12 @@ class Database
 		$statement = $this->mysqli->prepare("SELECT frame, type FROM t_names_of_charts ".
 											"WHERE chart_id=? ORDER BY t_names_of_charts.order ASC;");
 		$statement->bind_param('i', $chartId);
-		
+
 		$statement->execute();
 		$statement->bind_result($frame, $name);
-		
+
 		$reduction = ($period+1)*$this->config->app->reduction;
-		
+
 		$columns = array();
 		$joins = array();
 		$columnNames = array();
@@ -168,7 +168,7 @@ class Database
 		}
 		return $rows;
 	}
-	
+
 	/**
 	 * Query the power chart with given id and date
 	 * @param Date $date
@@ -184,9 +184,9 @@ class Database
 		$statement->bind_param('i', $chartId);
 		$statement->execute();
 		$statement->bind_result($frame, $name);
-	
+
 		$reduction = ($period+1)*$this->config->app->reduction;
-		
+
 		$columns = array();
 		$joins = array();
 		$columnNames = array();
@@ -208,7 +208,7 @@ class Database
 		$sql .= " WHERE datasets.date > DATE_SUB(\"$date\", INTERVAL $period DAY) ".
 				"AND datasets.date < DATE_ADD(\"$date\", INTERVAL 1 DAY))".
 				"ranked WHERE rownum %$reduction =1 GROUP BY date;";
-		
+
 		// fetch chart data
 		$rows = array();
 		if($result = $this->mysqli->query($sql)) {
@@ -219,7 +219,7 @@ class Database
 		}
 		return $rows;
 	}
-	
+
 	/**
 	 * Query the power chart with given id and date
 	 * @param Date $date
@@ -229,12 +229,12 @@ class Database
 	 */
 	public function queryMinmax($date, $frame, $type)
 	{
-	
+
 		$sql = "SELECT UNIX_TIMESTAMP(t_max.date) AS date, t_min.$type AS min, t_max.$type AS max ".
 			   "FROM t_max INNER JOIN t_min ON (t_max.date = t_min.date AND t_max.frame = t_min.frame) ".
 			   "WHERE t_max.frame=\"$frame\" AND t_max.date < DATE_ADD(\"$date\", INTERVAL 1 DAY) ".
 			   "AND t_max.date > DATE_SUB(\"$date\", INTERVAL 30 DAY);";
-	
+
 		// fetch chart data
 		$rows = array();
 		if($result = $this->mysqli->query($sql)) {
@@ -245,7 +245,7 @@ class Database
 		}
 		return $rows;
 	}
-	
+
 	/**
 	 * Query the energy chart with given id and date
 	 * @param Date $date
@@ -261,13 +261,13 @@ class Database
 		$statement->bind_param('i', $chartId);
 		$statement->execute();
 		$statement->bind_result($frame, $name);
-	
+
 		$columns = array();
 		$sums = array();
 		$joins = array();
 		$i = 1;
-		
-		
+
+
 		// build chart query
 		while($statement->fetch()) {
 			$sums[] = "SUM(c$i)";
@@ -308,7 +308,7 @@ class Database
 			}
 			$result->close();
 		}
-		
+
 		$data = array();
 		$data["rows"] = $rows; 
 		$sql = "SELECT MAX(energy1), SUM(energy1), AVG(energy1), MAX(energy2), SUM(energy2), AVG(energy2), frame FROM t_energies GROUP BY frame;";
@@ -355,24 +355,23 @@ class Database
 			}
 			$result->close();
 		}
-		
+
 		return $data;
 	}
-	
 	/**
 	 * Query the date of the last dataset in the database
 	 * @return number
 	 */
 	public function lastDataset()
-	{	
-		$pikoframe = $this->config->piko->pikoframe;		
-		$result = $this->mysqli->query("SELECT MAX(date) FROM t_data WHERE frame <> \"$pikoframe\";");	
+	{
+		$pikoframe = $this->config->piko->pikoframe;
+		$result = $this->mysqli->query("SELECT MAX(date) FROM t_data WHERE frame <> \"$pikoframe\";");
 //		$result = $this->mysqli->query("SELECT MAX(date) FROM t_data WHERE frame <> 'frame3';");
 		$last = $result->fetch_array();
 		$result->close();
 		return strtotime($last[0]);
 	}
-	
+
 	/**
 	 * Get the chart and menu configuration
 	 * @return Array
@@ -384,10 +383,10 @@ class Database
 											"FROM t_menu ORDER BY t_menu.order;");
 		$statement->execute();
 		$statement->bind_result($id, $name, $type, $schema, $unit);
-		
+
 		$rows = array("menu" => array(),
 				      "values" => array());
-		
+
 		// build menu array
 		while($statement->fetch()) {
 			if($type == "schema" && $schema!=NULL) {
@@ -404,7 +403,7 @@ class Database
 			}
 		}
 		$statement->close();
-		
+
 		// get chart configuration 
 		for($i=0; $i < count($rows["menu"]); $i++) {
 			if($rows["menu"][$i]["type"] != "schema") {
@@ -413,12 +412,12 @@ class Database
 													"ON (t_names.type = t_names_of_charts.type ".
 		   			                                "AND t_names.frame = t_names_of_charts.frame) ".
 													"WHERE t_names_of_charts.chart_id=? ORDER BY t_names_of_charts.order ASC;");
-				
+
 				$statement->bind_param('i', $rows["menu"][$i]["id"]);
-				
+
 				$statement->execute();
 				$statement->bind_result($name, $frame, $type);
-				
+
 				$columns = array("analog" => array(),"digital" => array());
 				$j=1;
 				while($statement->fetch()) {
@@ -440,13 +439,13 @@ class Database
 				$rows["menu"][$i]["columns"] = $columns;
 			}
 		}
-		
+
 		// get schema configuration
 		$statement = $this->mysqli->prepare("SELECT path, frame, type, format ".
 											"FROM t_schema;");
 		$statement->execute();
 		$statement->bind_result($path, $frame, $type, $format);
-		
+
 		while($statement->fetch()) {
 			$rows["values"][] = array("path" => $path,
 									  "frame" => $frame,

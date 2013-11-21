@@ -5,9 +5,9 @@
  * @copyright  Copyright (c) Bertram Winter bertram.winter@gmail.com
  * @license    GPLv3 License
  */
-include_once("lib/backend/uvr1611-connection.inc.php");
-include_once("lib/backend/database.inc.php");
-include_once("lib/backend/logfile.php");
+include_once("/var/www/myUvr1611DataLogger/lib/backend/uvr1611-connection.inc.php");
+include_once("/var/www/myUvr1611DataLogger/lib/backend/database.inc.php");
+include_once("/var/www/myUvr1611DataLogger/lib/backend/logfile.php");
 
 date_default_timezone_set("Europe/Berlin");
 
