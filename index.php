@@ -18,7 +18,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
   <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-    <title>UVR1611 Data Logger Pro</title>
+    <title>UVR1611/Piko Data Logger</title>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
@@ -39,7 +39,7 @@
 		    <text style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#666666;fill-opacity:1;stroke:none" x="0.49456322" y="1004.2011">
 		    	<tspan x="0.49456322" y="1004.2011" style="font-size:10px;font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#666666;font-family:Arial">
 		    		UVR<tspan style="font-size:12px;font-weight:normal;fill:#666666;">1611</tspan>
-					<tspan style="font-size:10px;font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#666666;font-family:Arial"> - Kostal</tspan>					
+					<tspan style="font-size:10px;font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#666666;font-family:Arial"> - Piko</tspan>					
 		    	</tspan>
 		    </text>
 		    <text style="font-size:28px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#666666;fill-opacity:1;stroke:none;" x="-1.1482943" y="1033.807">
