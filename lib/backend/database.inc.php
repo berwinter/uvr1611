@@ -8,6 +8,7 @@
  * @license    GPLv3 License
  */
 include_once("lib/config.inc.php");
+include_once("lib/backend/logfile.php");
 
 class Database
 {
@@ -41,6 +42,9 @@ class Database
 								   $this->config->mysql->password,
 								   $this->config->mysql->database);
 		$this->mysqli->set_charset("utf8");
+		
+		//get instance off logger
+		$logfile = LogFile::getInstance();		
 	}
 	
 	/**
@@ -67,7 +71,16 @@ class Database
 			}
 		}
 		
-		$this->mysqli->query($insert.join(',',$values));
+		$result = $this->mysqli->query($insert.join(',',$values));
+		
+		if ($result == TRUE) 
+		{
+			$logfile->writeLog("database.inc.php - insert in Database successfully\n");			
+		}
+		else 	
+		{
+			$logfile->writeLog("database.inc.php - insert in Database DENIED\n");					
+		}
 	}
 	
 	/**

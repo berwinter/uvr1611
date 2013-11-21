@@ -7,6 +7,8 @@
  */
 include_once("lib/backend/uvr1611-connection.inc.php");
 include_once("lib/backend/database.inc.php");
+include_once("lib/backend/logfile.php");
+
 date_default_timezone_set("Europe/Berlin");
 
 // set json header
@@ -41,6 +43,10 @@ if(isset($_GET["grouping"])) {
 // connect to database
 $database = Database::getInstance();
 
+//get instance off logger
+$logfile = LogFile::getInstance();
+
+
 // check if required date is today and last update is older than 10 minutes
 // -> so we need to fetch new values
 if($date == date("Y-m-d") && ($database->lastDataset() + Config::getInstance()->app->chartcache) < time()) {
@@ -65,10 +71,15 @@ if($date == date("Y-m-d") && ($database->lastDataset() + Config::getInstance()->
 		// insert all data into database
 		$database->insertData($data);
 		$database->updateTables();
+		$logfile->writeLog("commonChart.inc.php - insert in Database should be done\n");
 	}
 	catch (Exception $e) {
+		$logfile->writeLog("commonChart.inc.php - exception: ".$e->getMessage()."\n");			
 		if($e->getMessage() != "Another process is accessing the bl-net!") {
 			return "{'error':'".$e->getMessage()."'}";
 		}
 	}
+} 
+else {
+	$logfile->writeLog("commonChart.inc.php - no entry in Database --> too timegap too small\n");
 }
