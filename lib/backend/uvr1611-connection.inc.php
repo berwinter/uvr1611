@@ -81,6 +81,7 @@ class Uvr1611
 		$this->getCount();
 		create_pid();
 		$latest = "";
+try{
 		// for all can frames
 		for($j=1; $j<=$this->canFrames; $j++) {
 			// build command
@@ -140,6 +141,12 @@ class Uvr1611
 			return $gdata;
 		}
 		throw new Exception("Could not get latest data!");
+}
+
+catch (Exception $e) {
+	close_pid();
+	throw new Exception("Could not get latest data!");
+}
 	}
 	
 	/**
@@ -173,6 +180,7 @@ class Uvr1611
 	 */
 	public function fetchData()
 	{
+try{
 		if($this->count > 0) {
 			$this->connect();
 			create_pid();
@@ -200,7 +208,13 @@ class Uvr1611
 			close_pid();
 			throw new Exception("Could not get data!");
 		}
+
+} 
+catch (Exception $e) {
+	close_pid();
+	throw new Exception("da hot's was!");		
 	}
+}
 	
 	/**
 	 * Get the number of datasets in the bootloader memory
@@ -208,6 +222,7 @@ class Uvr1611
 	 */
 	public function getCount()
 	{
+try {
 		if($this->count == -1) {
 			$this->connect();
 			create_pid();
@@ -279,6 +294,11 @@ class Uvr1611
 			close_pid();
 		}
 		return $this->count;
+}catch (Exception $e) {
+	close_pid();
+	throw new Exception("getCount, da hot's was!- exception: ".$e->getMessage()."\n");	
+}	
+
 	}
 	
 	/**
@@ -432,9 +452,11 @@ function create_pid()
 	$path = '/tmp/uvr1611-logger.pid';
 	if(file_exists($path)) {
 		// if PID is older than an hour remove it
-		if(time() > (filemtime($path) + 3600)) {
+		if(time() > (filemtime($path) + 400)) {
 			$pid = file_get_contents($path);
 			exec("kill $pid");
+			close_pid();
+			throw new Exception("uvr1611-connection - kill ".$pid);	
 		}
 		else {
 			throw new Exception("Another process is accessing the bl-net!");
@@ -449,5 +471,5 @@ function create_pid()
  */
 function close_pid()
 {
-	unlink('/tmp/uvr1611-logger.pid');
+	unlink("/tmp/uvr1611-logger.pid");
 }

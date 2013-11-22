@@ -5,11 +5,21 @@
  * @copyright  Copyright (c) Bertram Winter bertram.winter@gmail.com
  * @license    GPLv3 License
  */
-include_once("lib/backend/uvr1611-connection.inc.php");
-include_once("lib/backend/database.inc.php");
+
 include_once("lib/backend/logfile.php");
 
+$debug = 1;//0 =off, 1=less, 2=full debug
+//get instance off logger
+$logfile = LogFile::getInstance();
+if ($debug > 1) $logfile->writeLog("commonChart.inc.php - start!\n");
+
+ 
+include_once("lib/backend/uvr1611-connection.inc.php");
+include_once("lib/backend/database.inc.php");
+
+
 date_default_timezone_set("Europe/Berlin");
+
 
 // set json header
 header('Cache-Control: no-cache, must-revalidate');
@@ -43,21 +53,25 @@ if(isset($_GET["grouping"])) {
 // connect to database
 $database = Database::getInstance();
 
-//get instance off logger
-$logfile = LogFile::getInstance();
 
 
+if ($debug > 1) $logfile->writeLog("commonChart.inc.php - check date!\n");
 // check if required date is today and last update is older than 10 minutes
 // -> so we need to fetch new values
 if($date == date("Y-m-d") && ($database->lastDataset() + Config::getInstance()->app->chartcache) < time()) {
 	try {
+		if ($debug > 1) $logfile->writeLog("commonChart.inc.php - date okay!\n");	
 		$uvr = Uvr1611::getInstance();
 		$data = Array();
 		$count = $uvr->getCount();
+		if ($debug > 1) $logfile->writeLog("commonChart.inc.php - date okay - 2\n");			
 		$lastDatabaseValue = $database->lastDataset();
+		if ($debug > 1) $logfile->writeLog("commonChart.inc.php - date okay - 3\n");					
 		for($i=0; $i < $count; $i++) {
+			if ($debug > 1) $logfile->writeLog("commonChart.inc.php - try fetchdata\n");					
 			// fetch a set of dataframes and insert them into the database
 			$value = $uvr->fetchData();
+			if ($debug > 1) $logfile->writeLog("commonChart.inc.php - data fetched\n");						
 			if(strtotime($value["frame1"]->date) < $lastDatabaseValue) {
 				break;
 			}
@@ -71,7 +85,7 @@ if($date == date("Y-m-d") && ($database->lastDataset() + Config::getInstance()->
 		// insert all data into database
 		$database->insertData($data);
 		$database->updateTables();
-		$logfile->writeLog("commonChart.inc.php - insert in Database should be done\n");
+		if ($debug > 0) $logfile->writeLog("commonChart.inc.php - insert ".$count." sets in Database should be done\n");
 	}
 	catch (Exception $e) {
 		$logfile->writeLog("commonChart.inc.php - exception: ".$e->getMessage()."\n");			
