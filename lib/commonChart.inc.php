@@ -6,7 +6,7 @@
  * @license    GPLv3 License
  */
 
-include_once("lib/backend/logfile.php");
+include_once("/var/www/myUvr1611DataLogger/lib/backend/logfile.php");
 
 $debug = 1;//0 =off, 1=less, 2=full debug
 //get instance off logger
@@ -14,8 +14,8 @@ $logfile = LogFile::getInstance();
 if ($debug > 1) $logfile->writeLog("commonChart.inc.php - start!\n");
 
  
-include_once("lib/backend/uvr1611-connection.inc.php");
-include_once("lib/backend/database.inc.php");
+include_once("/var/www/myUvr1611DataLogger/lib/backend/uvr1611-connection.inc.php");
+include_once("/var/www/myUvr1611DataLogger/lib/backend/database.inc.php");
 
 
 date_default_timezone_set("Europe/Berlin");

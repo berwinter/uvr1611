@@ -14,6 +14,8 @@ include_once("lib/backend/parser.inc.php");
 //include_once("pikoDatainterface.php");
 include_once("lib/backend/piko-connection.inc.php");
 
+include_once("lib/backend/logfile.php");
+
 class Uvr1611
 {
 	/**
@@ -61,6 +63,7 @@ class Uvr1611
 	private $canFrames = 1;
 
 	private $myAData = array();
+	private $logfile;
 	/**
 	 * Constructor
 	 */
@@ -68,6 +71,9 @@ class Uvr1611
 	{
 		$this->config = Config::getInstance()->uvr1611;
 		$this->checkMode();
+
+		//get instance off logger
+		$this->logfile = LogFile::getInstance();	
 	}
 
 	/**
@@ -77,9 +83,12 @@ class Uvr1611
 	 */
 	public function getLatest()
 	{
-		$this->connect();
+$this->logfile->writeLog("uvr1611-connection.inc - getLatest - 1\n");
+		$this->connect();-
 		$this->getCount();
 		create_pid();
+$this->logfile->writeLog("uvr1611-connection.inc - pid created - 2\n");
+
 		$latest = "";
 try{
 		// for all can frames
@@ -105,10 +114,14 @@ try{
 				}
 			}
 		}
+$this->logfile->writeLog("uvr1611-connection.inc - close pid  - 3\n");
+
 		close_pid();
 		$this->disconnect();
 		if(strlen($latest)>0) {
 			$gdata = $this->splitLatest($latest);
+$this->logfile->writeLog("uvr1611-connection.inc - splitLatest - 4\n");
+
 //			return $this->splitLatest($latest); //original
 			/*
 			get data with datainterface
@@ -182,8 +195,10 @@ catch (Exception $e) {
 	{
 try{
 		if($this->count > 0) {
+echo "uvr1611-connection fetchdata 1" >> '/var/log/myDataLogger.log';
 			$this->connect();
 			create_pid();
+echo "uvr1611-connection fetchdata 2" >> '/var/log/myDataLogger.log';
 			
 			// build address for bootloader
 			$address1 = $this->address & 0xFF;
@@ -195,7 +210,8 @@ try{
 							  self::READ_DATA + 1 + $address1 + $address2 + $address3);
 			
 			$data = $this->query($cmd, $this->fetchSize);
-			
+echo "uvr1611-connection fetchdata 3" >> '/var/log/myDataLogger.log';
+
 			if($this->checksum($data)) {
 				// increment address
 				$this->address -= $this->addressInc;
@@ -205,12 +221,16 @@ try{
 				close_pid();
 				return $this->splitDatasets($data);
 			}
+echo "uvr1611-connection fetchdata 4" >> '/var/log/myDataLogger.log';
+
 			close_pid();
 			throw new Exception("Could not get data!");
 		}
 
 } 
 catch (Exception $e) {
+echo "uvr1611-connection fetchdata 5" >> '/var/log/myDataLogger.log';
+
 	close_pid();
 	throw new Exception("da hot's was!");		
 	}
