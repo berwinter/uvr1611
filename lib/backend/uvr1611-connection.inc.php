@@ -70,12 +70,13 @@ class Uvr1611
 	 */
 	private function __construct()
 	{
-		$this->config = Config::getInstance()->uvr1611;
+		$this->allConfig = Config::getInstance();
+		$this->config = $this->allConfig->uvr1611;
 		$this->checkMode();
 
 		//get instance off logger
 		$this->logfile = LogFile::getInstance();	
-		$this->debug = $this->config->Logging->debug;
+		$this->debug = $this->allConfig->Logging->debug;
 	}
 
 	/**
