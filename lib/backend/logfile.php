@@ -63,10 +63,12 @@ class LogFile
 		if (file_exists($this->m_fileName))
 		{
 			$this->m_handle = @fopen($this->m_fileName, 'a') ;
+//			$this->writeLog("file still exits ".$this->m_handle." \n");
 		}
 		else
 		{
 			$this->m_handle = @fopen($this->m_fileName, 'w') ;
+//			$this->writeLog("file new created\n");
 		}
 
 		if ($this->m_handle === FALSE)

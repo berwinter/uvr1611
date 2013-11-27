@@ -64,6 +64,7 @@ class Uvr1611
 
 	private $myAData = array();
 	private $logfile;
+	private $debug;
 	/**
 	 * Constructor
 	 */
@@ -74,6 +75,7 @@ class Uvr1611
 
 		//get instance off logger
 		$this->logfile = LogFile::getInstance();	
+		$this->debug = $this->config->Logging->debug;
 	}
 
 	/**
@@ -83,11 +85,11 @@ class Uvr1611
 	 */
 	public function getLatest()
 	{
-$this->logfile->writeLog("uvr1611-connection.inc - getLatest - 1\n");
+if ($this->debug > 1) $this->logfile->writeLog("uvr1611-connection.inc - getLatest - 1\n");
 		$this->connect();-
 		$this->getCount();
 		create_pid();
-$this->logfile->writeLog("uvr1611-connection.inc - pid created - 2\n");
+if ($this->debug > 1) $this->logfile->writeLog("uvr1611-connection.inc - pid created - 2\n");
 
 		$latest = "";
 try{
@@ -114,13 +116,13 @@ try{
 				}
 			}
 		}
-$this->logfile->writeLog("uvr1611-connection.inc - close pid  - 3\n");
+if ($this->debug > 1) $this->logfile->writeLog("uvr1611-connection.inc - close pid  - 3\n");
 
 		close_pid();
 		$this->disconnect();
 		if(strlen($latest)>0) {
 			$gdata = $this->splitLatest($latest);
-$this->logfile->writeLog("uvr1611-connection.inc - splitLatest - 4\n");
+if ($this->debug > 1) $this->logfile->writeLog("uvr1611-connection.inc - splitLatest - 4\n");
 
 //			return $this->splitLatest($latest); //original
 			/*
@@ -195,10 +197,10 @@ catch (Exception $e) {
 	{
 try{
 		if($this->count > 0) {
-echo "uvr1611-connection fetchdata 1" >> '/var/log/myDataLogger.log';
+//echo "uvr1611-connection fetchdata 1" >> '/var/log/myDataLogger.log';
 			$this->connect();
 			create_pid();
-echo "uvr1611-connection fetchdata 2" >> '/var/log/myDataLogger.log';
+//echo "uvr1611-connection fetchdata 2" >> '/var/log/myDataLogger.log';
 			
 			// build address for bootloader
 			$address1 = $this->address & 0xFF;
@@ -210,7 +212,7 @@ echo "uvr1611-connection fetchdata 2" >> '/var/log/myDataLogger.log';
 							  self::READ_DATA + 1 + $address1 + $address2 + $address3);
 			
 			$data = $this->query($cmd, $this->fetchSize);
-echo "uvr1611-connection fetchdata 3" >> '/var/log/myDataLogger.log';
+//echo "uvr1611-connection fetchdata 3" >> '/var/log/myDataLogger.log';
 
 			if($this->checksum($data)) {
 				// increment address
@@ -221,7 +223,7 @@ echo "uvr1611-connection fetchdata 3" >> '/var/log/myDataLogger.log';
 				close_pid();
 				return $this->splitDatasets($data);
 			}
-echo "uvr1611-connection fetchdata 4" >> '/var/log/myDataLogger.log';
+//echo "uvr1611-connection fetchdata 4" >> '/var/log/myDataLogger.log';
 
 			close_pid();
 			throw new Exception("Could not get data!");
@@ -229,7 +231,7 @@ echo "uvr1611-connection fetchdata 4" >> '/var/log/myDataLogger.log';
 
 } 
 catch (Exception $e) {
-echo "uvr1611-connection fetchdata 5" >> '/var/log/myDataLogger.log';
+//echo "uvr1611-connection fetchdata 5" >> '/var/log/myDataLogger.log';
 
 	close_pid();
 	throw new Exception("da hot's was!");		
