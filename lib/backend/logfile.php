@@ -100,9 +100,14 @@ class LogFile
 	*/
 	public function writeLog($theData)
     {
+		// outputs the username that owns the running php/httpd process
+		// (on a system with the "whoami" executable in the path)
+		$whoami = exec('whoami');
+
 		$stext = "";	
 		$aktDate=date("Y.m.d - H:i:s");
-		$stext = $aktDate." - ".$theData;		
+
+		$stext = $aktDate." (".$whoami.") - ".$theData;		
 		
 		if ($this->m_handle !== FALSE)
 		{
