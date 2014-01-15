@@ -16,7 +16,7 @@ class LogFile
 	* @access private
 	*/
 	var $m_handle;
-	var $m_fileName = "/var/log/myDataLogger.log";
+	var $m_fileName = "/var/log/myLogs/myDataLogger.log";
 
 	/**
 	 *  Singleton Interface
