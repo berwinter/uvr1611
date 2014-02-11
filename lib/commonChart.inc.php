@@ -56,6 +56,15 @@ if($date == date("Y-m-d") && ($database->lastDataset() + Config::getInstance()->
 				break;
 			}
 			$data[] = $value;
+<<<<<<< HEAD
+			if($i%500==0) {
+				// insert all data into database
+=======
+			if(count($data) == 64) {
+>>>>>>> ad7454135ef29ed9a830814b752ab79b4eab16af
+				$database->insertData($data);
+				$data = Array();
+			}
 		}
 		$uvr->endRead();
 		// insert all data into database
@@ -63,8 +72,6 @@ if($date == date("Y-m-d") && ($database->lastDataset() + Config::getInstance()->
 		$database->updateTables();
 	}
 	catch (Exception $e) {
-		if($e->getMessage() != "Another process is accessing the bl-net!") {
-			return "{'error':'".$e->getMessage()."'}";
-		}
+		echo "{'error':'".$e->getMessage()."'}";
 	}
 }
