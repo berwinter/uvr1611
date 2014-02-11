@@ -57,8 +57,12 @@ if($date == date("Y-m-d") && ($database->lastDataset() + Config::getInstance()->
 			}
 			$data[] = $value;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if($i%500==0) {
 				// insert all data into database
+=======
+			if(count($data) == 64) {
+>>>>>>> ad7454135ef29ed9a830814b752ab79b4eab16af
 =======
 			if(count($data) == 64) {
 >>>>>>> ad7454135ef29ed9a830814b752ab79b4eab16af
