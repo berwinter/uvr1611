@@ -5,9 +5,7 @@
  * @copyright  Copyright (c) Bertram Winter bertram.winter@gmail.com
  * @license    GPLv3 License
  */
-
 include_once("/var/www/myUvr1611DataLogger/lib/backend/logfile.php");
-
 include_once("lib/config.inc.php");
 //$debug = Config::getInstance()->Logging->debug;
 $debug = 1;//0 =off, 1=less, 2=full debug
@@ -15,14 +13,9 @@ $logfile = LogFile::getInstance();
 if ($debug > 1) $logfile->writeLog("commonChart.inc.php - start!\n");
 //get instance off logger
 
- 
 include_once("/var/www/myUvr1611DataLogger/lib/backend/uvr1611-connection.inc.php");
 include_once("/var/www/myUvr1611DataLogger/lib/backend/database.inc.php");
-
-
-
 date_default_timezone_set("Europe/Berlin");
-
 
 // set json header
 header('Cache-Control: no-cache, must-revalidate');
@@ -55,8 +48,6 @@ if(isset($_GET["grouping"])) {
 
 // connect to database
 $database = Database::getInstance();
-
-
 
 if ($debug > 1) $logfile->writeLog("commonChart.inc.php - check date!\n");
 // check if required date is today and last update is older than 10 minutes
@@ -92,8 +83,7 @@ if($date == date("Y-m-d") && ($database->lastDataset() + Config::getInstance()->
 	}
 	catch (Exception $e) {
 		$logfile->writeLog("commonChart.inc.php - exception: ".$e->getMessage()."\n");			
-		if($e->getMessage() != "Another process is accessing the bl-net!") {
-			return "{'error':'".$e->getMessage()."'}";
+		echo "{'error':'".$e->getMessage()."'}";
 		}
 	}
 } 
