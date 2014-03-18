@@ -77,12 +77,12 @@ class Database
 		$result = $this->mysqli->query($insert.join(',',$values));		
 		if ($result === TRUE) 
 		{
-			if ($this->debug > 1) $this->logfile->writeLog("database.inc.php - insert in Database successfully\n");			
+			$this->logfile->writeLogInfo("database.inc.php - insert in Database successfully\n");			
 		}
 		else 	
 		{
-			if ($this->debug > 1) $this->logfile->writeLog("database.inc.php - insert in Database DENIED\n");					
-			if ($this->debug > 1) $this->logfile->writeLog("database.inc.php - Error: ".$this->mysqli->error."\n");
+			$this->logfile->writeLogError("database.inc.php - insert in Database DENIED\n");					
+			$this->logfile->writeLogError("database.inc.php - Error: ".$this->mysqli->error."\n");
 		}
 	}
 	

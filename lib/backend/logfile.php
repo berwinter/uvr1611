@@ -6,7 +6,7 @@
  * @package 
  * @version 0.1
  */
-
+include_once("lib/config.inc.php");
 
 class LogFile
 {
@@ -16,7 +16,6 @@ class LogFile
 	* @access private
 	*/
 	var $m_handle;
-	var $m_fileName = "/var/log/myLogs/myDataLogger.log";
 
 	/**
 	 *  Singleton Interface
@@ -56,26 +55,28 @@ class LogFile
 
 	/**
 	 * Constructor
-	 * Uses Config class to set up a MySQL connection
+	 * Uses Config class to get the infos
 	 */
 	private function __construct()
-	{
+	{	
+		$this->m_debug = Config::getInstance()->Logging->debug;
+		$this->m_fileName = Config::getInstance()->Logging->logfileWindows;		
 		if (file_exists($this->m_fileName))
 		{
 			$this->m_handle = @fopen($this->m_fileName, 'a') ;
-//			$this->writeLog("file still exits ".$this->m_handle." \n");
+			$this->writeLogInfo("file still exits ".$this->m_handle." \n");
 		}
 		else
 		{
 			$this->m_handle = @fopen($this->m_fileName, 'w') ;
-//			$this->writeLog("file new created\n");
+			$this->writeLogInfo("file new created\n");
 		}
 
 		if ($this->m_handle === FALSE)
 		{
 			trigger_error('Failed to open log file: ' . $this->m_fileName . '\n' .
 			'Current working directory: ' . getcwd(), E_USER_WARNING) ;
-		}
+		}	 
 	}	
 	
 	/**
@@ -98,7 +99,7 @@ class LogFile
 	* @param mixed Data to be logged.
 	* @return integer number of bytes written to the log.
 	*/
-	public function writeLog($theData)
+	public function writeLog($theData) 
     {
 		// outputs the username that owns the running php/httpd process
 		// (on a system with the "whoami" executable in the path)
@@ -118,4 +119,84 @@ class LogFile
 			trigger_error('Failed to write in log file: ' . $this->m_fileName,E_USER_WARNING);
 		}
     }
+
+		/**
+	* Write "state" to a log file.
+	*
+	* @access public
+	* @param mixed Data to be logged.
+	*/
+	public function writeLogState($theData)
+    {
+		if ($this->m_debug > 0 )
+		{	
+			$stext = "State  - ".$theData;					
+			$this->writeLogFile($stext);	
+		}	
+    }
+	/**
+	* Write "info" to a log file.
+	*
+	* @access public
+	* @param mixed Data to be logged.
+	*/
+	public function writeLogInfo($theData)
+    {
+		if ($this->m_debug > 2 )
+		{	
+			$stext = "Info  - ".$theData;					
+			$this->writeLogFile($stext);	
+		}	
+    }		
+	/**
+	* Write "warn" to a log file.
+	*
+	* @access public
+	* @param mixed Data to be logged.
+	*/
+	public function writeLogWarn($theData)
+    {
+		if ($this->m_debug > 1 )
+		{	
+			$stext = "Warn  - ".$theData;					
+			$this->writeLogFile($stext);	
+		}	
+    }	
+	/**
+	* Write "errors" to a log file.
+	* @access public
+	* @param mixed Data to be logged.
+	*/
+	public function writeLogError($theData)
+    {
+		if ($this->m_debug > 0 )
+		{	
+			$stext = "ERROR - ".$theData;		
+			$this->writeLogFile($stext); 
+		}			
+    }	
+
+	/**
+	* Write to a log file.
+	*
+	* @access private
+	* @param mixed Data to be logged.
+	*/	
+	private function writeLogFile($theData) 
+	{
+		// outputs the username that owns the running php/httpd process
+		// (on a system with the "whoami" executable in the path)
+		$whoami = exec('whoami');
+		$aktDate=date("Y.m.d - H:i:s");
+		$stext = $aktDate." (".$whoami."): ".$theData;				
+		
+		if ($this->m_handle !== FALSE)
+		{
+			fwrite($this->m_handle, $stext) ;
+		}
+		else
+		{
+			trigger_error('Failed to write in log file: ' . $this->m_fileName,E_USER_WARNING);
+		}
+    }	
 }//class logfile

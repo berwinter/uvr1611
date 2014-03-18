@@ -13,7 +13,8 @@ class Config
 	/**
 	 * Config location constant
 	 */
-    const DEFAULT_CONFIG_FILE = "config/config.ini";
+    const DEFAULT_CONFIG_FILE = "C:/Users/01111635/Documents/MyData/Netzwerk/Heimnetzwerk/Repositorys/myUvr1611DataLogger/trunk/config/config.ini";
+//    const DEFAULT_CONFIG_FILE = "../config/config.ini";
  
     /**
      * Singleton Interface
