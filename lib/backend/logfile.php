@@ -4,7 +4,7 @@
  * @author frama <frama1038@gmail.com>
  * @copyright copyright @ by Frama
  * @package 
- * @version 0.1
+ * @version 0.2
  */
 
 
@@ -16,7 +16,7 @@ class LogFile
 	* @access private
 	*/
 	var $m_handle;
-	var $m_fileName = "/var/log/myLogs/myDataLogger.log";
+	var $m_fileName = "/var/log/myLogs/myUvrDataLogger.log";
 
 	/**
 	 *  Singleton Interface

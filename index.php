@@ -29,10 +29,13 @@
     <script type="text/javascript" src="js/main.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/format.css">
 	<link rel="stylesheet" type="text/css" href="css/smoothness/jquery-ui-1.9.2.custom.min.css">
+
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+
   </head>
 
   <body>
-  	<div id="mymain"><a href="/index.html" target="_blank">MainPage</a></div>    
+  	<div id="mymain"><a href="../Home/index.html" target="_blank">Home</a></div>    
 	<div id="contact"><?php include("VERSION"); ?> <a href="https://github.com/fragner/uvr1611" target="_blank">GitHub</a> <a href="mailto:<?php echo $email; ?>">Kontakt</a></div>
 		<svg id="logo" xmlns="http://www.w3.org/2000/svg"  width="280" height="60">
 		  <g transform="translate(0,-992.36218)">
