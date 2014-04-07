@@ -150,7 +150,7 @@ class Uvr1611
 				
 				return $gdata;
 			}
-			$this->logfile->writeLogError("uvr1611-connection.inc-getLatest 1- ".$e->getMessage()."\n");			
+			$this->logfile->writeLogError("uvr1611-connection.inc-getLatest - Could not get latest data\n");	
 			throw new Exception("Could not get latest data!");
 		}
 
