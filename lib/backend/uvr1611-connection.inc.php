@@ -141,23 +141,23 @@ class Uvr1611
 	//			$gdata["frame3"] = $myAData;			
 	//			unset($myAData["frame"]);//delete key 'frame'	
 
-				$piko = Piko5::getInstance();
-				$piko->fetchData();
-				$myAData = $piko-> getArrValues();			
-
-				$frame = $myAData["frame"];
-				$gdata[$frame] = $myAData;
-				
+				$piko = Piko5::getInstance();				
+				if ($piko->fetchData()){			
+					 $myAData = $piko-> getArrValues();			
+					 $frame = $myAData["frame"];
+					 $gdata[$frame] = $myAData;
+				} else {
+					$this->logfile->writeLogError("uvr1611-connection.inc-getLatest - No connection to PIKO!\n");					
+				}				
 				return $gdata;
 			}
 			$this->logfile->writeLogError("uvr1611-connection.inc-getLatest - Could not get latest data\n");	
-			throw new Exception("Could not get latest data!");
+//			throw new Exception("Could not get latest data!");
 		}
-
 		catch (Exception $e) {
 			close_pid();		
 			$this->logfile->writeLogError("uvr1611-connection.inc-getLatest - ".$e->getMessage()."\n");			
-			throw new Exception("Could not get latest data!");
+//			throw new Exception("Could not get latest data!");
 		}
 	}
 	
