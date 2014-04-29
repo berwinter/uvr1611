@@ -84,6 +84,7 @@ class Database
 			$this->logfile->writeLogError("database.inc.php - insert in Database DENIED\n");					
 			$this->logfile->writeLogError("database.inc.php - Error: ".$this->mysqli->error."\n");
 		}
+		#$this->logfile->writeLogState("database.inc.php - TEST: ".$insert.join(',',$values)."\n");			
 	}
 	
 	/**
