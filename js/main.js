@@ -182,59 +182,63 @@ var actualValues =
 	},
 	display: function(data)
 	{
-	try{
 		for(var i in actualValues.values) {
-			var value = actualValues.values[i];
-			var text = value.format.replace(/((DIGITAL|MWH|KWH|MISCHER_AUF|MISCHER_ZU|VENTIL|DREHZAHL|ANIMATION|STATUS)\()?#\.?(#*)\)?/g, function(number,tmp,modifier,fractions) {
-				switch(modifier) {
-					case "MISCHER_AUF":
-						return converter.mixerOn(data[value.frame][value.type]);
-					case "MISCHER_ZU":
-						return converter.mixerOff(data[value.frame][value.type]);
-					case "VENTIL":
-						return converter.valve(data[value.frame][value.type]);
-					case "DIGITAL":
-						return converter.digital(data[value.frame][value.type]);
-					case "MWH":
-						return converter.mwh(data[value.frame][value.type]);
-					case "KWH":
-						return converter.kwh(data[value.frame][value.type]).toFixed(fractions.length);
-					case "DREHZAHL":
-						return converter.speed(data[value.frame][value.type]);
-					case "ANIMATION":
-						for(var i in $(value.path))
-						{
-							if(data[value.frame][value.type] == 1)
-							{
-								$(value.path)[i].beginElement();
-							}
-							else
-							{
-								$(value.path)[i].endElement();	
-							}
-						}
-						return null;
-					case "STATUS":
-						return converter.state(data[value.frame][value.type]);
-					default:
-						return data[value.frame][value.type].toFixed(fractions.length);
-				}
+			try{
 
-			});
-			
-			if(text != null)
-			{
-				$(value.path).text(text);
-			}
-		}
-	} catch (err){
-	;
-//		txt="There was an error on this page.\n\n";
-//		txt+="Error description: " + err.message + "\n\n";
-//		txt+="Click OK to continue.\n\n";
-//		alert(txt);
-	}
-	
+				var value = actualValues.values[i];
+				var text = value.format.replace(/((DIGITAL|MWH|KWH|MISCHER_AUF|MISCHER_ZU|VENTIL|DREHZAHL|ANIMATION|STATUS)\()?#\.?(#*)\)?/g, function(number,tmp,modifier,fractions) {
+					switch(modifier) {
+						case "MISCHER_AUF":
+							return converter.mixerOn(data[value.frame][value.type]);
+						case "MISCHER_ZU":
+							return converter.mixerOff(data[value.frame][value.type]);
+						case "VENTIL":
+							return converter.valve(data[value.frame][value.type]);
+						case "DIGITAL":
+							return converter.digital(data[value.frame][value.type]);
+						case "MWH":
+							return converter.mwh(data[value.frame][value.type]);
+						case "KWH":
+							return converter.kwh(data[value.frame][value.type]).toFixed(fractions.length);
+						case "DREHZAHL":
+							return converter.speed(data[value.frame][value.type]);
+						case "ANIMATION":
+							for(var i in $(value.path))
+							{
+								if(data[value.frame][value.type] == 1)
+								{
+									$(value.path)[i].beginElement();
+								}
+								else
+								{
+									$(value.path)[i].endElement();	
+								}
+							}
+							return null;
+						case "STATUS":
+							return converter.state(data[value.frame][value.type]);
+						default:
+							return data[value.frame][value.type].toFixed(fractions.length);
+					}
+
+				});
+				
+				if(text != null)
+				{
+					$(value.path).text(text);
+				}
+		
+			} catch (err){
+			;
+//			txt="There was an error on this page.\n\n";
+//			txt=+ value.frame + "mayby not in database";
+//			txt=+"\n\n";
+//			txt+="Error description: " + err.message + "\n\n";
+//			txt+="Click OK to continue.\n\n";
+			$(value.path).text("n.a.");			
+//				alert(txt);
+			}//end try
+		}//end for	
 	}
 }
 
