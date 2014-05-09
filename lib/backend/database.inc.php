@@ -369,9 +369,9 @@ class Database
 	 */
 	public function lastDataset()
 	{	
-		$pikoframe = $this->config->piko->pikoframe;		
+//		$pikoframe = $this->config->piko->pikoframe;		
 //		$result = $this->mysqli->query("SELECT MAX(date) FROM t_data WHERE frame <> \"$pikoframe\";");	
-		$result = $this->mysqli->query("SELECT MAX(date) FROM t_data WHERE frame <> 'frame3';");
+		$result = $this->mysqli->query("SELECT MAX(date) FROM t_data WHERE frame <> 'frame1';");
 		$last = $result->fetch_array();
 		$result->close();
 		return strtotime($last[0]);
