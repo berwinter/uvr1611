@@ -66,6 +66,13 @@ class Parser
 					              $package["years"],   $package["months"],
 								  $package["days"],    $package["hours"],
 								  $package["minutes"], $package["seconds"]);
+
+		}
+		else {
+//	echo "datum should be added\n";
+			$this->date = date("Y-m-d H:i:s");
+//	echo $this->date."\n";
+
 		}
 
 		// unpack binary string
