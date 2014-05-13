@@ -13,10 +13,11 @@ if(!$data)
 	$data = json_encode($uvr->getLatest());
 	save_cache($data,"uvr1611_latest");
 } else {
-	if ($argc > 1) {
+;
+//	if ($argc > 1) {
 	//echo only when an additional input received
-		echo "no new Data\n";
-	}
+//		echo "no new Data\n";
+//	}
 }
 echo $data;
 
