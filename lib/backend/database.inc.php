@@ -353,6 +353,18 @@ class Database
 	}
 	
 	/**
+	 * Query the energy of the current day
+	 * @return Array
+	 */
+	public function getCurrentEnergy($frame)
+	{
+		$result = $this->mysqli->query("SELECT energy1, energy2 FROM t_energies WHERE frame = '$frame' ORDER BY date DESC LIMIT 1;");
+		$data = $result->fetch_array(MYSQLI_NUM);
+		$result->close();
+		return $data;
+	}
+	
+	/**
 	 * Get the chart and menu configuration
 	 * @return Array
 	 */

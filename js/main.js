@@ -224,6 +224,7 @@ var actualValues =
 				$(value.path).text(text);
 			}
 		}
+		$("#time").text(data["time"]);
 	}
 }
 

@@ -2529,4 +2529,7 @@
        y="578.28131"
        id="tspan489-6"
        style="font-size:12px;font-style:oblique;text-align:center;text-anchor:middle;fill:#333333">Kühlfunktion</tspan></text>
+       <text transform="matrix(1, 0, 0, 1, 594, 574)" >
+         <tspan id="time" x="59.326" y="4" font-family="Helvetica" font-size="12" fill="#000000">?</tspan>
+       </text>
 </svg>

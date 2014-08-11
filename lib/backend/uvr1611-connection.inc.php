@@ -9,6 +9,8 @@
  */
 include_once("lib/config.inc.php");
 include_once("lib/backend/parser.inc.php");
+include_once("lib/backend/database.inc.php");
+
 
 class Uvr1611
 {
@@ -368,22 +370,36 @@ class Uvr1611
 	 */
 	private function splitLatest($data)
 	{
+		// connect to database
+		$database = Database::getInstance();
 		$frames = array();
 		switch($this->mode) {
 			case self::CAN_MODE:
 				for($i=0;$i<$this->canFrames;$i++) {
-					$frames["frame".($i+1)] = new Parser(substr($data, 1+(1+self::LATEST_SIZE)*$i, self::LATEST_SIZE));
+					$frames["frame".($i+1)] = (array)(new Parser(substr($data, 1+(1+self::LATEST_SIZE)*$i, self::LATEST_SIZE)));
+					$current_energy = $database->getCurrentEnergy("frame".($i+1));
+					$frames["frame".($i+1)]["current_energy1"] = $current_energy[0];
+					$frames["frame".($i+1)]["current_energy2"] = $current_energy[1];
 				}
 				break;
 			case self::DL_MODE:
-				$frames["frame1"] = new Parser(substr($data, 1, self::LATEST_SIZE));
+				$frames["frame1"] = (array)(new Parser(substr($data, 1, self::LATEST_SIZE)));
+				$current_energy = $database->getCurrentEnergy("frame1");
+				$frames["frame1"]["current_energy1"] = $current_energy[0];
+				$frames["frame1"]["current_energy2"] = $current_energy[1];
 				break;
 			case self::DL2_MODE:
-				$frames["frame1"] = new Parser(substr($data, 1, self::LATEST_SIZE));
-				$frames["frame2"] = new Parser(substr($data,1+self::LATEST_SIZE, self::LATEST_SIZE));
+				$frames["frame1"] = (array)(new Parser(substr($data, 1, self::LATEST_SIZE)));
+				$current_energy = $database->getCurrentEnergy("frame1");
+				$frames["frame1"]["current_energy1"] = $current_energy[0];
+				$frames["frame1"]["current_energy2"] = $current_energy[1];
+				$frames["frame2"] = (array)(new Parser(substr($data,1+self::LATEST_SIZE, self::LATEST_SIZE)));
+				$current_energy = $database->getCurrentEnergy("frame2");
+				$frames["frame2"]["current_energy1"] = $current_energy[0];
+				$frames["frame2"]["current_energy2"] = $current_energy[1];
 				break;
 		}
-	
+		$frames["time"] = date("H:i:s");
 		return $frames;
 	}
 }
