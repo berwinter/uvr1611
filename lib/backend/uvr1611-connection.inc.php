@@ -200,16 +200,18 @@ class Uvr1611
 				$this->connect();
 				create_pid();
 				$this->logfile->writeLogInfo("uvr1611-connection.inc - fetchData - 2\n");
-				
+
 				// build address for bootloader
 				$address1 = $this->address & 0xFF;
 				$address2 = ($this->address & 0x7F00)>>7;
 				$address3 = ($this->address & 0xFF8000)>>15;
-				
+				$this->logfile->writeLogInfo("uvr1611-connection.inc - fetchData - 2-address\n");
+
 				// build command
 				$cmd = pack("C6", self::READ_DATA, $address1, $address2, $address3, 1,
 								  self::READ_DATA + 1 + $address1 + $address2 + $address3);
-				
+				$this->logfile->writeLogInfo("uvr1611-connection.inc - fetchData - 2-pack\n");
+
 				$data = $this->query($cmd, $this->fetchSize);
 				$this->logfile->writeLogInfo("uvr1611-connection.inc - fetchData - 3\n");
 
@@ -222,17 +224,17 @@ class Uvr1611
 					close_pid();
 					return $this->splitDatasets($data);
 				}
-				$this->logfile->writeLogInfo("uvr1611-connection.inc - fetchData - 4\n");				
-				close_pid();				
-				$this->logfile->writeLogError("uvr1611-connection.inc-fetchData 1- ".$e->getMessage()."\n");	
+				$this->logfile->writeLogInfo("uvr1611-connection.inc - fetchData - 4\n");
+				close_pid();
+				$this->logfile->writeLogError("uvr1611-connection.inc-fetchData 1- ".$e->getMessage()."\n");
 				throw new Exception("Could not get data!");
 			}
 
-	} 
+	}
 	catch (Exception $e) {
-		$this->logfile->writeLogError("uvr1611-connection.inc-fetchData - ".$e->getMessage()."\n");	
+		$this->logfile->writeLogError("uvr1611-connection.inc-fetchData - ".$e->getMessage()."\n");
 		close_pid();
-		throw new Exception("da hot's was!");		
+		throw new Exception("da hot's was!");
 	}
 }
 	
@@ -471,18 +473,20 @@ class Uvr1611
  */
 function create_pid()
 {
+	$logfile = LogFile::getInstance();
+
 	$path = '/tmp/uvr1611-logger.pid';
 	if(file_exists($path)) {
+		$pid = file_get_contents($path);
 		// if PID is older than an hour remove it
 		if(time() > (filemtime($path) + 400)) {
-			$pid = file_get_contents($path);
 			exec("kill $pid");
 			close_pid();
-			$this->logfile->writeLogError("uvr1611-connection.inc-create_pid - kill ".$pid);				
-			throw new Exception("uvr1611-connection - kill ".$pid);	
+			$logfile->writeLogError("uvr1611-connection.inc-create_pid - kill ".$pid."\n");
+		//	throw new Exception("uvr1611-connection - kill ".$pid);
 		}
 		else {
-			$this->logfile->writeLogError("uvr1611-connection.inc-create_pid - Another process is accessing the bl-net! ".$pid);						
+			$logfile->writeLogError("uvr1611-connection.inc-create_pid - Another process is accessing the bl-net! ".$pid);
 			throw new Exception("Another process is accessing the bl-net!");
 		}
 
@@ -495,5 +499,15 @@ function create_pid()
  */
 function close_pid()
 {
-	unlink("/tmp/uvr1611-logger.pid");
+$filename='/tmp/uvr1611-logger.pid';
+$path   = '/tmp/uvr1611-logger.pid';
+
+	if (file_exists($filename)) {
+	       	$erg=unlink( $filename);
+//		unlink("/tmp/uvr1611-logger.pid");
+		if (!$erg){
+			$logfile = LogFile::getInstance();
+			$logfile->writeLogError("uvr1611-connection.inc-close_pid - NOT sucessfully ".$pid."\n");
+		}
+	}
 }
