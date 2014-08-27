@@ -214,7 +214,12 @@ var actualValues =
 						}
 						return null;
 					default:
-						return data[value.frame][value.type].toFixed(fractions.length);
+						try {
+							return data[value.frame][value.type].toFixed(fractions.length);
+						}
+						catch (e) {
+							return data[value.frame][value.type];
+						}
 				}
 
 			});

@@ -26,6 +26,8 @@ class Parser
 	const TYPE_RADIATION = 0x4000;
 	const TYPE_RAS = 0x7000;
 	const RAS_POSITIVE_MASK = 0x000001FF;
+	const INT32_MAX = 0x7FFFFFFF;
+	const INT32_SIGN = 0x80000000;
 	
 	/**
 	 * Constructor
@@ -193,7 +195,12 @@ class Parser
 	private static function convertPower($value, $active, $position)
 	{
 		if($active & $position) {
-			return ($value/2560);
+			if($value & self::INT32_SIGN) {
+				return -(($value ^ self::INT32_MAX)+1) / 2560;
+			}
+			else {
+				return ($value/2560);
+			}
 		}
 		else {
 			return "NULL";
