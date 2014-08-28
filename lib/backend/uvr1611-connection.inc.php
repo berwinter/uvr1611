@@ -210,7 +210,8 @@ class Uvr1611
 				// build command
 				$cmd = pack("C6", self::READ_DATA, $address1, $address2, $address3, 1,
 								  self::READ_DATA + 1 + $address1 + $address2 + $address3);
-				$this->logfile->writeLogInfo("uvr1611-connection.inc - fetchData - 2-pack\n");
+				$this->logfile->writeLogInfo("uvr1611-connection.inc - fetchData - 2-pack - cmd: ". $this->address." \n");
+				$this->logfile->writeLogInfo("uvr1611-connection.inc - fetchData - 2-pack -fetchsize: ". $this->fetchSize." \n");
 
 				$data = $this->query($cmd, $this->fetchSize);
 				$this->logfile->writeLogInfo("uvr1611-connection.inc - fetchData - 3\n");
