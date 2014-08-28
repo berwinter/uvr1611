@@ -81,8 +81,10 @@ class Database
 		}
 		else 	
 		{
-			$this->logfile->writeLogError("database.inc.php - insert in Database DENIED\n");					
+			$this->logfile->writeLogError("database.inc.php - insert in Database DENIED\n");
 			$this->logfile->writeLogError("database.inc.php - Error: ".$this->mysqli->error."\n");
+			$this->logfile->writeLogError("database.inc.php - insert: ".$insert."\n");
+			$this->logfile->writeLogError("database.inc.php - values: ".json_encode($values)."\n");
 		}
 		#$this->logfile->writeLogState("database.inc.php - TEST: ".$insert.join(',',$values)."\n");			
 	}
