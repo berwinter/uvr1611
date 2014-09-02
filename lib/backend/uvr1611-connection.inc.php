@@ -412,7 +412,7 @@ class Uvr1611
 		}
 
 		$this->disconnect();
-		$this->logfile->writeLogError("uvr1611-connection.inc-query - Error while querying command!\nCommand: ".bin2hex($cmd));			
+		$this->logfile->writeLogError("uvr1611-connection.inc-query - Error while querying command!Command: \n".bin2hex($cmd));			
 		throw new Exception('Error while querying command!\nCommand: '.bin2hex($cmd));
 	}
 	
@@ -487,7 +487,7 @@ function create_pid()
 		//	throw new Exception("uvr1611-connection - kill ".$pid);
 		}
 		else {
-			$logfile->writeLogError("uvr1611-connection.inc-create_pid - Another process is accessing the bl-net! ".$pid);
+			$logfile->writeLogError("uvr1611-connection.inc-create_pid - Another process is accessing the bl-net!\n".$pid);
 			throw new Exception("Another process is accessing the bl-net!");
 		}
 
