@@ -407,15 +407,13 @@ class Uvr1611
 				$data .= $return;
 			}
 			while(strlen($return)>32 && strlen($data) < $length);
-			
 			return $data;
 		}
 
 		$this->disconnect();
-		$this->logfile->writeLogError("uvr1611-connection.inc-query - Error while querying command!Command: \n".bin2hex($cmd));			
+		$this->logfile->writeLogError("uvr1611-connection.inc-query - Error while querying command!Command: ".bin2hex($cmd)."\n");
 		throw new Exception('Error while querying command!\nCommand: '.bin2hex($cmd));
 	}
-	
 	/**
 	 * Split a binary string in datasets and parse it (Datasets values)
 	 * @param string $data
@@ -487,7 +485,7 @@ function create_pid()
 		//	throw new Exception("uvr1611-connection - kill ".$pid);
 		}
 		else {
-			$logfile->writeLogError("uvr1611-connection.inc-create_pid - Another process is accessing the bl-net!\n".$pid);
+			$logfile->writeLogError("uvr1611-connection.inc-create_pid - Another process is accessing the bl-net! pid= ".$pid." \n");
 			throw new Exception("Another process is accessing the bl-net!");
 		}
 
