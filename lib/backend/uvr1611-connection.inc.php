@@ -412,7 +412,7 @@ class Uvr1611
 
 		$this->disconnect();
 		$this->logfile->writeLogError("uvr1611-connection.inc-query - Error while querying command!Command: ".bin2hex($cmd)."\n");
-		throw new Exception('Error while querying command!\nCommand: '.bin2hex($cmd));
+		throw new Exception('Error while querying command! Command: '.bin2hex($cmd));
 	}
 	/**
 	 * Split a binary string in datasets and parse it (Datasets values)
