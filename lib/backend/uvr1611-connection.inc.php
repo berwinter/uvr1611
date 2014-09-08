@@ -122,41 +122,20 @@ class Uvr1611
 			if(strlen($latest)>0) {
 				$gdata = $this->splitLatest($latest);
 				$this->logfile->writeLogInfo("uvr1611-connection.inc - splitLatest - 4\n");
-
-	//			return $this->splitLatest($latest); //original
-				/*
-				get data with datainterface
-				*/
-				/* it work's
-					but very much entrys when latest.php was startet
-					ToDo: make a function in Piko5 where a array with only the wanted entrys are returned 
-					eg: getPikoArrData()
-				*/
-				
-				//doesn't work at the moment
-				//$myAData = getPikoActValues();
-				/*				
-					test - get data from website
-				*/			
-	 //			$myAData = getPikoArrData();			
-				/* must be convertet to string, 
-				   otherwise in the schema the values will not be shown
-				   also frame must be deletet, for the same reason */
-	//			$gdata["frame3"] = $myAData;			
-	//			unset($myAData["frame"]);//delete key 'frame'	
-
-				$piko = Piko5::getInstance();				
-				if ($piko->fetchData()){			
-					 $myAData = $piko-> getArrValues();			
-					 $frame = $myAData["frame"];
-					 $gdata[$frame] = $myAData;
-				} else {
-					$this->logfile->writeLogError("uvr1611-connection.inc-getLatest - No connection to PIKO!\n");					
-				}				
-				return $gdata;
+			} else {
+				$this->logfile->writeLogError("uvr1611-connection.inc-getLatest - Could not get latest data from uvr1611\n");				
 			}
-			$this->logfile->writeLogError("uvr1611-connection.inc-getLatest - Could not get latest data\n");	
-//			throw new Exception("Could not get latest data!");
+			$piko = Piko5::getInstance();				
+			if ($piko->fetchData()){			
+				 $myAData = $piko-> getArrValues();			
+				 $frame = $myAData["frame"];
+				/* must be convertet to string, 
+				   otherwise in the schema the values will not be shown */				 
+				 $gdata[$frame] = $myAData;
+			} else {
+				$this->logfile->writeLogError("uvr1611-connection.inc-getLatest - No connection to PIKO!\n");					
+			}
+			return $gdata;	
 		}
 		catch (Exception $e) {
 			close_pid();		
