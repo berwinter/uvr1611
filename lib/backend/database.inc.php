@@ -23,7 +23,7 @@ class Database
 		}
 		return self::$instance;
 	}
-	
+
 	/**
 	 * Privates
 	 */
@@ -31,7 +31,7 @@ class Database
 	private $mysqli;
 	private $logfile;
 	private $debug;
-	
+
 	/**
 	 * Constructor
 	 * Uses Config class to set up a MySQL connection
@@ -73,7 +73,13 @@ class Database
 				next($dataset);
 			}
 		}
-		
+//echo "dumpValues: ".var_dump($values)."\n";
+
+//		if ($values[frame] <> "0" ) {
+//			$this->logfile->writeLogError("database.inc.php - no Values available \n");
+//			$this->logfile->writeLogError("database.inc.php - insert in Database DENIED\n");
+//		}
+
 		$result = $this->mysqli->query($insert.join(',',$values));		
 		if ($result === TRUE) 
 		{

@@ -331,7 +331,8 @@ class Uvr1611
 					} 
 					else {
 						$this->logfile->writeLogError("uvr1611-connection.inc - getCount - NO VALID address \n");
-						throw new Exception("uvr1611-connection.inc - getCount - NO VALID address");
+//exception removed , otherwise the piko data wouldn't be insert in database
+//						throw new Exception("uvr1611-connection.inc - getCount - NO VALID address");
 					}
 				}
 				close_pid();
