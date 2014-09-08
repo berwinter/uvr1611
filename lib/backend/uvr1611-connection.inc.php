@@ -66,11 +66,15 @@ class Uvr1611
 	 */
 	private function __construct()
 	{
-		$this->allConfig = Config::getInstance();
-		$this->config = $this->allConfig->uvr1611;
-		$this->checkMode();
 		//get instance off logger
-		$this->logfile = LogFile::getInstance();	
+		$this->logfile = LogFile::getInstance();
+		$this->logfile->writeLogInfo("uvr1611-connection.inc - construct \n");
+		$this->allConfig = Config::getInstance();
+		$this->logfile->writeLogInfo("uvr1611-connection.inc - allConfig \n");
+		$this->config = $this->allConfig->uvr1611;
+		$this->logfile->writeLogInfo("uvr1611-connection.inc - config \n");
+		$this->checkMode();
+		$this->logfile->writeLogInfo("uvr1611-connection.inc - checkMode \n");
 	}
 
 	/**
@@ -247,13 +251,18 @@ class Uvr1611
 	{
 		try {
 			if($this->count == -1) {
+				$this->logfile->writeLogInfo("uvr1611-connection.inc - getCount - 1 \n");
 				$this->connect();
+				$this->logfile->writeLogInfo("uvr1611-connection.inc - getCount - connect \n");
 				create_pid();
+				$this->logfile->writeLogInfo("uvr1611-connection.inc - getCount - create_pid \n");
 				$data = $this->query(self::GET_HEADER, 21);
-				
+				$this->logfile->writeLogInfo("uvr1611-connection.inc - getCount - query \n");
+
 				if($this->checksum($data)) {
 					switch($this->mode) {
 						case self::CAN_MODE:
+							$this->logfile->writeLogInfo("uvr1611-connection.inc - getCount - CAN_MODE \n");
 							$binary = unpack("C5/CnumberOfFrames/C*",$data);
 							$binary = unpack("Ctype/Cversion/C3timestamp/CnumberOfFrames/C".
 											 $binary["numberOfFrames"].
@@ -264,6 +273,7 @@ class Uvr1611
 							$this->fetchSize = 4+61*$this->canFrames;
 							break;
 						case self::DL_MODE:
+							$this->logfile->writeLogInfo("uvr1611-connection.inc - getCount - DL_MODE \n");
 							$binary = unpack("C5/Cdevice1/C3startaddress/C3endaddress/Cchecksum",
 											 $data);
 							$this->addressInc = 64;
@@ -272,12 +282,16 @@ class Uvr1611
 							$this->fetchSize = 65;
 							break;
 						case self::DL2_MODE:
+							$this->logfile->writeLogInfo("uvr1611-connection.inc - getCount - DL2_MODE \n");
 							$binary = unpack("C5/Cdevice1/Cdevice2/C3startaddress/C3endaddress/Cchecksum",
 											 $data);
 							$this->addressInc = 128;
 							$this->canFrames = 1;
 							$this->actualSize = 113;
 							$this->fetchSize = 126;
+//							$this->logfile->writeLogInfo("uvr1611-connection.inc - getCount - binary: ".var_dump($binary));
+							$this->logfile->writeLogInfo("uvr1611-connection.inc - getCount - hex: ".bin2hex($data)."\n");
+							$this->logfile->writeLogInfo("uvr1611-connection.inc - getCount - binary: ".implode(", ",$binary)."\n");
 							break;
 					}
 					
@@ -292,6 +306,8 @@ class Uvr1611
 					   $binary["endaddress2"] != 0xFF ||
 					   $binary["endaddress1"] != 0xFF)
 					{
+						$this->logfile->writeLogInfo("uvr1611-connection.inc - getCount - valid address\n");
+
 						// fix addresses
 						$startaddress = ($binary["startaddress3"] << 15)
 									  + ($binary["startaddress2"] << 7)
@@ -312,15 +328,20 @@ class Uvr1611
 						}
 
 						$this->address = $endaddress;
+					} 
+					else {
+						$this->logfile->writeLogError("uvr1611-connection.inc - getCount - NO VALID address \n");
+						throw new Exception("uvr1611-connection.inc - getCount - NO VALID address");
 					}
 				}
 				close_pid();
 			}
+			$this->logfile->writeLogInfo("uvr1611-connection.inc-getCount - count: ".$this->count."\n");
 			return $this->count;
 		}catch (Exception $e) {
 			close_pid();
 			$this->logfile->writeLogError("uvr1611-connection.inc-getCount - ".$e->getMessage()."\n");		
-			throw new Exception("getCount, da hot's was!- exception: ".$e->getMessage()."\n");	
+			throw new Exception("getCount, da hot's was!- exception: ".$e->getMessage()."\n");
 		}	
 	}
 	
