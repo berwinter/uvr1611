@@ -16,7 +16,8 @@ class LogFile
 	* @access private
 	*/
 	var $m_handle;
-
+	var $s_message;
+	
 	/**
 	 *  Singleton Interface
 	 */
@@ -109,6 +110,7 @@ class LogFile
 		$aktDate=date("Y.m.d - H:i:s");
 
 		$stext = $aktDate." (".$whoami.") - ".$theData;		
+		$this->addTempLog($text);
 		
 		if ($this->m_handle !== FALSE)
 		{
@@ -128,6 +130,7 @@ class LogFile
 	*/
 	public function writeLogState($theData)
     {
+		$this->addTempLog("State - " .$theData);
 		if ($this->m_debug > 0 )
 		{	
 			$stext = "State  - ".$theData;					
@@ -142,6 +145,7 @@ class LogFile
 	*/
 	public function writeLogInfo($theData)
     {
+		$this->addTempLog("Info  - " .$theData);
 		if ($this->m_debug > 2 )
 		{	
 			$stext = "Info  - ".$theData;					
@@ -156,6 +160,7 @@ class LogFile
 	*/
 	public function writeLogWarn($theData)
     {
+		$this->addTempLog("Warn  - " .$theData);
 		if ($this->m_debug > 1 )
 		{	
 			$stext = "Warn  - ".$theData;					
@@ -169,6 +174,7 @@ class LogFile
 	*/
 	public function writeLogError($theData)
     {
+		$this->addTempLog("ERROR - " .$theData);
 		if ($this->m_debug > 0 )
 		{	
 			$stext = "ERROR - ".$theData;		
@@ -198,5 +204,37 @@ class LogFile
 		{
 			trigger_error('Failed to write in log file: ' . $this->m_fileName,E_USER_WARNING);
 		}
+    }
+	/**=========================================================================
+		store all messages temporary in a var (s_message) 
+		in a case of an error, the messages can be written into the log file
+	===========================================================================*/
+	/**
+	* Write infos in a temp message.
+	* @access private
+	* @param mixed Data to be logged.
+	*/
+	private function addTempLog($theData)
+    {
+		$this->s_message .= $theData;
     }	
+	
+	/**
+	* reset infos in the temp message.
+	* @access public
+	*/
+	public function resetTempLog()
+    {
+		$this->s_message = "";
+    }	
+	/**
+	* write the temporary infos into the log file
+	* @access public
+	*/
+	public function writeTempLog()
+    {
+		$this->writeLog($this->s_message);
+		$this->resetTempLog();//new start at the beginning
+    }	
+
 }//class logfile
