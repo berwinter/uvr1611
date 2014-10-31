@@ -310,11 +310,18 @@ class Uvr1611
 					} 
 					else {
 						$this->logfile->writeLogError("uvr1611-connection.inc - getCount - NO VALID address \n");
-//exception removed , otherwise the piko data wouldn't be insert in database
-//						throw new Exception("uvr1611-connection.inc - getCount - NO VALID address");
+						//exception removed , otherwise the piko data wouldn't be insert in database
+						//throw new Exception("uvr1611-connection.inc - getCount - NO VALID address");
 					}
 				}
 				close_pid();
+			}
+			/**
+			* -1 is binary 1111111 -> dec 4095
+			* avoid to show "insert 4095 sets in Database should be done"
+			*/
+			if($this->count == -1) {
+				$this->count = 0;
 			}
 			$this->logfile->writeLogInfo("uvr1611-connection.inc-getCount - count: ".$this->count."\n");
 			return $this->count;
