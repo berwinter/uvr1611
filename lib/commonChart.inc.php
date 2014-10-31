@@ -55,7 +55,9 @@ if($date == date("Y-m-d") && ($database->lastDataset() + Config::getInstance()->
 		$logfile->writeLogInfo("commonChart.inc.php - date okay!\n");	
 		$uvr = Uvr1611::getInstance();
 		$data = Array();
+		$myCount = 0;
 		$count = $uvr->getCount();
+if ($count > 0) {
 		$logfile->writeLogInfo("commonChart.inc.php - date okay - 2\n");			
 		$lastDatabaseValue = $database->lastDataset();
 		$logfile->writeLogInfo("commonChart.inc.php - date okay - 3\n");					
@@ -71,16 +73,25 @@ if($date == date("Y-m-d") && ($database->lastDataset() + Config::getInstance()->
 			if(count($data) == 64) {
 				$database->insertData($data);
 				$data = Array();
+				$myCount++;
 			}
 		}
 		$uvr->endRead();
 		// insert all data into database
 		$database->insertData($data);
 		$database->updateTables();
-		$logfile->writeLogState("commonChart.inc.php - insert ".$count." sets in Database should be done\n");
+		$logfile->writeLogState("commonChart.inc.php - insert ".$count." sets in Database should be done myCount:= ".$myCount ."\n");
+		if ($count == 4095) {
+		//additional debug info
+			$logfile->writeLogState("commonChart.inc.php - myCount:= ".$myCount." value of i:= ".$i."\n");
+		}
+	} else {
+		$logfile->writeLogError("commonChart.inc.php - getCount: $count \n");
+
+	}
 	}
 	catch (Exception $e) {
-		$logfile->writeLogError("commonChart.inc.php - exception: ".$e->getMessage()."\n");			
+		$logfile->writeLogError("commonChart.inc.php - exception: ".$e->getMessage()."\n");
 		echo "{'error':'".$e->getMessage()."'}";
 	}
 } 
