@@ -80,7 +80,7 @@ if ($count > 0) {
 		// insert all data into database
 		$database->insertData($data);
 		$database->updateTables();
-		$logfile->writeLogState("commonChart.inc.php - insert ".$count." sets in Database should be done myCount:= ".$myCount ."\n");
+		$logfile->writeLogState("commonChart.inc.php - insert ".$count." sets in Database should be done\n");
 		if ($count == 4095) {
 		//additional debug info
 			$logfile->writeLogState("commonChart.inc.php - myCount:= ".$myCount." value of i:= ".$i."\n");

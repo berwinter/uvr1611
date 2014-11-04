@@ -111,7 +111,7 @@ class LogFile
 
 		$stext = $aktDate." (".$whoami.") - ".$theData;		
 		$this->addTempLog($text);
-		
+
 		if ($this->m_handle !== FALSE)
 		{
 			fwrite($this->m_handle, $stext) ;
@@ -130,12 +130,13 @@ class LogFile
 	*/
 	public function writeLogState($theData)
     {
-		$this->addTempLog("State - " .$theData);
 		if ($this->m_debug > 0 )
-		{	
-			$stext = "State  - ".$theData;					
-			$this->writeLogFile($stext);	
-		}	
+		{
+			$stext = "State - ".$theData;
+			$this->writeLogFile($stext);
+		} else {
+			$this->addTempLog("State - " .$theData);
+		}
     }
 	/**
 	* Write "info" to a log file.
@@ -145,13 +146,14 @@ class LogFile
 	*/
 	public function writeLogInfo($theData)
     {
-		$this->addTempLog("Info  - " .$theData);
 		if ($this->m_debug > 2 )
-		{	
-			$stext = "Info  - ".$theData;					
-			$this->writeLogFile($stext);	
-		}	
-    }		
+		{
+			$stext = "Info  - ".$theData;
+			$this->writeLogFile($stext);
+		} else {
+			$this->addTempLog("Info  - " .$theData);
+		}
+    }
 	/**
 	* Write "warn" to a log file.
 	*
@@ -160,13 +162,15 @@ class LogFile
 	*/
 	public function writeLogWarn($theData)
     {
-		$this->addTempLog("Warn  - " .$theData);
 		if ($this->m_debug > 1 )
-		{	
-			$stext = "Warn  - ".$theData;					
-			$this->writeLogFile($stext);	
-		}	
-    }	
+		{
+			$stext = "Warn  - ".$theData;
+			$this->writeLogFile($stext);
+		} else {
+			$this->addTempLog("Warn  - " .$theData);
+		}
+
+    }
 	/**
 	* Write "errors" to a log file.
 	* @access public
@@ -174,13 +178,15 @@ class LogFile
 	*/
 	public function writeLogError($theData)
     {
-		$this->addTempLog("ERROR - " .$theData);
+//not needed, otherwise the ERROR entry is double
+//		$this->addTempLog("ERROR - " .$theData);
+		$this->writeTempLog();
 		if ($this->m_debug > 0 )
-		{	
-			$stext = "ERROR - ".$theData;		
-			$this->writeLogFile($stext); 
-		}			
-    }	
+		{
+			$stext = "ERROR - ".$theData;
+			$this->writeLogFile($stext);
+		}
+    }
 
 	/**
 	* Write to a log file.
@@ -194,8 +200,8 @@ class LogFile
 		// (on a system with the "whoami" executable in the path)
 		$whoami = exec('whoami');
 		$aktDate=date("Y.m.d - H:i:s");
-		$stext = $aktDate." (".$whoami."): ".$theData;				
-		
+		$stext = $aktDate." (".$whoami."): ".$theData;
+
 		if ($this->m_handle !== FALSE)
 		{
 			fwrite($this->m_handle, $stext) ;
@@ -206,7 +212,7 @@ class LogFile
 		}
     }
 	/**=========================================================================
-		store all messages temporary in a var (s_message) 
+		store all messages temporary in a var (s_message)
 		in a case of an error, the messages can be written into the log file
 	===========================================================================*/
 	/**
@@ -216,9 +222,14 @@ class LogFile
 	*/
 	private function addTempLog($theData)
     {
-		$this->s_message .= $theData;
-    }	
-	
+		// outputs the username that owns the running php/httpd process
+		// (on a system with the "whoami" executable in the path)
+		$whoami = exec('whoami');
+		$aktDate=date("Y.m.d - H:i:s");
+		$stext = $aktDate." (".$whoami."): ".$theData;
+		$this->s_message .= $stext;
+    }
+
 	/**
 	* reset infos in the temp message.
 	* @access public
@@ -226,7 +237,7 @@ class LogFile
 	public function resetTempLog()
     {
 		$this->s_message = "";
-    }	
+    }
 	/**
 	* write the temporary infos into the log file
 	* @access public
@@ -235,6 +246,6 @@ class LogFile
     {
 		$this->writeLog($this->s_message);
 		$this->resetTempLog();//new start at the beginning
-    }	
+    }
 
 }//class logfile

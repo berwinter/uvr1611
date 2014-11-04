@@ -320,7 +320,7 @@ class Uvr1611
 			* -1 is binary 1111111 -> dec 4095
 			* avoid to show "insert 4095 sets in Database should be done"
 			*/
-			if($this->count == -1) {
+			if($this->count == -1 || $this->count == 4095) {
 				$this->count = 0;
 			}
 			$this->logfile->writeLogInfo("uvr1611-connection.inc-getCount - count: ".$this->count."\n");
