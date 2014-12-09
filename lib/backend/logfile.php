@@ -16,7 +16,7 @@ class LogFile
 	* @access private
 	*/
 	var $m_handle;
-	var $s_message;
+	public static $s_message;
 	
 	/**
 	 *  Singleton Interface
@@ -94,13 +94,14 @@ class LogFile
     }
 
 	/**
-	* Write to a log file.
+	* not longer used --> delete when checked
 	*
-	* @access public
+	* Write to a log file.	*
+	* @access private
 	* @param mixed Data to be logged.
-	* @return integer number of bytes written to the log.
+	* @return integer number of bytes written to the log.	*
 	*/
-	public function writeLog($theData) 
+	private function writeLog($theData) 
     {
 		// outputs the username that owns the running php/httpd process
 		// (on a system with the "whoami" executable in the path)
@@ -129,7 +130,7 @@ class LogFile
 	* @param mixed Data to be logged.
 	*/
 	public function writeLogState($theData)
-    {
+	{
 		if ($this->m_debug > 0 )
 		{
 			$stext = "State - ".$theData;
@@ -137,7 +138,7 @@ class LogFile
 		} else {
 			$this->addTempLog("State - " .$theData);
 		}
-    }
+	}
 	/**
 	* Write "info" to a log file.
 	*
@@ -221,31 +222,38 @@ class LogFile
 	* @param mixed Data to be logged.
 	*/
 	private function addTempLog($theData)
-    {
+	{
 		// outputs the username that owns the running php/httpd process
 		// (on a system with the "whoami" executable in the path)
 		$whoami = exec('whoami');
 		$aktDate=date("Y.m.d - H:i:s");
 		$stext = $aktDate." (".$whoami."): ".$theData;
 		$this->s_message .= $stext;
-    }
+	}
 
 	/**
 	* reset infos in the temp message.
 	* @access public
 	*/
 	public function resetTempLog()
-    {
-		$this->s_message = "";
-    }
+	{
+		$this->s_message = "\n";
+	}
 	/**
 	* write the temporary infos into the log file
 	* @access public
 	*/
 	public function writeTempLog()
-    {
-		$this->writeLog($this->s_message);
+	{
+		if ($this->m_handle !== FALSE)
+		{
+			fwrite($this->m_handle, $this->s_message) ;
+		}
+		else
+		{
+			trigger_error('Failed to write in log file: ' . $this->m_fileName,E_USER_WARNING);
+		}
 		$this->resetTempLog();//new start at the beginning
-    }
+	}
 
 }//class logfile

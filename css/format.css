@@ -24,7 +24,7 @@ body {
 	left:0;
 	margin: auto;
 	width: 400px;
-	height: 250px;
+	height: 320px;
 	position:absolute;
 	background-color: #FFF;
 	border: 1px solid #DDD;
@@ -86,7 +86,7 @@ div.hover > div.icon, div.active > div.icon {
 	top:50%;
 	left:50%;
 	margin-left:-210px;
-	margin-top:-210px;
+	margin-top:-240px;
 	width:400px;
 	height:80px;
 	position: absolute;

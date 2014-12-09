@@ -270,7 +270,7 @@ class Uvr1611
 							$this->fetchSize = 126;
 //							$this->logfile->writeLogInfo("uvr1611-connection.inc - getCount - binary: ".var_dump($binary));
 							$this->logfile->writeLogInfo("uvr1611-connection.inc - getCount - hex: ".bin2hex($data)."\n");
-							$this->logfile->writeLogInfo("uvr1611-connection.inc - getCount - binary: ".implode(", ",$binary)."\n");
+							$this->logfile->writeLogInfo("uvr1611-connection.inc - getCount - dez: ".implode(", ",$binary)."\n");
 							break;
 					}
 					
@@ -299,11 +299,13 @@ class Uvr1611
 							// calculate count
 							$this->count = (($endaddress - $startaddress)
 										 / $this->addressInc) + 1;
+							$this->logfile->writeLogInfo("uvr1611-connection.inc - getCount - $endaddress > $startaddress\n");
 						}
 						else {
 							// calculate count
 							$this->count = (($this->addressEnd + $startaddress - $endaddress)
 										 / $this->addressInc);
+							$this->logfile->writeLogInfo("uvr1611-connection.inc - getCount - $endaddress <= $startaddress, $this->addressEnd\n");
 						}
 
 						$this->address = $endaddress;
@@ -406,15 +408,19 @@ class Uvr1611
 	 */
 	private function query($cmd, $length)
 	{
+		$receives = 0;
 		// send command
 		if(strlen($cmd) == socket_write($this->sock, $cmd, strlen($cmd))) {
+			$this->logfile->writeLogInfo("uvr1611-connection.inc - query - Command: ".bin2hex($cmd)."\n");
 			$data = "";
 			// get response until length or less 32 bytes
 			do {
 				$return = socket_read($this->sock, $length, PHP_BINARY_READ);
 				$data .= $return;
+				$receives++;
 			}
 			while(strlen($return)>32 && strlen($data) < $length);
+			$this->logfile->writeLogInfo("uvr1611-connection.inc - query - bytes received: ".$receives."\n");
 			return $data;
 		}
 
