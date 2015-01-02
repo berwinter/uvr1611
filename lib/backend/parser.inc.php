@@ -106,7 +106,7 @@ class Parser
 		// calculate result value
 		$result = $value & self::POSITIVE_VALUE_MASK;
 		if($value & self::SIGN_BIT) {
-			$result = -(($result ^ POSITIVE_VALUE_MASK)+1);
+			$result = -(($result ^ self::POSITIVE_VALUE_MASK)+1);
 		}
 		
 		// choose type
