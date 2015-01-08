@@ -4,7 +4,8 @@
  * @author frama <frama1038@gmail.com>
  * @copyright copyright @ by Frama
  * @package 
- * @version 0.1
+ * @version 0.2
+ * write errors in an own file
  */
 include_once("lib/config.inc.php");
 
@@ -77,7 +78,9 @@ class LogFile
 		{
 			trigger_error('Failed to open log file: ' . $this->m_fileName . '\n' .
 			'Current working directory: ' . getcwd(), E_USER_WARNING) ;
-		}	 
+		}
+		/* create an own file for errors */
+		$this->createErrorFile();
 	}	
 	
 	/**
@@ -130,15 +133,14 @@ class LogFile
 	* @param mixed Data to be logged.
 	*/
 	public function writeLogState($theData)
-	{
+    {
+		$stext = "State - ".$theData;
+		$this->addToTempErrorLog($stext);		
 		if ($this->m_debug > 0 )
 		{
-			$stext = "State - ".$theData;
-			$this->writeLogFile($stext);
-		} else {
-			$this->addTempLog("State - " .$theData);
+			$this->writeLogFile($stext);		
 		}
-	}
+    }
 	/**
 	* Write "info" to a log file.
 	*
@@ -147,12 +149,11 @@ class LogFile
 	*/
 	public function writeLogInfo($theData)
     {
+		$stext = "Info  - ".$theData;
+		$this->addToTempErrorLog($stext);
 		if ($this->m_debug > 2 )
 		{
-			$stext = "Info  - ".$theData;
 			$this->writeLogFile($stext);
-		} else {
-			$this->addTempLog("Info  - " .$theData);
 		}
     }
 	/**
@@ -163,12 +164,11 @@ class LogFile
 	*/
 	public function writeLogWarn($theData)
     {
+		$stext = "Warn  - ".$theData;
+		$this->addToTempErrorLog($stext);		
 		if ($this->m_debug > 1 )
 		{
-			$stext = "Warn  - ".$theData;
 			$this->writeLogFile($stext);
-		} else {
-			$this->addTempLog("Warn  - " .$theData);
 		}
 
     }
@@ -179,12 +179,11 @@ class LogFile
 	*/
 	public function writeLogError($theData)
     {
-//not needed, otherwise the ERROR entry is double
-//		$this->addTempLog("ERROR - " .$theData);
-		$this->writeTempLog();
+		$stext = "ERROR - ".$theData;
+		$this->addToTempErrorLog($stext);
+		$this->writeErrLog();
 		if ($this->m_debug > 0 )
-		{
-			$stext = "ERROR - ".$theData;
+		{			
 			$this->writeLogFile($stext);
 		}
     }
@@ -212,48 +211,80 @@ class LogFile
 			trigger_error('Failed to write in log file: ' . $this->m_fileName,E_USER_WARNING);
 		}
     }
+	
+	
 	/**=========================================================================
 		store all messages temporary in a var (s_message)
-		in a case of an error, the messages can be written into the log file
+		in a case of an error, the messages can be written into the special error log file
 	===========================================================================*/
+	
+	/* create an own file for errors */
+	private function createErrorFile() {
+		$this->m_ErrorFile = Config::getInstance()->Logging->errorfile;
+		if (file_exists($this->m_ErrorFile))
+		{
+			$this->m_handleError = @fopen($this->m_ErrorFile, 'a') ;
+			$this->writeLogInfo("file still exits ".$this->m_handleError." \n");
+		}
+		else
+		{
+			$this->m_handleError = @fopen($this->m_ErrorFile, 'w') ;
+			$this->writeLogInfo("file new created\n");
+		}
+		if ($this->m_handleError === FALSE)
+		{
+			trigger_error('Failed to open log file: ' . $this->m_ErrorFile . '\n' .
+			'Current working directory: ' . getcwd(), E_USER_WARNING) ;
+		}			
+	}
 	/**
 	* Write infos in a temp message.
 	* @access private
 	* @param mixed Data to be logged.
 	*/
-	private function addTempLog($theData)
-	{
+	private function addToTempErrorLog($theData)
+    {
 		// outputs the username that owns the running php/httpd process
 		// (on a system with the "whoami" executable in the path)
 		$whoami = exec('whoami');
 		$aktDate=date("Y.m.d - H:i:s");
 		$stext = $aktDate." (".$whoami."): ".$theData;
 		$this->s_message .= $stext;
-	}
+    }
 
 	/**
 	* reset infos in the temp message.
 	* @access public
 	*/
 	public function resetTempLog()
-	{
+    {
 		$this->s_message = "\n";
-	}
+    }
 	/**
 	* write the temporary infos into the log file
 	* @access public
 	*/
-	public function writeTempLog()
+	public function writeErrLog()
+    {
+		$this->writeErrorLogFile($this->s_message);
+		$this->resetTempLog();//new start at the beginning
+    }
+
+	/**
+	* Write to a error log file
+	*
+	* @access private
+	* @param mixed Data to be logged.
+	*/	
+	private function writeErrorLogFile($theData) 
 	{
-		if ($this->m_handle !== FALSE)
+		if ($this->m_handleError !== FALSE)
 		{
-			fwrite($this->m_handle, $this->s_message) ;
+			fwrite($this->m_handleError, $theData) ;
 		}
 		else
 		{
-			trigger_error('Failed to write in log file: ' . $this->m_fileName,E_USER_WARNING);
+			trigger_error('Failed to write in log file: ' . $this->m_ErrorFile,E_USER_WARNING);
 		}
-		$this->resetTempLog();//new start at the beginning
-	}
-
+    }	
 }//class logfile

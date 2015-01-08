@@ -35,7 +35,7 @@
   </head>
 
   <body>
-  	<div id="mymain"><a href="../Home/index.html" target="_blank">Home</a></div>    
+  	<div id="mymain"><a href="../Home/index.php" target="_blank">Home</a></div>    
 	<div id="contact"><?php include("VERSION"); ?> <a href="https://github.com/fragner/uvr1611" target="_blank">GitHub</a> <a href="mailto:<?php echo $email; ?>">Kontakt</a></div>
 		<svg id="logo" xmlns="http://www.w3.org/2000/svg"  width="280" height="60">
 		  <g transform="translate(0,-992.36218)">
