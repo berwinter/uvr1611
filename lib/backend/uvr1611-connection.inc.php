@@ -9,7 +9,6 @@
  */
 include_once("lib/config.inc.php");
 include_once("lib/backend/parser.inc.php");
-include_once("lib/backend/piko-connection.inc.php");
 include_once("lib/backend/logfile.php");
 
 class Uvr1611
@@ -124,16 +123,6 @@ class Uvr1611
 				$this->logfile->writeLogInfo("uvr1611-connection.inc - splitLatest - 4\n");
 			} else {
 				$this->logfile->writeLogError("uvr1611-connection.inc-getLatest - Could not get latest data from uvr1611\n");				
-			}
-			$piko = Piko5::getInstance();				
-			if ($piko->fetchData()){			
-				 $myAData = $piko-> getArrValues();			
-				 $frame = $myAData["frame"];
-				/* must be convertet to string, 
-				   otherwise in the schema the values will not be shown */				 
-				 $gdata[$frame] = $myAData;
-			} else {
-				$this->logfile->writeLogError("uvr1611-connection.inc-getLatest - No connection to PIKO!\n");					
 			}
 			return $gdata;	
 		}
