@@ -15,8 +15,14 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>com.dell.toadext.editors.project.ToadextProjectBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.php.core.PHPNature</nature>
+		<nature>com.dell.toadext.ToadextNature</nature>
 	</natures>
 </projectDescription>
