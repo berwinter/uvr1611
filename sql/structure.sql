@@ -816,13 +816,13 @@ SELECT ifnull(`u`.`id`, `h`.`id`) AS `id`,
          `h`.`141` AS `141`
     FROM (`uvr1611`.`t_data` `u`
           LEFT JOIN `uvr1611`.`t_hg_data` `h` ON ((`u`.`date` = `h`.`date`)))
-ORDER BY `u`.`date` DESC
+ORDER BY `u`.`date` DESC;
 
 
 ------------------------------------------------------------------
 --  VIEW v_energies
 ------------------------------------------------------------------
-
+create view v_energies as
 SELECT cast(`v_minmaxdate`.`date` AS date) AS `date`,
        (`max`.`energy1` - `min`.`energy1`) AS `energy1`,
        (`max`.`energy2` - `min`.`energy2`) AS `energy2`,
@@ -833,13 +833,13 @@ SELECT cast(`v_minmaxdate`.`date` AS date) AS `date`,
                  AND (`min`.`frame` = `v_minmaxdate`.`frame`))))
         LEFT JOIN `uvr1611`.`t_data` `max`
            ON ((    (`max`.`date` = `v_minmaxdate`.`max`)
-                AND (`max`.`frame` = `v_minmaxdate`.`frame`))))
+                AND (`max`.`frame` = `v_minmaxdate`.`frame`))));
 
 
 ------------------------------------------------------------------
 --  VIEW v_max
 ------------------------------------------------------------------
-
+Create view v_max as 
   SELECT cast(`v_data`.`date` AS date) AS `date`,
          max(`v_data`.`analog1`) AS `analog1`,
          max(`v_data`.`analog2`) AS `analog2`,
@@ -1011,13 +1011,13 @@ SELECT cast(`v_minmaxdate`.`date` AS date) AS `date`,
                     (SELECT max(`uvr1611`.`t_max`.`date`)
                        FROM `uvr1611`.`t_max`) AS date))
           OR ((SELECT count(0) FROM `uvr1611`.`t_max`) = 0))
-GROUP BY cast(`v_data`.`date` AS date), `v_data`.`frame`
+GROUP BY cast(`v_data`.`date` AS date), `v_data`.`frame`;
 
 
 ------------------------------------------------------------------
 --  VIEW v_min
 ------------------------------------------------------------------
-
+Create view v_min as 
   SELECT cast(`v_data`.`date` AS date) AS `date`,
          min(`v_data`.`analog1`) AS `analog1`,
          min(`v_data`.`analog2`) AS `analog2`,
@@ -1189,13 +1189,13 @@ GROUP BY cast(`v_data`.`date` AS date), `v_data`.`frame`
                     (SELECT max(`uvr1611`.`t_min`.`date`)
                        FROM `uvr1611`.`t_min`) AS date))
           OR ((SELECT count(0) FROM `uvr1611`.`t_min`) = 0))
-GROUP BY cast(`v_data`.`date` AS date), `v_data`.`frame`
+GROUP BY cast(`v_data`.`date` AS date), `v_data`.`frame`;
 
 
 ------------------------------------------------------------------
 --  VIEW v_minmaxdate
 ------------------------------------------------------------------
-
+create view v_minmaxdate as 
   SELECT `uvr1611`.`t_data`.`date` AS `date`,
          min(`uvr1611`.`t_data`.`date`) AS `min`,
          max(`uvr1611`.`t_data`.`date`) AS `max`,
@@ -1206,7 +1206,7 @@ GROUP BY cast(`v_data`.`date` AS date), `v_data`.`frame`
                     (SELECT max(`uvr1611`.`t_energies`.`date`)
                        FROM `uvr1611`.`t_energies`) AS date))
           OR ((SELECT count(0) FROM `uvr1611`.`t_energies`) = 0))
-GROUP BY cast(`uvr1611`.`t_data`.`date` AS date), `uvr1611`.`t_data`.`frame`
+GROUP BY cast(`uvr1611`.`t_data`.`date` AS date), `uvr1611`.`t_data`.`frame`;
 
 ------------------------------------------------------------------
 --  PROCEDURE p_energies
@@ -1273,7 +1273,6 @@ REPLACE INTO t_max(date,
                    power2,
                    frame)
 SELECT * FROM v_max;
-
 END
 
 ------------------------------------------------------------------
