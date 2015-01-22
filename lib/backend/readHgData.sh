@@ -1,4 +1,5 @@
 #!/bin/bash
+# replace the IP with the one of your central-heating boiler
 nc 192.168.95.101 23 -w 3 | while read line
 do
 DATE=$(date "+%Y-%m-%d %T.%6N")
