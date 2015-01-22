@@ -592,7 +592,7 @@ CREATE TABLE t_min
 CREATE TABLE t_names
 (
    id      int(11),
-   frame   varchar(20) DEFAULT 'frame2',
+   frame   varchar(20) DEFAULT 'frame1',
    type    varchar(20),
    name    varchar(200),
    unit    varchar(20)
@@ -621,15 +621,15 @@ CREATE TABLE t_schema
     id        int(11),
     path      varchar(200),
     frame     ENUM('frame1','frame2','frame3','frame4','frame5','frame6','frame7','frame8'),
-    type      ENUM('analog1','analog2','analog3','analog4','analog5','analog6','analog7','analog8','analog9','analog10','analog11','analog12','analog13','analog14','analog15','analog16','digital1','digital2','digital3','digital4','digital5','digital6','digital7','digital8','digital9','digital10','digital11','digital12','digital13','digital14','digital15','digital16','speed1','speed2','speed3','speed4','energy1','energy2','power1','power2','current_energy1','current_energy2'),
+    type      varchar(20),
     format    varchar(200)
 );
 
 ------------------------------------------------------------------
 --  VIEW v_data
 ------------------------------------------------------------------
-
-
+DROP VIEW IF EXISTS `v_data`;
+CREATE VIEW v_data as
 SELECT ifnull(`u`.`id`, `h`.`id`) AS `id`,
          ifnull(`u`.`date`, `h`.`date`) AS `date`,
          ifnull(`u`.`frame`, `h`.`frame`) AS `frame`,
@@ -817,6 +817,15 @@ SELECT ifnull(`u`.`id`, `h`.`id`) AS `id`,
     FROM (`uvr1611`.`t_data` `u`
           LEFT JOIN `uvr1611`.`t_hg_data` `h` ON ((`u`.`date` = `h`.`date`)))
 ORDER BY `u`.`date` DESC;
+
+DROP VIEW IF EXISTS `v_max`;
+
+DROP VIEW IF EXISTS `v_min`;
+
+DROP VIEW IF EXISTS `v_minmaxdate`;
+
+DROP VIEW IF EXISTS `v_energies`;
+
 
 
 ------------------------------------------------------------------
@@ -1208,22 +1217,25 @@ create view v_minmaxdate as
           OR ((SELECT count(0) FROM `uvr1611`.`t_energies`) = 0))
 GROUP BY cast(`uvr1611`.`t_data`.`date` AS date), `uvr1611`.`t_data`.`frame`;
 
+DROP PROCEDURE IF EXISTS `p_energies`;
+DROP PROCEDURE IF EXISTS `p_minmax`;
 ------------------------------------------------------------------
 --  PROCEDURE p_energies
 ------------------------------------------------------------------
 
 
-CREATE DEFINER=`uvr1611`@`%` PROCEDURE `p_energies`()
+CREATE  PROCEDURE `p_energies`()
 BEGIN
 REPLACE INTO t_energies (date, energy1, energy2, frame) SELECT * FROM v_energies;
-END
+
+END$$
 
 
 ------------------------------------------------------------------
 --  PROCEDURE p_minmax
 ------------------------------------------------------------------
 
-CREATE DEFINER=`uvr1611`@`%` PROCEDURE `p_minmax`()
+CREATE  PROCEDURE `p_minmax`()
 BEGIN
 REPLACE INTO t_min (date, analog1, analog2, analog3, analog4, analog5, analog6, analog7, analog8,
 analog9, analog10, analog11, analog12, analog13, analog14, analog15, analog16, speed1, speed2, speed3, speed4, power1, power2, frame ,
@@ -1235,45 +1247,9 @@ analog9, analog10, analog11, analog12, analog13, analog14, analog15, analog16, s
 t_max.1,
 t_max.2, t_max.3, t_max.4, t_max.5, t_max.6, t_max.7, t_max.8, t_max.9, t_max.10, t_max.11, t_max.12, t_max.13, t_max.14, t_max.15, t_max.16, t_max.17, t_max.18, t_max.19, t_max.20, t_max.21, t_max.22, t_max.23, t_max.24, t_max.25, t_max.26, t_max.27, t_max.28, t_max.29, t_max.30, t_max.31, t_max.32, t_max.33, t_max.34, t_max.35, t_max.36, t_max.37, t_max.38, t_max.39, t_max.40, t_max.41, t_max.42, t_max.43, t_max.44, t_max.45, t_max.46, t_max.47, t_max.48, t_max.49, t_max.50, t_max.51, t_max.52, t_max.53, t_max.54, t_max.55, t_max.56, t_max.57, t_max.58, t_max.59, t_max.60, t_max.61, t_max.62, t_max.63, t_max.64, t_max.65, t_max.66, t_max.67, t_max.68, t_max.69, t_max.70, t_max.71, t_max.72, t_max.73, t_max.74, t_max.75, t_max.76, t_max.77, t_max.78, t_max.79, t_max.80,t_max.81, t_max.82, t_max.83, t_max.84, t_max.85, t_max.86, t_max.87, t_max.88, t_max.89, t_max.90, t_max.91, t_max.92, t_max.93, t_max.94, t_max.95, t_max.96, t_max.97, t_max.98, t_max.99, t_max.100, t_max.101, t_max.102, t_max.103, t_max.104, t_max.105, t_max.106, t_max.107, t_max.108, t_max.109, t_max.110, t_max.111, t_max.112, t_max.113, t_max.114, t_max.115, t_max.116, t_max.117, t_max.118, t_max.119, t_max.120, t_max.121, t_max.122, t_max.123, t_max.124, t_max.125, t_max.126, t_max.127, t_max.128, t_max.129, t_max.130, t_max.131, t_max.132, t_max.133, t_max.134, t_max.135, t_max.136, t_max.137, t_max.138, t_max.139, t_max.140, t_max.141) SELECT * FROM v_max;
 
-END
+END$$
 
 
-------------------------------------------------------------------
---  PROCEDURE p_minmax_orig
-------------------------------------------------------------------
-
-CREATE DEFINER=`uvr1611`@`%` PROCEDURE `p_minmax_orig`()
-BEGIN
-REPLACE INTO t_min (date, analog1, analog2, analog3, analog4, analog5, analog6, analog7, analog8,
-analog9, analog10, analog11, analog12, analog13, analog14, analog15, analog16, speed1, speed2, speed3, speed4, power1, power2, frame) SELECT * FROM v_min;
-
-
-REPLACE INTO t_max(date,
-                   analog1,
-                   analog2,
-                   analog3,
-                   analog4,
-                   analog5,
-                   analog6,
-                   analog7,
-                   analog8,
-                   analog9,
-                   analog10,
-                   analog11,
-                   analog12,
-                   analog13,
-                   analog14,
-                   analog15,
-                   analog16,
-                   speed1,
-                   speed2,
-                   speed3,
-                   speed4,
-                   power1,
-                   power2,
-                   frame)
-SELECT * FROM v_max;
-END
 
 ------------------------------------------------------------------
 --  INDEX frame
@@ -1314,7 +1290,25 @@ ADD UNIQUE KEY `primary` (id);
 ALTER TABLE t_data
 ADD UNIQUE KEY `unique` (`date`, frame);
 
+------------------------------------------------------------------
+--  TRIGGER TR_SECOND_STRIP
+------------------------------------------------------------------
 
+CREATE TRIGGER `TR_SECOND_STRIP`
+   BEFORE INSERT
+   ON uvr1611.t_hg_data
+   FOR EACH ROW
+BEGIN
+   SET new.date = Date_format(new.date, '%Y-%m-%d %H:%i');
+END;
+
+CREATE TRIGGER `TR_SECOND_STRIP_1`
+   BEFORE INSERT
+   ON uvr1611.t_data
+   FOR EACH ROW
+BEGIN
+   SET new.date = Date_format(new.date, '%Y-%m-%d %H:%i');
+END;
 
 
 
