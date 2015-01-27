@@ -625,6 +625,23 @@ CREATE TABLE t_schema
     format    varchar(200)
 );
 
+
+------------------------------------------------------------------
+--  VIEW v_minmaxdate
+------------------------------------------------------------------
+create or replace view v_minmaxdate as 
+  SELECT `uvr1611`.`t_data`.`date` AS `date`,
+         min(`uvr1611`.`t_data`.`date`) AS `min`,
+         max(`uvr1611`.`t_data`.`date`) AS `max`,
+         `uvr1611`.`t_data`.`frame` AS `frame`
+    FROM `uvr1611`.`t_data`
+   WHERE (   (`uvr1611`.`t_data`.`date` >=
+                 cast(
+                    (SELECT max(`uvr1611`.`t_energies`.`date`)
+                       FROM `uvr1611`.`t_energies`) AS date))
+          OR ((SELECT count(0) FROM `uvr1611`.`t_energies`) = 0))
+GROUP BY cast(`uvr1611`.`t_data`.`date` AS date), `uvr1611`.`t_data`.`frame`;
+
 ------------------------------------------------------------------
 --  VIEW v_data
 ------------------------------------------------------------------
@@ -818,20 +835,13 @@ SELECT ifnull(`u`.`id`, `h`.`id`) AS `id`,
           LEFT JOIN `uvr1611`.`t_hg_data` `h` ON ((`u`.`date` = `h`.`date`)))
 ORDER BY `u`.`date` DESC;
 
-DROP VIEW IF EXISTS `v_max`;
-
-DROP VIEW IF EXISTS `v_min`;
-
-DROP VIEW IF EXISTS `v_minmaxdate`;
-
-DROP VIEW IF EXISTS `v_energies`;
 
 
 
 ------------------------------------------------------------------
 --  VIEW v_energies
 ------------------------------------------------------------------
-create view v_energies as
+create or replace view v_energies as
 SELECT cast(`v_minmaxdate`.`date` AS date) AS `date`,
        (`max`.`energy1` - `min`.`energy1`) AS `energy1`,
        (`max`.`energy2` - `min`.`energy2`) AS `energy2`,
@@ -848,7 +858,7 @@ SELECT cast(`v_minmaxdate`.`date` AS date) AS `date`,
 ------------------------------------------------------------------
 --  VIEW v_max
 ------------------------------------------------------------------
-Create view v_max as 
+Create or replace view v_max as 
   SELECT cast(`v_data`.`date` AS date) AS `date`,
          max(`v_data`.`analog1`) AS `analog1`,
          max(`v_data`.`analog2`) AS `analog2`,
@@ -1026,7 +1036,7 @@ GROUP BY cast(`v_data`.`date` AS date), `v_data`.`frame`;
 ------------------------------------------------------------------
 --  VIEW v_min
 ------------------------------------------------------------------
-Create view v_min as 
+Create or replace view v_min as 
   SELECT cast(`v_data`.`date` AS date) AS `date`,
          min(`v_data`.`analog1`) AS `analog1`,
          min(`v_data`.`analog2`) AS `analog2`,
@@ -1201,21 +1211,7 @@ Create view v_min as
 GROUP BY cast(`v_data`.`date` AS date), `v_data`.`frame`;
 
 
-------------------------------------------------------------------
---  VIEW v_minmaxdate
-------------------------------------------------------------------
-create view v_minmaxdate as 
-  SELECT `uvr1611`.`t_data`.`date` AS `date`,
-         min(`uvr1611`.`t_data`.`date`) AS `min`,
-         max(`uvr1611`.`t_data`.`date`) AS `max`,
-         `uvr1611`.`t_data`.`frame` AS `frame`
-    FROM `uvr1611`.`t_data`
-   WHERE (   (`uvr1611`.`t_data`.`date` >=
-                 cast(
-                    (SELECT max(`uvr1611`.`t_energies`.`date`)
-                       FROM `uvr1611`.`t_energies`) AS date))
-          OR ((SELECT count(0) FROM `uvr1611`.`t_energies`) = 0))
-GROUP BY cast(`uvr1611`.`t_data`.`date` AS date), `uvr1611`.`t_data`.`frame`;
+
 
 DROP PROCEDURE IF EXISTS `p_energies`;
 DROP PROCEDURE IF EXISTS `p_minmax`;
@@ -1224,11 +1220,10 @@ DROP PROCEDURE IF EXISTS `p_minmax`;
 ------------------------------------------------------------------
 
 
-CREATE  PROCEDURE `p_energies`()
+CREATE PROCEDURE p_energies()
 BEGIN
 REPLACE INTO t_energies (date, energy1, energy2, frame) SELECT * FROM v_energies;
-
-END$$
+END;
 
 
 ------------------------------------------------------------------
@@ -1241,13 +1236,11 @@ REPLACE INTO t_min (date, analog1, analog2, analog3, analog4, analog5, analog6, 
 analog9, analog10, analog11, analog12, analog13, analog14, analog15, analog16, speed1, speed2, speed3, speed4, power1, power2, frame ,
 t_min.1,
 t_min.2, t_min.3, t_min.4, t_min.5, t_min.6, t_min.7, t_min.8, t_min.9, t_min.10, t_min.11, t_min.12, t_min.13, t_min.14, t_min.15, t_min.16, t_min.17, t_min.18, t_min.19, t_min.20, t_min.21, t_min.22, t_min.23, t_min.24, t_min.25, t_min.26, t_min.27, t_min.28, t_min.29, t_min.30, t_min.31, t_min.32, t_min.33, t_min.34, t_min.35, t_min.36, t_min.37, t_min.38, t_min.39, t_min.40, t_min.41, t_min.42, t_min.43, t_min.44, t_min.45, t_min.46, t_min.47, t_min.48, t_min.49, t_min.50, t_min.51, t_min.52, t_min.53, t_min.54, t_min.55, t_min.56, t_min.57, t_min.58, t_min.59, t_min.60, t_min.61, t_min.62, t_min.63, t_min.64, t_min.65, t_min.66, t_min.67, t_min.68, t_min.69, t_min.70, t_min.71, t_min.72, t_min.73, t_min.74, t_min.75, t_min.76, t_min.77, t_min.78, t_min.79, t_min.80,t_min.81, t_min.82, t_min.83, t_min.84, t_min.85, t_min.86, t_min.87, t_min.88, t_min.89, t_min.90, t_min.91, t_min.92, t_min.93, t_min.94, t_min.95, t_min.96, t_min.97, t_min.98, t_min.99, t_min.100, t_min.101, t_min.102, t_min.103, t_min.104, t_min.105, t_min.106, t_min.107, t_min.108, t_min.109, t_min.110, t_min.111, t_min.112, t_min.113, t_min.114, t_min.115, t_min.116, t_min.117, t_min.118, t_min.119, t_min.120, t_min.121, t_min.122, t_min.123, t_min.124, t_min.125, t_min.126, t_min.127, t_min.128, t_min.129, t_min.130, t_min.131, t_min.132, t_min.133, t_min.134, t_min.135, t_min.136, t_min.137, t_min.138, t_min.139, t_min.140, t_min.141) SELECT * FROM v_min;
-
 REPLACE INTO t_max (date, analog1, analog2, analog3, analog4, analog5, analog6, analog7, analog8,
 analog9, analog10, analog11, analog12, analog13, analog14, analog15, analog16, speed1, speed2, speed3, speed4, power1, power2, frame,
 t_max.1,
 t_max.2, t_max.3, t_max.4, t_max.5, t_max.6, t_max.7, t_max.8, t_max.9, t_max.10, t_max.11, t_max.12, t_max.13, t_max.14, t_max.15, t_max.16, t_max.17, t_max.18, t_max.19, t_max.20, t_max.21, t_max.22, t_max.23, t_max.24, t_max.25, t_max.26, t_max.27, t_max.28, t_max.29, t_max.30, t_max.31, t_max.32, t_max.33, t_max.34, t_max.35, t_max.36, t_max.37, t_max.38, t_max.39, t_max.40, t_max.41, t_max.42, t_max.43, t_max.44, t_max.45, t_max.46, t_max.47, t_max.48, t_max.49, t_max.50, t_max.51, t_max.52, t_max.53, t_max.54, t_max.55, t_max.56, t_max.57, t_max.58, t_max.59, t_max.60, t_max.61, t_max.62, t_max.63, t_max.64, t_max.65, t_max.66, t_max.67, t_max.68, t_max.69, t_max.70, t_max.71, t_max.72, t_max.73, t_max.74, t_max.75, t_max.76, t_max.77, t_max.78, t_max.79, t_max.80,t_max.81, t_max.82, t_max.83, t_max.84, t_max.85, t_max.86, t_max.87, t_max.88, t_max.89, t_max.90, t_max.91, t_max.92, t_max.93, t_max.94, t_max.95, t_max.96, t_max.97, t_max.98, t_max.99, t_max.100, t_max.101, t_max.102, t_max.103, t_max.104, t_max.105, t_max.106, t_max.107, t_max.108, t_max.109, t_max.110, t_max.111, t_max.112, t_max.113, t_max.114, t_max.115, t_max.116, t_max.117, t_max.118, t_max.119, t_max.120, t_max.121, t_max.122, t_max.123, t_max.124, t_max.125, t_max.126, t_max.127, t_max.128, t_max.129, t_max.130, t_max.131, t_max.132, t_max.133, t_max.134, t_max.135, t_max.136, t_max.137, t_max.138, t_max.139, t_max.140, t_max.141) SELECT * FROM v_max;
-
-END$$
+END;
 
 
 
@@ -1280,7 +1273,7 @@ ADD UNIQUE KEY name (name);
 ------------------------------------------------------------------
 
 ALTER TABLE t_data
-ADD UNIQUE KEY `primary` (id);
+ADD UNIQUE KEY `primaryId` (id);
 
 
 ------------------------------------------------------------------
@@ -1310,5 +1303,2740 @@ BEGIN
    SET new.date = Date_format(new.date, '%Y-%m-%d %H:%i');
 END;
 
+-- INSERTS
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (1,
+             'frame1',
+             'analog1',
+             'Kollektor',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (4,
+             'frame1',
+             'analog2',
+             'Solar RL PU',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (5,
+             'frame1',
+             'analog3',
+             'Puffer unten',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (6,
+             'frame1',
+             'analog4',
+             'Puffer oben',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (7,
+             'frame1',
+             'analog5',
+             'Solar RL WW',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (8,
+             'frame1',
+             'analog6',
+             'Boiler oben',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (9,
+             'frame1',
+             'analog7',
+             'HKL 2 VL',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (10,
+             'frame1',
+             'analog8',
+             'Solar RL',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (11,
+             'frame1',
+             'analog9',
+             'HKL 1 VL',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (12,
+             'frame1',
+             'analog10',
+             'Boiler unten',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (13,
+             'frame1',
+             'analog11',
+             'Außen',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (14,
+             'frame1',
+             'analog12',
+             'Kessel RL',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (15,
+             'frame1',
+             'analog13',
+             'Kessel VL',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (16,
+             'frame1',
+             'analog14',
+             'Solar VL',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (17,
+             'frame1',
+             'analog15',
+             'DFM Kessel',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (18,
+             'frame1',
+             'analog16',
+             'DFM Solar',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (19,
+             'frame1',
+             'power1',
+             'Leistung Kessel',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (20,
+             'frame1',
+             'power2',
+             'Leistung Kollektor',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (21,
+             'frame1',
+             'energy1',
+             'Kessel',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (22,
+             'frame1',
+             'energy2',
+             'Flächenkollektor',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (197,
+             'frame1',
+             '1',
+             'ZK',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (198,
+             'frame1',
+             '2',
+             'O2',
+             '%');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (199,
+             'frame1',
+             '3',
+             'O2soll',
+             '%');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (200,
+             'frame1',
+             '4',
+             'TK',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (201,
+             'frame1',
+             '5',
+             'TKsoll',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (202,
+             'frame1',
+             '6',
+             'TRG',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (203,
+             'frame1',
+             '7',
+             'SZ',
+             '%');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (204,
+             'frame1',
+             '8',
+             'SZsoll',
+             '%');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (205,
+             'frame1',
+             '9',
+             'PLK',
+             '%');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (206,
+             'frame1',
+             '10',
+             'PLKsoll',
+             '%');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (207,
+             'frame1',
+             '11',
+             'Leistung',
+             '%');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (208,
+             'frame1',
+             '12',
+             'Förder',
+             '%');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (209,
+             'frame1',
+             '13',
+             'EsRostPos',
+             '°');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (210,
+             'frame1',
+             '14',
+             'UD',
+             'Pa');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (211,
+             'frame1',
+             '15',
+             'GBF',
+             '°');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (212,
+             'frame1',
+             '16',
+             'I Es',
+             'mA');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (213,
+             'frame1',
+             '17',
+             'I Ra',
+             'mA');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (214,
+             'frame1',
+             '18',
+             'I Aa',
+             'mA');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (215,
+             'frame1',
+             '19',
+             'I EsRost',
+             'mA');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (216,
+             'frame1',
+             '20',
+             'I VS',
+             'mA');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (217,
+             'frame1',
+             '21',
+             'Taus',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (218,
+             'frame1',
+             '22',
+             'TA Gem.',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (219,
+             'frame1',
+             '23',
+             'TPo',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (220,
+             'frame1',
+             '24',
+             'TPm',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (221,
+             'frame1',
+             '25',
+             'TPu',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (222,
+             'frame1',
+             '26',
+             'TFW',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (223,
+             'frame1',
+             '27',
+             'TRL',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (224,
+             'frame1',
+             '28',
+             'TRLsoll',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (225,
+             'frame1',
+             '29',
+             'RLP',
+             '%');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (226,
+             'frame1',
+             '30',
+             'Tplat',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (227,
+             'frame1',
+             '31',
+             'TVL_A',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (228,
+             'frame1',
+             '32',
+             'TVLs_A',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (229,
+             'frame1',
+             '33',
+             'TRA',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (230,
+             'frame1',
+             '34',
+             'TBA',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (231,
+             'frame1',
+             '35',
+             'TBs_A',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (232,
+             'frame1',
+             '36',
+             'TVL_1',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (233,
+             'frame1',
+             '37',
+             'TVL_2',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (234,
+             'frame1',
+             '38',
+             'TVLs_1',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (235,
+             'frame1',
+             '39',
+             'TVLs_2',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (236,
+             'frame1',
+             '40',
+             'TR1',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (237,
+             'frame1',
+             '41',
+             'TR2',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (238,
+             'frame1',
+             '42',
+             'TB1',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (239,
+             'frame1',
+             '43',
+             'TBs_1',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (240,
+             'frame1',
+             '44',
+             'TVL_3',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (241,
+             'frame1',
+             '45',
+             'TVL_4',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (242,
+             'frame1',
+             '46',
+             'TVLs_3',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (243,
+             'frame1',
+             '47',
+             'TVLs_4',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (244,
+             'frame1',
+             '48',
+             'TR3',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (245,
+             'frame1',
+             '49',
+             'TR4',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (246,
+             'frame1',
+             '50',
+             'TB2',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (247,
+             'frame1',
+             '51',
+             'TBs_2',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (248,
+             'frame1',
+             '52',
+             'TVL_5',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (249,
+             'frame1',
+             '53',
+             'TVL_6',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (250,
+             'frame1',
+             '54',
+             'TVLs_5',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (251,
+             'frame1',
+             '55',
+             'TVLs_6',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (252,
+             'frame1',
+             '56',
+             'TR5',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (253,
+             'frame1',
+             '57',
+             'TR6',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (254,
+             'frame1',
+             '58',
+             'TB3',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (255,
+             'frame1',
+             '59',
+             'TBs_3',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (256,
+             'frame1',
+             '60',
+             'TRs_A',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (257,
+             'frame1',
+             '61',
+             'TRs_1',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (258,
+             'frame1',
+             '62',
+             'TRs_2',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (259,
+             'frame1',
+             '63',
+             'TRs_3',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (260,
+             'frame1',
+             '64',
+             'TRs_4',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (261,
+             'frame1',
+             '65',
+             'TRs_5',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (262,
+             'frame1',
+             '66',
+             'TRs_6',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (263,
+             'frame1',
+             '67',
+             'WMZ Vorl.',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (264,
+             'frame1',
+             '68',
+             'WMZ Rueckl.',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (265,
+             'frame1',
+             '69',
+             'WMZ Durchf.',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (266,
+             'frame1',
+             '70',
+             'WMZ Leist.',
+             'KW');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (267,
+             'frame1',
+             '71',
+             'VFS Flow',
+             'l/min');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (268,
+             'frame1',
+             '72',
+             'VFS Temp',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (269,
+             'frame1',
+             '73',
+             'IO32 VL',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (270,
+             'frame1',
+             '74',
+             'KaskSollTmp_1',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (271,
+             'frame1',
+             '75',
+             'KaskSollTmp_2',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (272,
+             'frame1',
+             '76',
+             'KaskSollTmp_3',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (273,
+             'frame1',
+             '77',
+             'KaskSollTmp_4',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (274,
+             'frame1',
+             '78',
+             'KaskIstTmp_1',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (275,
+             'frame1',
+             '79',
+             'KaskIstTmp_2',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (276,
+             'frame1',
+             '80',
+             'KaskIstTmp_3',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (277,
+             'frame1',
+             '81',
+             'KaskIstTmp_4',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (278,
+             'frame1',
+             '82',
+             'UsePos',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (279,
+             'frame1',
+             '83',
+             'UseMotSoll',
+             'mm');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (280,
+             'frame1',
+             '84',
+             'UseMotIst',
+             'mm');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (281,
+             'frame1',
+             '85',
+             'HKZustand_A',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (282,
+             'frame1',
+             '86',
+             'HKZustand_1',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (283,
+             'frame1',
+             '87',
+             'HKZustand_2',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (284,
+             'frame1',
+             '88',
+             'HKZustand_3',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (285,
+             'frame1',
+             '89',
+             'HKZustand_4',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (286,
+             'frame1',
+             '90',
+             'HKZustand_5',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (287,
+             'frame1',
+             '91',
+             'HKZustand_6',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (288,
+             'frame1',
+             '92',
+             'BoiZustand_A',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (289,
+             'frame1',
+             '93',
+             'BoiZustand_1',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (290,
+             'frame1',
+             '94',
+             'BoiZustand_2',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (291,
+             'frame1',
+             '95',
+             'BoiZustand_3',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (292,
+             'frame1',
+             '96',
+             'PuffZustand',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (293,
+             'frame1',
+             '97',
+             'Puffer_soll',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (294,
+             'frame1',
+             '98',
+             'Mode Fw',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (295,
+             'frame1',
+             '99',
+             'I AschRost',
+             'mA');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (296,
+             'frame1',
+             '100',
+             'AschRostPos',
+             '°');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (297,
+             'frame1',
+             '101',
+             'ETÜ',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (298,
+             'frame1',
+             '102',
+             'TÜB',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (299,
+             'frame1',
+             '103',
+             'IO32 521',
+             'Pa');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (300,
+             'frame1',
+             '104',
+             'IO32 522',
+             'Pa');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (301,
+             'frame1',
+             '105',
+             'IO32 509',
+             'Pa');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (302,
+             'frame1',
+             '106',
+             'IO32 510',
+             'Pa');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (303,
+             'frame1',
+             '107',
+             'NICRNI Res',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (304,
+             'frame1',
+             '108',
+             'GBF soll',
+             '°');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (305,
+             'frame1',
+             '109',
+             'UD rel',
+             '%');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (306,
+             'frame1',
+             '110',
+             'U_Lambda',
+             'mV');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (307,
+             'frame1',
+             '111',
+             'Max Leistung',
+             NULL);
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (308,
+             'frame1',
+             '112',
+             'Solltmp. ExtHK',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (309,
+             'frame1',
+             '113',
+             'BSZ Einschub',
+             'h');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (310,
+             'frame1',
+             '114',
+             'KaskLZLeisMin_1',
+             'Min');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (311,
+             'frame1',
+             '115',
+             'KaskLZLeisMin_2',
+             'Min');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (312,
+             'frame1',
+             '116',
+             'KaskLZLeisMin_3',
+             'Min');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (313,
+             'frame1',
+             '117',
+             'KaskLZLeisMin_4',
+             'Min');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (314,
+             'frame1',
+             '118',
+             'KaskLZLeisMax_1',
+             'Min');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (315,
+             'frame1',
+             '119',
+             'KaskLZLeisMax_2',
+             'Min');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (316,
+             'frame1',
+             '120',
+             'KaskLZLeisMax_3',
+             'Min');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (317,
+             'frame1',
+             '121',
+             'KaskLZLeisMax_4',
+             'Min');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (318,
+             'frame1',
+             '122',
+             'Kask LZLeist_1',
+             'h');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (319,
+             'frame1',
+             '123',
+             'Kask LZLeist_2',
+             'h');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (320,
+             'frame1',
+             '124',
+             'Kask LZLeist_3',
+             'h');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (321,
+             'frame1',
+             '125',
+             'Kask LZLeist_4',
+             'h');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (322,
+             'frame1',
+             '126',
+             'TÜB2',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (323,
+             'frame1',
+             '127',
+             'TRA_A',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (324,
+             'frame1',
+             '128',
+             'TRA_1',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (325,
+             'frame1',
+             '129',
+             'TRA_2',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (326,
+             'frame1',
+             '130',
+             'TRA_3',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (327,
+             'frame1',
+             '131',
+             'TRA_4',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (328,
+             'frame1',
+             '132',
+             'TRA_5',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (329,
+             'frame1',
+             '133',
+             'TRA_6',
+             '°C');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (352,
+             'frame1',
+             'd010',
+             'HKP2',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (351,
+             'frame1',
+             'd09',
+             'M1Z',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (350,
+             'frame1',
+             'd08',
+             'M1A',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (349,
+             'frame1',
+             'd07',
+             'HKP1',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (348,
+             'frame1',
+             'd06',
+             'MAZ',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (347,
+             'frame1',
+             'd05',
+             'MAA',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (346,
+             'frame1',
+             'd04',
+             'HKPA',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (345,
+             'frame1',
+             'd02',
+             'TKS',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (344,
+             'frame1',
+             'd01',
+             'NotAus',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (343,
+             'frame1',
+             'd00',
+             'Stb',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (353,
+             'frame1',
+             'd011',
+             'M2A',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (354,
+             'frame1',
+             'd012',
+             'M2Z',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (355,
+             'frame1',
+             'd013',
+             'Störung',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (356,
+             'frame1',
+             'd10',
+             'L Heiz.',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (357,
+             'frame1',
+             'd11',
+             'Z Heiz.',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (358,
+             'frame1',
+             'd12',
+             'Z Geb.',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (359,
+             'frame1',
+             'd13',
+             'AA Run',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (360,
+             'frame1',
+             'd14',
+             'AA Dir',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (361,
+             'frame1',
+             'd15',
+             'AA Saug',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (362,
+             'frame1',
+             'd16',
+             'ES Run',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (363,
+             'frame1',
+             'd17',
+             'ES Dir',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (364,
+             'frame1',
+             'd18',
+             'RA Run',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (365,
+             'frame1',
+             'd19',
+             'RA Dir',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (366,
+             'frame1',
+             'd110',
+             'Deckel',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (367,
+             'frame1',
+             'd111',
+             'FS Asche',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (368,
+             'frame1',
+             'd112',
+             'INI Asche',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (369,
+             'frame1',
+             'd113',
+             'ER Run',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (370,
+             'frame1',
+             'd114',
+             'AR Run',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (371,
+             'frame1',
+             'd20',
+             'BPA',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (372,
+             'frame1',
+             'd21',
+             'BP1',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (373,
+             'frame1',
+             'd22',
+             'BP2',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (374,
+             'frame1',
+             'd23',
+             'BP3',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (375,
+             'frame1',
+             'd24',
+             'BZP0',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (376,
+             'frame1',
+             'd25',
+             'BZP1',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (377,
+             'frame1',
+             'd26',
+             'BZP2',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (378,
+             'frame1',
+             'd27',
+             'BZP3',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (379,
+             'frame1',
+             'd28',
+             'RLm_auf',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (380,
+             'frame1',
+             'd29',
+             'RLm_zu',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (381,
+             'frame1',
+             'd210',
+             'RL Pumpe',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (382,
+             'frame1',
+             'd211',
+             'SK Aschebox',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (383,
+             'frame1',
+             'd212',
+             'SK RaDeckel',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (384,
+             'frame1',
+             'd213',
+             'SK VsDeckel',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (385,
+             'frame1',
+             'd214',
+             'SK Lager',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (386,
+             'frame1',
+             'd30',
+             'HKP3',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (387,
+             'frame1',
+             'd31',
+             'M3A',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (388,
+             'frame1',
+             'd32',
+             'M3Z',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (389,
+             'frame1',
+             'd33',
+             'HKP4',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (390,
+             'frame1',
+             'd34',
+             'M4A',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (391,
+             'frame1',
+             'd35',
+             'M4Z',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (392,
+             'frame1',
+             'd36',
+             'HKP5',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (393,
+             'frame1',
+             'd37',
+             'M5A',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (394,
+             'frame1',
+             'd38',
+             'M5Z',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (395,
+             'frame1',
+             'd39',
+             'HKP6',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (396,
+             'frame1',
+             'd310',
+             'M6A',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (397,
+             'frame1',
+             'd311',
+             'M6Z',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (398,
+             'frame1',
+             'd312',
+             'FLP1',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (399,
+             'frame1',
+             'd313',
+             'FLP2',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (400,
+             'frame1',
+             'd314',
+             'VS/RA2 Run',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (401,
+             'frame1',
+             'd315',
+             'VS/RA2 Dir',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (402,
+             'frame1',
+             'd41',
+             'Entasch gesp.',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (403,
+             'frame1',
+             'd42',
+             'ATW',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (404,
+             'frame1',
+             'd43',
+             'SK Bruecke',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (405,
+             'frame1',
+             'd44',
+             'ExtHK',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (406,
+             'frame1',
+             'd45',
+             'ExtHK_1',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (407,
+             'frame1',
+             'd46',
+             'ExtHK_2',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (408,
+             'frame1',
+             'd47',
+             'ExtHK_3',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (409,
+             'frame1',
+             'd48',
+             'HKP Ext',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (410,
+             'frame1',
+             'd49',
+             'HKP Ext_1',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (411,
+             'frame1',
+             'd410',
+             'HKP Ext_2',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (412,
+             'frame1',
+             'd411',
+             'PuffP',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (413,
+             'frame1',
+             'd412',
+             'FW Freig.',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (414,
+             'frame1',
+             'd414',
+             'HKV',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (415,
+             'frame1',
+             'd415',
+             'DIN_E1',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (416,
+             'frame1',
+             'd50',
+             'VS Deckel',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (417,
+             'frame1',
+             'd51',
+             'DIN_E13',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (418,
+             'frame1',
+             'd52',
+             'DIN_E14',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (419,
+             'frame1',
+             'd53',
+             'DIN_E35',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (420,
+             'frame1',
+             'd54',
+             'KASK1 MinLeist',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (421,
+             'frame1',
+             'd55',
+             'KASK2 MinLeist',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (422,
+             'frame1',
+             'd56',
+             'KASK3 MinLeist',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (423,
+             'frame1',
+             'd57',
+             'KASK4 MinLeist',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (424,
+             'frame1',
+             'd58',
+             'KASK1 MaxLeist',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (425,
+             'frame1',
+             'd59',
+             'KASK2 MaxLeist',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (426,
+             'frame1',
+             'd510',
+             'KASK3 MaxLeist',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (427,
+             'frame1',
+             'd511',
+             'KASK4 MaxLeist',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (428,
+             'frame1',
+             'd512',
+             'KASK1 Run',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (429,
+             'frame1',
+             'd513',
+             'KASK2 Run',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (430,
+             'frame1',
+             'd514',
+             'KASK3 Run',
+             'digital');
+
+INSERT INTO t_names(id,
+                    frame,
+                    type,
+                    name,
+                    unit)
+     VALUES (431,
+             'frame1',
+             'd515',
+             'KASK4 Run',
+             'digital');
+             
+
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (2,'analog1','frame1',1);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (2,'21','frame1',2);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (2,'analog10','frame1',4);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (2,'analog3','frame1',6);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (3,'analog9','frame1',2);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (3,'analog7','frame1',3);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (2,'analog4','frame1',5);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (4,'analog13','frame1',4);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (3,'21','frame1',1);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (4,'21','frame1',1);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (4,'analog14','frame1',2);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (4,'analog8','frame1',3);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (4,'analog12','frame1',5);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (5,'analog1','frame1',1);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (5,'analog14','frame1',2);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (5,'analog8','frame1',3);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (5,'analog2','frame1',4);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (6,'power1','frame1',1);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (6,'power2','frame1',2);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (7,'energy1','frame1',1);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (7,'energy2','frame1',2);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (2,'analog6','frame1',3);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (5,'analog5','frame1',5);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (5,'21','frame1',6);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (10,'4','frame1',1);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (10,'11','frame1',2);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (10,'12','frame1',3);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (10,'9','frame1',4);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (10,'21','frame1',5);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (11,'86','frame1',1);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (11,'87','frame1',2);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (11,'96','frame1',3);
+insert into `t_names_of_charts`(`chart_id`,`type`,`frame`,`order`) values (11,'93','frame1',4);
+
+
+insert into `t_menu`(`id`,`name`,`unit`,`type`,`order`,`schema`) values (2,'Speicher','#.# �C','line',3,null);
+insert into `t_menu`(`id`,`name`,`unit`,`type`,`order`,`schema`) values (3,'Heizkreise','#.# �C','line',4,null);
+insert into `t_menu`(`id`,`name`,`unit`,`type`,`order`,`schema`) values (4,'Sonstige','#.# �C','line',5,null);
+insert into `t_menu`(`id`,`name`,`unit`,`type`,`order`,`schema`) values (5,'Solar','#.# �C','line',6,null);
+insert into `t_menu`(`id`,`name`,`unit`,`type`,`order`,`schema`) values (6,'Leistung','#.## kW','power',7,null);
+insert into `t_menu`(`id`,`name`,`unit`,`type`,`order`,`schema`) values (7,'Ertr�ge','#.# kWh','energy',8,null);
+insert into `t_menu`(`id`,`name`,`unit`,`type`,`order`,`schema`) values (8,'Schema',null,'schema',1,'schema.svg');
+insert into `t_menu`(`id`,`name`,`unit`,`type`,`order`,`schema`) values (9,'Kollektoren',null,'schema',2,'kollektoren.svg');
+insert into `t_menu`(`id`,`name`,`unit`,`type`,`order`,`schema`) values (10,'Kessel','# �C','line',9,null);
+insert into `t_menu`(`id`,`name`,`unit`,`type`,`order`,`schema`) values (11,'Zust�nde','#','line',10,null);
+
+
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (1,'#speicher1_oben > tspan','frame1','analog1','#.# �C');
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (2,'#speicher1_unten > tspan','frame1','analog2','#.# �C');
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (3,'#speicher2_oben > tspan','frame1','analog3','#.# �C');
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (4,'#speicher2_unten > tspan','frame1','analog4','#.# �C');
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (5,'#innen_temp > tspan','frame1','analog5','#.# �C');
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (6,'#aussen_temp > tspan','frame1','analog11','#.# �C');
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (7,'#vl1_temp > tspan','frame1','analog7','#.# �C');
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (8,'#vl2_temp > tspan','frame1','analog8','#.# �C');
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (9,'#rl3_temp > tspan','frame1','analog9','#.# �C');
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (10,'#kessel_temp > tspan','frame1','analog12','#.# �C');
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (11,'#roehren_temp > tspan','frame1','analog15','#.# �C');
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (12,'#flach_temp > tspan','frame1','analog16','#.# �C');
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (13,'#solarrl_temp > tspan','frame1','analog14','#.# �C');
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (14,'#solarvl_temp > tspan','frame1','analog13','#.# �C');
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (15,'#fb_pump > tspan','frame1','digital2','DIGITAL(#)');
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (16,'#hz_pump > tspan','frame1','digital1','DIGITAL(#)');
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (17,'#ww_pump > tspan','frame1','digital6','DIGITAL(#)');
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (18,'#flach_pumpe > tspan','frame1','digital11','DIGITAL(#)');
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (19,'#roehren_pumpe > tspan','frame1','digital10','DIGITAL(#)');
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (20,'#lade_pumpe > tspan','frame1','digital7','DIGITAL(#)');
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (21,'#flach_info > tspan:eq(1)','frame1','energy1','Gesamt: MWH(#) MWh KWH(#.#) kWh');
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (22,'#flach_info > tspan:eq(2)','frame1','power1','Aktuell: #.### kW');
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (23,'#roehren_info > tspan:eq(1)','frame1','energy2','Gesamt: MWH(#) MWh KWH(#.#) kWh');
+insert into `t_schema`(`id`,`path`,`frame`,`type`,`format`) values (24,'#roehren_info > tspan:eq(2)','frame1','power2','Aktuell: #.### kW');
 
 
