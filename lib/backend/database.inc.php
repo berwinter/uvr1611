@@ -62,9 +62,10 @@ class Database
 		         ."digital1, digital2, digital3, digital4, digital5, digital6, digital7, digital8,"
 		         ."digital9, digital10, digital11, digital12, digital13, digital14, digital15, digital16,"
 		         ."speed1, speed2, speed3, speed4,"
-                 ."power1, power2, energy1, energy2,"
-				 ."RASMode1, RASMode2, RASMode3, RASMode4, RASMode5, RASMode6, RASMode7, RASMode8,"
-				 ."RASMode9, RASMode10, RASMode11, RASMode12, RASMode13, RASMode14, RASMode15, RASMode16)  VALUES ";
+		          ."power1, power2, energy1, energy2)  VALUES ";
+//                 ."power1, power2, energy1, energy2,"
+	//			 ."RASMode1, RASMode2, RASMode3, RASMode4, RASMode5, RASMode6, RASMode7, RASMode8,"
+		//		 ."RASMode9, RASMode10, RASMode11, RASMode12, RASMode13, RASMode14, RASMode15, RASMode16)  VALUES ";
 		
 		$values = Array();
 		foreach ($data as $dataset) {
@@ -122,11 +123,12 @@ class Database
 		      ." $data->digital9, $data->digital10, $data->digital11, $data->digital12,"
 		      ." $data->digital13, $data->digital14, $data->digital15, $data->digital16,"
 		      ." $data->speed1, $data->speed2, $data->speed3, $data->speed4,"
-		      ." $data->power1, $data->power2, $data->energy1, $data->energy2,"
-			  ." '$data->RASMode1',  '$data->RASMode2',  '$data->RASMode3',  '$data->RASMode4',"
-			  ." '$data->RASMode5',  '$data->RASMode6',  '$data->RASMode7',  '$data->RASMode8',"
-			  ." '$data->RASMode9',  '$data->RASMode10', '$data->RASMode11', '$data->RASMode12',"
-			  ." '$data->RASMode13', '$data->RASMode14', '$data->RASMode15', '$data->RASMode16')";
+		       ." $data->power1, $data->power2, $data->energy1, $data->energy2)";
+		    //  ." $data->power1, $data->power2, $data->energy1, $data->energy2,"
+			//  ." '$data->RASMode1',  '$data->RASMode2',  '$data->RASMode3',  '$data->RASMode4',"
+			//  ." '$data->RASMode5',  '$data->RASMode6',  '$data->RASMode7',  '$data->RASMode8',"
+			//  ." '$data->RASMode9',  '$data->RASMode10', '$data->RASMode11', '$data->RASMode12',"
+			//  ." '$data->RASMode13', '$data->RASMode14', '$data->RASMode15', '$data->RASMode16')";
 	}
 	
 	/**
