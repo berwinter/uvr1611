@@ -20,7 +20,7 @@ class Parser
 	 */
 	const SIGN_BIT = 0x8000;
 	const POSITIVE_VALUE_MASK = 0x00000FFF;
-	const NEGATIVE_VALUE_MASK = 0xFFFFF000;
+	const NEGATIVE_VALUE_MASK = 0x0000AFFF;
 	const DIGITAL_ON = 1;
 	const DIGITAL_OFF = 0;
 	const SPEED_ACTIVE = 0x80;
@@ -148,13 +148,13 @@ class Parser
 		// calculate result value
 		//$result = $value & self::POSITIVE_VALUE_MASK;
 		if($value & self::SIGN_BIT) {
-			$result = -(($result ^ self::POSITIVE_VALUE_MASK)+1);
-			if (self::DEBUG >1) echo "negative value\n";
+			$result = -(($result ^ self::NEGATIVE_VALUE_MASK)+1);
+			if (self::DEBUG >1) echo "negative value $result\n";
 		}
 		
 		else {
 			$result = $value & self::POSITIVE_VALUE_MASK;
-			if (self::DEBUG >1) echo "positive value\n";			
+			if (self::DEBUG >1) echo "positive value $result\n";			
 		}
 		// choose type
 		switch($value & self::TYPE_MASK)
