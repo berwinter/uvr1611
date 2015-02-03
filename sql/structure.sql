@@ -208,14 +208,14 @@ CREATE TABLE t_hg_data
    `131`    float,
    `132`    float,
    `133`    float,
-   `134`    binary(1),
-   `135`    binary(1),
-   `136`    binary(9),
-   `137`    binary(1),
-   `138`    binary(1),
-   `139`    binary(1),
-   `140`    binary(1),
-   `141`    binary(1),
+   `134`    binary(2),
+   `135`    binary(2),
+   `136`    binary(2),
+   `137`    binary(2),
+   `138`    binary(2),
+   `139`    binary(2),
+   `140`    binary(2),
+   `141`    binary(2),
    frame    varchar(20) DEFAULT 'frame2'
 );
 
