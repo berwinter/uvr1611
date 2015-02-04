@@ -31,7 +31,7 @@
      showgrid="false"
      inkscape:zoom="1.1125147"
      inkscape:cx="423.36007"
-     inkscape:cy="360.06681"
+     inkscape:cy="162.99763"
      inkscape:window-x="1912"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
@@ -738,25 +738,25 @@
          id="tspan4225"
          style="font-size:14px;font-style:oblique;text-align:end;text-anchor:end;fill:#333333">? °C</tspan></text>
     <text
-       x="523.92639"
-       y="279.48203"
+       x="401.68082"
+       y="319.03207"
        id="vl1_temp"
        xml:space="preserve"
        style="font-size:14px;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#333333;font-family:Arial"
        sodipodi:linespacing="125%"><tspan
-         x="523.92639"
-         y="279.48203"
+         x="401.68082"
+         y="319.03207"
          id="tspan4228"
          style="font-size:14px;font-style:oblique;fill:#333333">? °C</tspan></text>
     <text
-       x="662.31927"
-       y="279.48203"
+       x="546.36572"
+       y="320.8298"
        id="vl2_temp"
        xml:space="preserve"
        style="font-size:14px;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#333333;font-family:Arial"
        sodipodi:linespacing="125%"><tspan
-         x="662.31927"
-         y="279.48203"
+         x="546.36572"
+         y="320.8298"
          id="tspan4231"
          style="font-size:14px;font-style:oblique;fill:#333333">? °C</tspan></text>
     <text
@@ -1303,13 +1303,13 @@
          id="tspan4225-7-1"
          style="font-size:14px;font-style:oblique;text-align:end;text-anchor:end;fill:#333333">? °C</tspan></text>
     <text
-       x="322.62653"
+       x="325.32312"
        y="306.8688"
        id="sol_vl"
        xml:space="preserve"
        style="font-size:14px;text-align:end;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#333333;font-family:Arial"
        sodipodi:linespacing="125%"><tspan
-         x="322.62653"
+         x="325.32312"
          y="306.8688"
          id="tspan4225-7-8"
          style="font-size:14px;font-style:oblique;text-align:end;text-anchor:end;fill:#333333">? °C</tspan></text>
@@ -1504,5 +1504,92 @@
          y="553.65082"
          id="tspan4200-0-4-8-4-9"
          style="font-size:14px;font-style:oblique;fill:#333333">? state</tspan></text>
+    <text
+       x="389.10321"
+       y="603.98376"
+       id="ke_rl"
+       xml:space="preserve"
+       style="font-size:14px;text-align:end;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#333333;font-family:Arial"
+       sodipodi:linespacing="125%"><tspan
+         x="389.10321"
+         y="603.98376"
+         id="tspan4225-7-8-2"
+         style="font-size:14px;font-style:oblique;text-align:end;text-anchor:end;fill:#333333">? °C</tspan></text>
+    <text
+       x="520.80377"
+       y="268.70731"
+       id="vl1_temp_hg"
+       xml:space="preserve"
+       style="font-size:14px;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#333333;font-family:Arial"
+       sodipodi:linespacing="125%"><tspan
+         x="520.80377"
+         y="268.70731"
+         id="tspan4228-7"
+         style="font-size:14px;font-style:oblique;fill:#333333">? °C</tspan></text>
+    <text
+       x="520.80377"
+       y="287.58347"
+       id="vl1_temp_hg_soll"
+       xml:space="preserve"
+       style="font-size:14px;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#333333;font-family:Arial"
+       sodipodi:linespacing="125%"><tspan
+         x="520.80377"
+         y="287.58347"
+         id="tspan4228-7-7"
+         style="font-size:14px;font-style:oblique;fill:#333333">? °C</tspan></text>
+    <text
+       x="661.92548"
+       y="287.58347"
+       id="vl2_temp_hg_soll"
+       xml:space="preserve"
+       style="font-size:14px;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#333333;font-family:Arial"
+       sodipodi:linespacing="125%"><tspan
+         x="661.92548"
+         y="287.58347"
+         id="tspan4228-7-7-5"
+         style="font-size:14px;font-style:oblique;fill:#333333">? °C</tspan></text>
+    <text
+       x="661.92554"
+       y="271.4039"
+       id="vl2_temp_hg"
+       xml:space="preserve"
+       style="font-size:14px;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#333333;font-family:Arial"
+       sodipodi:linespacing="125%"><tspan
+         x="661.92554"
+         y="271.4039"
+         id="tspan4231-2"
+         style="font-size:14px;font-style:oblique;fill:#333333">? °C</tspan></text>
+    <g
+       transform="translate(104.29024,-27.231146)"
+       id="g3961-4"
+       style="stroke:#000000">
+      <path
+         d="m 354.42,342.23 h 10.363"
+         id="path3963-1"
+         style="fill:none;stroke-width:5.17280006;stroke-linecap:round"
+         inkscape:connector-curvature="0" />
+      <path
+         d="m 314.16,434.84 c 0,2.2316 -1.809,4.0406 -4.0406,4.0406 -2.2316,0 -4.0406,-1.809 -4.0406,-4.0406 0,-2.2316 1.809,-4.0406 4.0406,-4.0406 2.2316,0 4.0406,1.809 4.0406,4.0406 z"
+         transform="translate(43.748,-92.677)"
+         id="path3965-7"
+         style="fill:#ff9000;stroke-linejoin:round"
+         inkscape:connector-curvature="0" />
+    </g>
+    <g
+       transform="translate(248.10856,-25.433417)"
+       id="g3961-3"
+       style="stroke:#000000">
+      <path
+         d="m 354.42,342.23 h 10.363"
+         id="path3963-2"
+         style="fill:none;stroke-width:5.17280006;stroke-linecap:round"
+         inkscape:connector-curvature="0" />
+      <path
+         d="m 314.16,434.84 c 0,2.2316 -1.809,4.0406 -4.0406,4.0406 -2.2316,0 -4.0406,-1.809 -4.0406,-4.0406 0,-2.2316 1.809,-4.0406 4.0406,-4.0406 2.2316,0 4.0406,1.809 4.0406,4.0406 z"
+         transform="translate(43.748,-92.677)"
+         id="path3965-4"
+         style="fill:#ff9000;stroke-linejoin:round"
+         inkscape:connector-curvature="0" />
+    </g>
   </g>
 </svg>
