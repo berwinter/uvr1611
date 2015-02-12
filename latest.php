@@ -1,6 +1,6 @@
 <?php
 include_once("lib/backend/uvr1611-connection.inc.php");
-include_once ("/var/www/myUvr1611DataLogger/lib/backend/database.inc.php");
+include_once ("lib/backend/database.inc.php");
 header('Cache-Control: no-cache, must-revalidate');
 header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 header('Content-type: application/json; charset=utf-8');
