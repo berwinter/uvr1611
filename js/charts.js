@@ -9,7 +9,7 @@ var lineChart = {
 		},
 		chartArea: {width: '80%', height: '80%'},
 		legend: {position: 'bottom'},
-		colors: ['#3366cc','#dc3912','#ff9900','#109618','#990099']
+		colors: ['#3366cc','#dc3912','#ff9900','#109618','#990099','#3366cc','#dc3912','#ff9900','#109618','#990099']
 	},
 	digitalOptions: {
 		vAxis: {minValue: 0, textPosition: 'none'},
@@ -20,7 +20,7 @@ var lineChart = {
 		},
 		chartArea: {width: '80%', height: '50%'},
 		legend: {position: 'bottom'},
-		colors: ['#3366cc','#dc3912','#ff9900','#109618','#990099']
+		colors: ['#3366cc','#dc3912','#ff9900','#109618','#990099','#3366cc','#dc3912','#ff9900','#109618','#990099']
 	},
 	zoomed: false,
 	init: function()
@@ -217,7 +217,7 @@ var barChart = {
 		},
 		chartArea: {width: '80%', height: '80%'},
 		legend: {position: 'bottom'},
-		colors: ['#3366cc','#dc3912','#ff9900','#109618','#990099']
+		colors: ['#3366cc','#dc3912','#ff9900','#109618','#990099','#3366cc','#dc3912','#ff9900','#109618','#990099']
 	},
 	init: function()
 	{
