@@ -322,12 +322,20 @@ var menu = {
 		}
 	}
 
-	google.load('visualization', '1', {'packages':['corechart']});
-	menu.init();
+	google.load('visualization', '1.0', {'packages':['corechart']});
 
-	$(document).ready(function() {
-		actualValues.init();
-		toolbar.init();
-		
-		$(window).on("hashchange", menu.handle);
-	});
+	//Set a callback to run when the Google Visualization API is loaded.
+	google.setOnLoadCallback(googleLoaded);
+	
+	
+	function googleLoaded() {
+
+		menu.init();
+
+		$(document).ready(function() {
+			actualValues.init();
+			toolbar.init();
+			
+			$(window).on("hashchange", menu.handle);
+		});
+      }
