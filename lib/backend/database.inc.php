@@ -381,7 +381,7 @@ class Database
 		
 		// build menu array
 		while($statement->fetch()) {
-			if($type == "schema" && $schema!=NULL) {
+			if(($type == "schema" || $type == "weather") && $schema!=NULL) {
 				$rows["menu"][] = array("id" => $id,
 						                "name" => $name,
 										"type" => $type,
@@ -398,7 +398,7 @@ class Database
 		
 		// get chart configuration 
 		for($i=0; $i < count($rows["menu"]); $i++) {
-			if($rows["menu"][$i]["type"] != "schema") {
+			if($rows["menu"][$i]["type"] != "schema" || $rows["menu"][$i]["type"] != "weather") {
 				$statement = $this->mysqli->prepare("SELECT t_names.name, t_names.frame, t_names.type FROM t_names ".
 													"INNER JOIN t_names_of_charts ".
 													"ON (t_names.type = t_names_of_charts.type ".

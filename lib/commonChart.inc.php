@@ -52,14 +52,16 @@ if($date == date("Y-m-d") && ($database->lastDataset() + Config::getInstance()->
 		for($i=0; $i < $count; $i++) {
 			// fetch a set of dataframes and insert them into the database
 			$value = $uvr->fetchData();
-			if(strtotime($value["frame1"]->date) < $lastDatabaseValue) {
-				break;
-			}
-			$data[] = $value;
-			if(count($data) == 64) {
-				$database->insertData($data);
-				$data = Array();
-			}
+			if($value !== false) {
+		    	if(strtotime($value["frame1"]->date) < $lastDatabaseValue) {
+		    		break;
+		    	}
+		    	$data[] = $value;
+		    	if(count($data) == 64) {
+				    $database->insertData($data);
+				    $data = Array();
+			    }
+		    }
 		}
 		$uvr->endRead();
 		// insert all data into database

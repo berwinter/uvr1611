@@ -15,14 +15,13 @@ Die Features sind:
 * Zoomen in den Diagrammen
 * Übersichtstabellen zu den Diagrammen
 * Monatliche Trendwerte
+* Aktuelles Wetter
 
-Ein Beispiel der Anwendung befindet sich hier: [Demo](http://berwinter.dyndns.org/uvr1611/)
 
 Downloads
 ------
 
-* [Stable (v90)](https://github.com/berwinter/uvr1611/archive/v90.zip)
-* [Stable (v81)](https://github.com/berwinter/uvr1611/archive/v80.zip)
+* [Stable (v95)](https://github.com/berwinter/uvr1611/archive/v95.zip)
 * [Development](https://github.com/berwinter/uvr1611/archive/master.zip)
 
 Vorteile der Anwendung
@@ -68,6 +67,11 @@ Die Konfiguration des Datenloggers befindet sich in der Datei `config/config.ini
 	reduction = 2
 
 In der Sektion `mysql` befinden sich die Parameter für den Zugang zur Datenbank. Der angebene Datenbank-Benutzer benötigt die Rechte `DELETE`, `EXECUTE`, `INSERT`, `SELECT`, `SHOW VIEW` und `UPDATE` für die Datebank. In der Sektion `uvr1611` befinden sich die IP-Adresse für den BL-NET. Mit dem Schalter `reset` kann das Löschen der Daten vom BL-NET nach dem Logging aktiviert werden. Der Bereich `app` legt Einstellungen zur Anwendung fest. Anwendung fest. Unter `name` kann der Eintrag „Solar/Heizungs Datenauswertung“ durch einen individuellen Eintrag ersetzt werden, ebenso der Eintrag unter `email`. `chartcache` und `latestcache` legen den Zeitraum in Sekunden fest, in dem keine neuen Daten vom Bootloader geholt werden. `reduction` reduziert die Daten in den Diagrammen um den angegebenen Faktor.
+
+Standort Wetter
+------
+
+In der Version v0.95 können aktuelle Wetterinformationen angezeigt werden. Dazu muss in der Datenbank in der Tabelle `t_menu` ein Eintrag vom Typ `weather` erstellt werden. In der Spalte `schema` ist der gewünschte Ort einzutragen. Die Daten werden von [openWeatherMap](http://openweathermap.org) abgerufen.
 
 Automatisches abrufen der Daten
 ------
@@ -143,6 +147,8 @@ Screenshots
 ![Ertäge](./doc/balken.png)
 
 ![Ertäge (Monate)](./doc/balken2.png)
+
+![Wetter](./doc/weather.png)
 
 Kontakt
 ------

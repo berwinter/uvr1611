@@ -51,6 +51,9 @@ div.chart {
 div.home {
 	background: url(../images/home.png) no-repeat transparent;
 }
+div.weather {
+	background: url(../images/weather.png) no-repeat transparent;
+}
 div.icon
 {
     background-position: 50% 100%;
@@ -104,6 +107,71 @@ div.hover > div.icon, div.active > div.icon {
 
 .schema {
 	text-align: center;
+}
+
+.weatherinfo {
+	color: #444;
+	width: 600px;
+	margin: 20px auto;
+}
+
+.weatherinfo > table {
+	width: 200px;
+	table-layout: fixed;
+	border-collapse:collapse;
+}
+
+td.weatherprop {
+	font-weight: bold;
+	width: 120px;
+}
+td.weathervalue {
+	width: 80px;
+}
+
+.weatherinfo > h2 {
+	font-weight: bold;
+	font-size:2em;
+	margin-bottom:0;
+}
+div.weatherdetail {
+	font-weight: normal;
+	margin-bottom:50px;
+}
+span.weathercity {
+	font-weight: bold;
+}
+.weatherinfo > h3 {
+	font-weight: bold;
+	font-size:1.4em;
+	margin-bottom:5px;
+}
+
+table.weatherdetail {
+	width: 100%;
+	table-layout: fixed;
+	border-collapse:collapse;
+}
+
+table.weatherdetail td.leftalign {
+	text-align: left;
+}
+table.weatherdetail td.rightalign {
+	text-align: right;
+}
+
+table.weatherdetail span.temp {
+	font-weight: bold;
+}
+
+table.weatherdetail td.leftalign span.temp {
+	font-size:2em;
+}
+
+.weathericon {
+	position: relative;
+	float: right;
+	width: 175px
 }
 
 #pages {

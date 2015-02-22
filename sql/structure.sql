@@ -56,7 +56,7 @@ CREATE TABLE `t_menu` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL,
   `unit` varchar(10) DEFAULT NULL,
-  `type` enum('schema','line','power','energy') NOT NULL,
+  `type` enum('schema','line','power','energy','weather') NOT NULL,
   `order` tinyint(4) DEFAULT NULL,
   `schema` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`id`)

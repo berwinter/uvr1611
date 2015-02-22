@@ -360,7 +360,28 @@ class Uvr1611
 				$frames["frame2"] = new Parser(substr($data, 3+self::DATASET_SIZE, self::DATASET_SIZE));
 				break;
 		}
-		return $frames;
+
+		$start = 0;
+		if($this->mode==self::CAN_MODE) {
+			$start = 3;
+		}
+		if(substr($data, $start, self::DATASET_SIZE-6) == str_repeat("\x00",self::DATASET_SIZE-6)) {
+			$this->logDataset($data, $frames);
+			return false;
+		}
+		else {
+			return $frames;	
+		}
+	}
+	
+	private function logDataset($data, $frames)
+	{
+		$text ="";
+		$text .= "Address: ".dechex($this->address)."\n";
+		$text .= "Count: ".$this->count."\n";
+		$text .= "Data: ".bin2hex($data)."\n";
+		$text .= "Frame: ".print_r($frames,true)."\n\n";
+		file_put_contents("/tmp/uvr1611-logger.log", $text, FILE_APPEND);
 	}
 	
 	/**

@@ -27,6 +27,13 @@ var menu = {
 							$pages.append($container);
 							item["container"] = $container;
 							break;
+						case 'weather':
+							$item.find("div.icon").addClass("weather");
+							var $container = $('<div class="weatherinfo"><div class="weathericon"><img></img><table class="weatherdetail"><tr><td collspan=2 class="description"><td><tr><tr><td class="leftalign"rowspan=2><span class="temp actuell"></span></td><td class="rightalign">Max: <span class="temp max"></span></td></tr><tr><td class="rightalign">Min: <span class="temp min"></span></td></tr></table></div><h2></h2><div class="weatherdetail"><span class="weathercity"></span> - <span class="weathertime"></span></div><h3>Details</h3><table><tr><td class="weatherprop">Temperatur:</td><td class="weathervalue"></td></tr><tr><td class="weatherprop">Luftfeuchtigkeit:</td><td class="weathervalue"></td></tr><tr><td class="weatherprop">Bewölkung:</td><td class="weathervalue"></td></tr><tr><td class="weatherprop">Wind:</td><td class="weathervalue"></td></tr><tr><td class="weatherprop">Niederschlag:</td><td class="weathervalue"></td></tr><tr><td class="weatherprop">Luftdruck:</td><td class="weathervalue"></td></tr><tr><td class="weatherprop">Sonnenaufgang:</td><td class="weathervalue"></td></tr><tr><td class="weatherprop">Sonnenuntergang:</td><td class="weathervalue"></td></tr></table></div>');
+							item["load"] = weather.fetch;
+							$pages.append($container);
+							item["container"] = $container;
+							break;
 						case 'energy':
 							$item.find("div.icon").addClass("chart");
 							item["container"] = $pages.find("#energy_container");
@@ -140,6 +147,10 @@ var menu = {
 				toolbar.hideDateNavigation();
 				actualValues.fetchData();
 				break;
+			case "weather":
+				toolbar.hideDateNavigation();
+				menu.selectedItem.load(menu.selectedItem["schema"]);
+				break;
 			case "energy":
 				toolbar.showDateNavigation();
 				toolbar.showGrouping();
@@ -154,6 +165,45 @@ var menu = {
 				break;
 		}
 	}
+}
+
+
+var weather = 
+{
+	fetch: function(city)
+	{
+		$.ajax({
+			url: "http://api.openweathermap.org/data/2.5/weather",
+			jsonp: "callback",
+			dataType: "jsonp",
+			data: {
+				q: city,
+				units: "metric",
+				lang: "de"
+			},
+			success: function(data)
+			{
+				var dateFormatter = new google.visualization.DateFormat({pattern: "EEEE, dd.MM.yyyy, HH:mm"});
+				var timeFormatter = new google.visualization.DateFormat({pattern: "HH:mm"});
+				menu.selectedItem["container"].find("h2").text(data.name);
+				menu.selectedItem["container"].find("span.weathercity").text(data.sys.country);
+				menu.selectedItem["container"].find("span.weathertime").text(dateFormatter.formatValue(new Date(data.dt*1000)));
+				menu.selectedItem["container"].find("div.weathericon td.description").text(data.weather[0].description);
+				menu.selectedItem["container"].find("div.weathericon img").attr("src", "images/weather/"+data.weather[0].icon+".png");
+				menu.selectedItem["container"].find("div.weathericon span.temp.actuell").text(data.main.temp + " °C");
+				menu.selectedItem["container"].find("div.weathericon span.temp.max").text(data.main.temp_max + " °C");
+				menu.selectedItem["container"].find("div.weathericon span.temp.min").text(data.main.temp_min + " °C");
+				menu.selectedItem["container"].find("table td.weathervalue:eq(0)").text(data.main.temp + " °C");
+				menu.selectedItem["container"].find("table td.weathervalue:eq(1)").text(data.main.humidity + "%");
+				menu.selectedItem["container"].find("table td.weathervalue:eq(2)").text(data.clouds.all + "%");
+				menu.selectedItem["container"].find("table td.weathervalue:eq(3)").text(data.wind.speed + " km/h");
+				menu.selectedItem["container"].find("table td.weathervalue:eq(4)").text(data.rain["1h"] + " mm");
+				menu.selectedItem["container"].find("table td.weathervalue:eq(5)").text(data.main.pressure + " mbar");
+				menu.selectedItem["container"].find("table td.weathervalue:eq(6)").text(timeFormatter.formatValue(new Date(data.sys.sunrise*1000)));
+				menu.selectedItem["container"].find("table td.weathervalue:eq(7)").text(timeFormatter.formatValue(new Date(data.sys.sunset*1000)));
+			}
+		});	
+    }
 }
 
 
