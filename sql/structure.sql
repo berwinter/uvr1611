@@ -207,16 +207,31 @@ CREATE TABLE t_hg_data
    `130`    float,
    `131`    float,
    `132`    float,
-   `133`    float,
-   `134`    binary(2),
-   `135`    binary(2),
-   `136`    binary(2),
-   `137`    binary(2),
-   `138`    binary(2),
-   `139`    binary(2),
-   `140`    binary(2),
-   `141`    binary(2),
-   frame    varchar(20) DEFAULT 'frame2'
+   `133`    float,      
+   `134`    float,
+   `135`    float,
+   `136`    float,
+   `137`    float,
+   `138`    float,
+   `139`    float,
+   `140`    float,
+   `141`    float,
+   `142`    float,
+   `143`    float,
+   `144`    float,
+   `145`    float,
+   `146`    float,
+   `147`    float,
+   `148`    float,
+   `149`    binary(2),
+   `150`    binary(2),
+   `151`    binary(2),
+   `152`    binary(2),
+   `153`    binary(2),
+   `154`    binary(2),
+   `155`    binary(2),
+   `156`    binary(2),
+   frame    varchar(20) DEFAULT 'frame1'
 );
 
 
@@ -381,17 +396,32 @@ CREATE TABLE t_max
     `128`       float,
     `129`       float,
     `130`       float,
-    `131`       float,
-    `132`       float,
-    `133`       float,
-    `134`       binary(1),
-    `135`       binary(1),
-    `136`       binary(9),
-    `137`       binary(1),
-    `138`       binary(1),
-    `139`       binary(1),
-    `140`       binary(1),
-    `141`       binary(1)
+   `131`    float,
+   `132`    float,
+   `133`    float,      
+   `134`    float,
+   `135`    float,
+   `136`    float,
+   `137`    float,
+   `138`    float,
+   `139`    float,
+   `140`    float,
+   `141`    float,
+   `142`    float,
+   `143`    float,
+   `144`    float,
+   `145`    float,
+   `146`    float,
+   `147`    float,
+   `148`    float,
+   `149`    binary(2),
+   `150`    binary(2),
+   `151`    binary(2),
+   `152`    binary(2),
+   `153`    binary(2),
+   `154`    binary(2),
+   `155`    binary(2),
+   `156`    binary(2)
 );
 
 
@@ -571,17 +601,32 @@ CREATE TABLE t_min
     `128`       float,
     `129`       float,
     `130`       float,
-    `131`       float,
-    `132`       float,
-    `133`       float,
-    `134`       binary(1),
-    `135`       binary(1),
-    `136`       binary(9),
-    `137`       binary(1),
-    `138`       binary(1),
-    `139`       binary(1),
-    `140`       binary(1),
-    `141`       binary(1)
+   `131`    float,
+   `132`    float,
+   `133`    float,      
+   `134`    float,
+   `135`    float,
+   `136`    float,
+   `137`    float,
+   `138`    float,
+   `139`    float,
+   `140`    float,
+   `141`    float,
+   `142`    float,
+   `143`    float,
+   `144`    float,
+   `145`    float,
+   `146`    float,
+   `147`    float,
+   `148`    float,
+   `149`    binary(2),
+   `150`    binary(2),
+   `151`    binary(2),
+   `152`    binary(2),
+   `153`    binary(2),
+   `154`    binary(2),
+   `155`    binary(2),
+   `156`    binary(2)
 );
 
 
@@ -830,7 +875,22 @@ SELECT ifnull(`u`.`id`, `h`.`id`) AS `id`,
          `h`.`138` AS `138`,
          `h`.`139` AS `139`,
          `h`.`140` AS `140`,
-         `h`.`141` AS `141`
+         `h`.`141` AS `141`,
+		 `h`.`142` AS `142`,
+         `h`.`143` AS `143`,
+         `h`.`144` AS `144`,
+         `h`.`145` AS `145`,
+         `h`.`146` AS `146`,
+         `h`.`147` AS `147`,
+         `h`.`148` AS `148`,
+         `h`.`149` AS `149`,
+         `h`.`150` AS `150`,
+         `h`.`151` AS `151`,
+         `h`.`152` AS `152`,
+         `h`.`153` AS `153`,
+         `h`.`154` AS `154`,
+         `h`.`155` AS `155`,
+         `h`.`156` AS `156`
     FROM (`uvr1611`.`t_data` `u`
           LEFT JOIN `uvr1611`.`t_hg_data` `h` ON ((`u`.`date` = `h`.`date`)))
 ORDER BY `u`.`date` DESC;
@@ -1023,7 +1083,23 @@ Create or replace view v_max as
          max(`v_data`.`138`) AS `138`,
          max(`v_data`.`139`) AS `139`,
          max(`v_data`.`140`) AS `140`,
-         max(`v_data`.`141`) AS `141`
+         max(`v_data`.`141`) AS `141`,
+		 
+		 max(`v_data`.`142`) AS `142`,
+         max(`v_data`.`143`) AS `143`,
+         max(`v_data`.`144`) AS `144`,
+         max(`v_data`.`145`) AS `145`,
+         max(`v_data`.`146`) AS `146`,
+         max(`v_data`.`147`) AS `147`,
+         max(`v_data`.`148`) AS `148`,
+         max(`v_data`.`149`) AS `149`,
+         max(`v_data`.`150`) AS `150`,
+         max(`v_data`.`151`) AS `151`,
+         max(`v_data`.`152`) AS `152`,
+         max(`v_data`.`153`) AS `153`,
+         max(`v_data`.`154`) AS `154`,
+         max(`v_data`.`155`) AS `155`,
+         max(`v_data`.`156`) AS `156`
     FROM `uvr1611`.`v_data`
    WHERE (   (`v_data`.`date` >=
                  cast(
@@ -1201,7 +1277,23 @@ Create or replace view v_min as
          min(`v_data`.`138`) AS `138`,
          min(`v_data`.`139`) AS `139`,
          min(`v_data`.`140`) AS `140`,
-         min(`v_data`.`141`) AS `141`
+         min(`v_data`.`141`) AS `141`,
+		 
+		 min(`v_data`.`142`) AS `142`,
+         min(`v_data`.`143`) AS `143`,
+         min(`v_data`.`144`) AS `144`,
+         min(`v_data`.`145`) AS `145`,
+         min(`v_data`.`146`) AS `146`,
+         min(`v_data`.`147`) AS `147`,
+         min(`v_data`.`148`) AS `148`,
+         min(`v_data`.`149`) AS `149`,
+         min(`v_data`.`150`) AS `150`,
+         min(`v_data`.`151`) AS `151`,
+         min(`v_data`.`152`) AS `152`,
+         min(`v_data`.`153`) AS `153`,
+         min(`v_data`.`154`) AS `154`,
+         min(`v_data`.`155`) AS `155`,
+         min(`v_data`.`156`) AS `156`
     FROM `uvr1611`.`v_data`
    WHERE (   (`v_data`.`date` >=
                  cast(
@@ -1235,13 +1327,12 @@ BEGIN
 REPLACE INTO t_min (date, analog1, analog2, analog3, analog4, analog5, analog6, analog7, analog8,
 analog9, analog10, analog11, analog12, analog13, analog14, analog15, analog16, speed1, speed2, speed3, speed4, power1, power2, frame ,
 t_min.1,
-t_min.2, t_min.3, t_min.4, t_min.5, t_min.6, t_min.7, t_min.8, t_min.9, t_min.10, t_min.11, t_min.12, t_min.13, t_min.14, t_min.15, t_min.16, t_min.17, t_min.18, t_min.19, t_min.20, t_min.21, t_min.22, t_min.23, t_min.24, t_min.25, t_min.26, t_min.27, t_min.28, t_min.29, t_min.30, t_min.31, t_min.32, t_min.33, t_min.34, t_min.35, t_min.36, t_min.37, t_min.38, t_min.39, t_min.40, t_min.41, t_min.42, t_min.43, t_min.44, t_min.45, t_min.46, t_min.47, t_min.48, t_min.49, t_min.50, t_min.51, t_min.52, t_min.53, t_min.54, t_min.55, t_min.56, t_min.57, t_min.58, t_min.59, t_min.60, t_min.61, t_min.62, t_min.63, t_min.64, t_min.65, t_min.66, t_min.67, t_min.68, t_min.69, t_min.70, t_min.71, t_min.72, t_min.73, t_min.74, t_min.75, t_min.76, t_min.77, t_min.78, t_min.79, t_min.80,t_min.81, t_min.82, t_min.83, t_min.84, t_min.85, t_min.86, t_min.87, t_min.88, t_min.89, t_min.90, t_min.91, t_min.92, t_min.93, t_min.94, t_min.95, t_min.96, t_min.97, t_min.98, t_min.99, t_min.100, t_min.101, t_min.102, t_min.103, t_min.104, t_min.105, t_min.106, t_min.107, t_min.108, t_min.109, t_min.110, t_min.111, t_min.112, t_min.113, t_min.114, t_min.115, t_min.116, t_min.117, t_min.118, t_min.119, t_min.120, t_min.121, t_min.122, t_min.123, t_min.124, t_min.125, t_min.126, t_min.127, t_min.128, t_min.129, t_min.130, t_min.131, t_min.132, t_min.133, t_min.134, t_min.135, t_min.136, t_min.137, t_min.138, t_min.139, t_min.140, t_min.141) SELECT * FROM v_min;
+t_min.2, t_min.3, t_min.4, t_min.5, t_min.6, t_min.7, t_min.8, t_min.9, t_min.10, t_min.11, t_min.12, t_min.13, t_min.14, t_min.15, t_min.16, t_min.17, t_min.18, t_min.19, t_min.20, t_min.21, t_min.22, t_min.23, t_min.24, t_min.25, t_min.26, t_min.27, t_min.28, t_min.29, t_min.30, t_min.31, t_min.32, t_min.33, t_min.34, t_min.35, t_min.36, t_min.37, t_min.38, t_min.39, t_min.40, t_min.41, t_min.42, t_min.43, t_min.44, t_min.45, t_min.46, t_min.47, t_min.48, t_min.49, t_min.50, t_min.51, t_min.52, t_min.53, t_min.54, t_min.55, t_min.56, t_min.57, t_min.58, t_min.59, t_min.60, t_min.61, t_min.62, t_min.63, t_min.64, t_min.65, t_min.66, t_min.67, t_min.68, t_min.69, t_min.70, t_min.71, t_min.72, t_min.73, t_min.74, t_min.75, t_min.76, t_min.77, t_min.78, t_min.79, t_min.80,t_min.81, t_min.82, t_min.83, t_min.84, t_min.85, t_min.86, t_min.87, t_min.88, t_min.89, t_min.90, t_min.91, t_min.92, t_min.93, t_min.94, t_min.95, t_min.96, t_min.97, t_min.98, t_min.99, t_min.100, t_min.101, t_min.102, t_min.103, t_min.104, t_min.105, t_min.106, t_min.107, t_min.108, t_min.109, t_min.110, t_min.111, t_min.112, t_min.113, t_min.114, t_min.115, t_min.116, t_min.117, t_min.118, t_min.119, t_min.120, t_min.121, t_min.122, t_min.123, t_min.124, t_min.125, t_min.126, t_min.127, t_min.128, t_min.129, t_min.130, t_min.131, t_min.132, t_min.133, t_min.134, t_min.135, t_min.136, t_min.137, t_min.138, t_min.139, t_min.140, t_min.141, t_min.142,t_min.143, t_min.144, t_min.145, t_min.146, t_min.147, t_min.148, t_min.149, t_min.150, t_min.151, t_min.152, t_min.153, t_min.154,t_min.155, t_min.156) SELECT * FROM v_min;
 REPLACE INTO t_max (date, analog1, analog2, analog3, analog4, analog5, analog6, analog7, analog8,
 analog9, analog10, analog11, analog12, analog13, analog14, analog15, analog16, speed1, speed2, speed3, speed4, power1, power2, frame,
 t_max.1,
-t_max.2, t_max.3, t_max.4, t_max.5, t_max.6, t_max.7, t_max.8, t_max.9, t_max.10, t_max.11, t_max.12, t_max.13, t_max.14, t_max.15, t_max.16, t_max.17, t_max.18, t_max.19, t_max.20, t_max.21, t_max.22, t_max.23, t_max.24, t_max.25, t_max.26, t_max.27, t_max.28, t_max.29, t_max.30, t_max.31, t_max.32, t_max.33, t_max.34, t_max.35, t_max.36, t_max.37, t_max.38, t_max.39, t_max.40, t_max.41, t_max.42, t_max.43, t_max.44, t_max.45, t_max.46, t_max.47, t_max.48, t_max.49, t_max.50, t_max.51, t_max.52, t_max.53, t_max.54, t_max.55, t_max.56, t_max.57, t_max.58, t_max.59, t_max.60, t_max.61, t_max.62, t_max.63, t_max.64, t_max.65, t_max.66, t_max.67, t_max.68, t_max.69, t_max.70, t_max.71, t_max.72, t_max.73, t_max.74, t_max.75, t_max.76, t_max.77, t_max.78, t_max.79, t_max.80,t_max.81, t_max.82, t_max.83, t_max.84, t_max.85, t_max.86, t_max.87, t_max.88, t_max.89, t_max.90, t_max.91, t_max.92, t_max.93, t_max.94, t_max.95, t_max.96, t_max.97, t_max.98, t_max.99, t_max.100, t_max.101, t_max.102, t_max.103, t_max.104, t_max.105, t_max.106, t_max.107, t_max.108, t_max.109, t_max.110, t_max.111, t_max.112, t_max.113, t_max.114, t_max.115, t_max.116, t_max.117, t_max.118, t_max.119, t_max.120, t_max.121, t_max.122, t_max.123, t_max.124, t_max.125, t_max.126, t_max.127, t_max.128, t_max.129, t_max.130, t_max.131, t_max.132, t_max.133, t_max.134, t_max.135, t_max.136, t_max.137, t_max.138, t_max.139, t_max.140, t_max.141) SELECT * FROM v_max;
+t_max.2, t_max.3, t_max.4, t_max.5, t_max.6, t_max.7, t_max.8, t_max.9, t_max.10, t_max.11, t_max.12, t_max.13, t_max.14, t_max.15, t_max.16, t_max.17, t_max.18, t_max.19, t_max.20, t_max.21, t_max.22, t_max.23, t_max.24, t_max.25, t_max.26, t_max.27, t_max.28, t_max.29, t_max.30, t_max.31, t_max.32, t_max.33, t_max.34, t_max.35, t_max.36, t_max.37, t_max.38, t_max.39, t_max.40, t_max.41, t_max.42, t_max.43, t_max.44, t_max.45, t_max.46, t_max.47, t_max.48, t_max.49, t_max.50, t_max.51, t_max.52, t_max.53, t_max.54, t_max.55, t_max.56, t_max.57, t_max.58, t_max.59, t_max.60, t_max.61, t_max.62, t_max.63, t_max.64, t_max.65, t_max.66, t_max.67, t_max.68, t_max.69, t_max.70, t_max.71, t_max.72, t_max.73, t_max.74, t_max.75, t_max.76, t_max.77, t_max.78, t_max.79, t_max.80,t_max.81, t_max.82, t_max.83, t_max.84, t_max.85, t_max.86, t_max.87, t_max.88, t_max.89, t_max.90, t_max.91, t_max.92, t_max.93, t_max.94, t_max.95, t_max.96, t_max.97, t_max.98, t_max.99, t_max.100, t_max.101, t_max.102, t_max.103, t_max.104, t_max.105, t_max.106, t_max.107, t_max.108, t_max.109, t_max.110, t_max.111, t_max.112, t_max.113, t_max.114, t_max.115, t_max.116, t_max.117, t_max.118, t_max.119, t_max.120, t_max.121, t_max.122, t_max.123, t_max.124, t_max.125, t_max.126, t_max.127, t_max.128, t_max.129, t_max.130, t_max.131, t_max.132, t_max.133, t_max.134, t_max.135, t_max.136, t_max.137, t_max.138, t_max.139, t_max.140, t_max.141, t_max.142,t_max.143, t_max.144, t_max.145, t_max.146, t_max.147, t_max.148, t_max.149, t_max.150, t_max.151, t_max.152, t_max.153, t_max.154,t_max.155, t_max.156) SELECT * FROM v_max;
 END;
-
 
 
 ------------------------------------------------------------------
