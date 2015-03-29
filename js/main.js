@@ -233,51 +233,57 @@ var actualValues =
 	display: function(data)
 	{
 		for(var i in actualValues.values) {
-			var value = actualValues.values[i];
-			var text = value.format.replace(/((DIGITAL|MWH|KWH|MISCHER_AUF|MISCHER_ZU|VENTIL|DREHZAHL|ANIMATION)\()?#\.?(#*)\)?/g, function(number,tmp,modifier,fractions) {
-				switch(modifier) {
-					case "MISCHER_AUF":
-						return converter.mixerOn(data[value.frame][value.type]);
-					case "MISCHER_ZU":
-						return converter.mixerOff(data[value.frame][value.type]);
-					case "VENTIL":
-						return converter.valve(data[value.frame][value.type]);
-					case "DIGITAL":
-						return converter.digital(data[value.frame][value.type]);
-					case "MWH":
-						return converter.mwh(data[value.frame][value.type]);
-					case "KWH":
-						return converter.kwh(data[value.frame][value.type]).toFixed(fractions.length);
-					case "DREHZAHL":
-						return converter.speed(data[value.frame][value.type]);
-					case "ANIMATION":
-						for(var i in $(value.path))
-						{
-							if(data[value.frame][value.type] == 1)
-							{
-								$(value.path)[i].beginElement();
-							}
-							else
-							{
-								$(value.path)[i].endElement();	
-							}
-						}
-						return null;
-					default:
-						try {
-							return data[value.frame][value.type].toFixed(fractions.length);
-						}
-						catch (e) {
-							return data[value.frame][value.type];
-						}
-				}
-
-			});
-			
-			if(text != null)
-			{
-				$(value.path).text(text);
+			try {
+     			var value = actualValues.values[i];
+     			var text = value.format.replace(/((DIGITAL|MWH|KWH|MISCHER_AUF|MISCHER_ZU|VENTIL|DREHZAHL|ANIMATION)\()?#\.?(#*)\)?/g, function(number,tmp,modifier,fractions) {
+     				switch(modifier) {
+     					case "MISCHER_AUF":
+     						return converter.mixerOn(data[value.frame][value.type]);
+     					case "MISCHER_ZU":
+     						return converter.mixerOff(data[value.frame][value.type]);
+     					case "VENTIL":
+     						return converter.valve(data[value.frame][value.type]);
+     					case "DIGITAL":
+     						return converter.digital(data[value.frame][value.type]);
+     					case "MWH":
+     						return converter.mwh(data[value.frame][value.type]);
+     					case "KWH":
+     						return converter.kwh(data[value.frame][value.type]).toFixed(fractions.length);
+     					case "DREHZAHL":
+     						return converter.speed(data[value.frame][value.type]);
+     					case "ANIMATION":
+     						for(var i in $(value.path))
+     						{
+     							if(data[value.frame][value.type] == 1)
+     							{
+     								$(value.path)[i].beginElement();
+     							}
+     							else
+     							{
+     								$(value.path)[i].endElement();	
+     							}
+     						}
+     						return null;
+     					default:
+     						try {
+     							return data[value.frame][value.type].toFixed(fractions.length);
+     						}
+     						catch (e) {
+     							return data[value.frame][value.type];
+     						}
+     				}
+     
+     			});
 			}
+			catch(e) {
+				var text = "ERROR";
+			}
+     			
+     		if(text != null)
+     		{
+     			$(value.path).text(text);
+     		}
+			
 		}
 		$("#time").text(data["time"]);
 	}
