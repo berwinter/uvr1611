@@ -430,6 +430,19 @@ class Database
 				$statement->close();
 				$rows["menu"][$i]["columns"] = $columns;
 			}
+			// get chart options
+			$statement = $this->mysqli->prepare("SELECT property, value FROM t_chartoptions WHERE chard_id=?;");
+			$statement->bind_param('i', $rows["menu"][$i]["id"]);
+			$statement->execute();
+			$statement->bind_result($property, $value);
+			$options = array();
+			while($statement->fetch()) {
+				$options[$property] = $value;
+			}
+			$statement->close();
+			if(count($options)) {
+				$rows["menu"][$i]["options"] = $options;		
+			}
 		}
 		
 		// get schema configuration

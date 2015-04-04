@@ -65,8 +65,10 @@ var lineChart = {
 	draw: function()
 	{
 		var table = [];
+		var columns = [0]; 
 		this.data = {};
 		this.data.analog = new google.visualization.DataTable();
+		this.data.analogView = new google.visualization.DataView(this.data.analog);
 		this.data.digital = new google.visualization.DataTable();
 		// add columns
 		this.data.analog.addColumn('datetime', 'Time');
@@ -85,6 +87,7 @@ var lineChart = {
 		
 		for (var i in cols.analog) {
 			this.data.analog.addColumn('number', cols.analog[i].name);
+			columns.push(columns.length);
 			var tableRow = {min:{value:null},max:{value:null},avg:{value:0}};
 			for (var j = 0; j < this.json.length; j++ ) { 
 				var value = this.json[j][cols.analog[i].index];
@@ -106,6 +109,20 @@ var lineChart = {
 			tableRow.avg.value /= this.json.length;
 			table.push(tableRow);
 		}
+
+
+		if (menu.selectedItem.options) {
+			this.options.series = {};
+			if(menu.selectedItem.options["low_threshold"]) {
+				this.options.series[columns.length-1] = {color: '#888', lineDashStyle: [4, 4],visibleInLegend: false, enableInteractivity: false};
+				columns.push({type:'number', calc: function() { return parseFloat(menu.selectedItem.options["low_threshold"]);}});
+			}
+			if(menu.selectedItem.options["high_threshold"]) {
+				this.options.series[columns.length-1] = {color: '#888', lineDashStyle: [4, 4],visibleInLegend: false, enableInteractivity: false};
+				columns.push({type:'number', calc: function() { return parseFloat(menu.selectedItem.options["high_threshold"]);}});
+			}
+		}
+		this.data.analogView.setColumns(columns);
 		var rowMarker = [];
 		for (var i in cols.digital) {
 			this.data.digital.addColumn('number', cols.digital[i].name);
@@ -123,7 +140,7 @@ var lineChart = {
 		if(this.json.analog[0] && this.json.analog[0][1] != null){
 			$("#line_chart").show();
 			// add data
-			this.data.analog.addRows(this.json.analog);	
+			this.data.analog.addRows(this.json.analog);
 			// set unit
 			this.options.vAxis.format = menu.selectedItem["unit"];		
 			this.options.hAxis.format = toolbar.getPeriod() == "day" ? "HH:mm": "dd.MM";
@@ -131,7 +148,7 @@ var lineChart = {
 			this.options.hAxis.viewWindow = {min:this.json.analog[0][0], max:this.json.analog[this.json.analog.length-1][0]};
 			// fill table with information
 			menu.selectedItem.table.fill(table, this.options.vAxis.format);
-			this.chart.draw(this.data.analog, this.options);
+			this.chart.draw(this.data.analogView, this.options);
 		}
 		else {
 			$("#line_chart").hide();
@@ -169,7 +186,7 @@ var lineChart = {
 				lineChart.options.hAxis.format = toolbar.getPeriod() == "day" ? "HH:mm": "dd.MM HH:mm";
 				lineChart.options.hAxis.viewWindow.min = new Date(lineChart.json.analog[row][0].getTime()-offset);
 				lineChart.options.hAxis.viewWindow.max = new Date(lineChart.json.analog[row][0].getTime()+offset);
-				lineChart.chart.draw(lineChart.data.analog, lineChart.options);
+				lineChart.chart.draw(lineChart.data.analogView, lineChart.options);
 			}
 			if(lineChart.json.digital[0] && lineChart.json.digital[0][1] != null){
 				lineChart.digitalOptions.hAxis.viewWindow.min = new Date(lineChart.json.analog[row][0].getTime()-offset);
@@ -195,7 +212,7 @@ var lineChart = {
 				lineChart.options.hAxis.format = toolbar.getPeriod() == "day" ? "HH:mm": "dd.MM";
 				lineChart.options.hAxis.viewWindow.min = lineChart.json.analog[0][0];
 				lineChart.options.hAxis.viewWindow.max = lineChart.json.analog[lineChart.json.analog.length-1][0];
-				lineChart.chart.draw(lineChart.data.analog, lineChart.options);
+				lineChart.chart.draw(lineChart.data.analogView, lineChart.options);
 			}
 			if(lineChart.json.digital[0] && lineChart.json.digital[0][1] != null){
 				lineChart.digitalOptions.hAxis.viewWindow.min = lineChart.json.analog[0][0];

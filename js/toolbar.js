@@ -1,4 +1,5 @@
 var toolbar = {
+	timeInc: 86400000, 
 	date: null,
 	init: function()
 	{
@@ -28,7 +29,7 @@ var toolbar = {
 			},
 			text: false
 		}).click(function (){
-			toolbar.setDate(new Date(toolbar.date.getTime() - 86400000));
+			toolbar.setDate(new Date(toolbar.date.getTime() - toolbar.timeInc));
 		});
 		
 		// back to chart button
@@ -54,7 +55,7 @@ var toolbar = {
 			},
 			text: false
 		}).click(function (){
-			toolbar.setDate(new Date(toolbar.date.getTime() + 86400000));
+			toolbar.setDate(new Date(toolbar.date.getTime() + toolbar.timeInc));
 		});
 		
 		// today button
@@ -72,8 +73,24 @@ var toolbar = {
 		
 		// init buttonsets
 		this.buttonset.buttonset();
-		this.period.buttonset().change(function(){menu.selectedItem.load()});
-		this.grouping.buttonset().change(function(){menu.selectedItem.load()});
+		this.period.buttonset().change(function(){
+			if(toolbar.getPeriod() == "week") {
+				toolbar.timeInc = 7*86400000;
+			}
+			else {
+				toolbar.timeInc = 86400000;
+			}
+			menu.selectedItem.load();
+		});
+		this.grouping.buttonset().change(function(){
+			if(toolbar.getGrouping() == "months") {
+				toolbar.timeInc = 31*86400000;
+			}
+			else {
+				toolbar.timeInc = 86400000;
+			}
+			menu.selectedItem.load();
+		});
 	},
 	setDate: function(newDate)
 	{

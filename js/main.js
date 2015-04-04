@@ -235,7 +235,8 @@ var actualValues =
 		for(var i in actualValues.values) {
 			try {
      			var value = actualValues.values[i];
-     			var text = value.format.replace(/((DIGITAL|MWH|KWH|MISCHER_AUF|MISCHER_ZU|VENTIL|DREHZAHL|ANIMATION)\()?#\.?(#*)\)?/g, function(number,tmp,modifier,fractions) {
+				var type  = "value";
+     			var text = value.format.replace(/((DIGITAL|MWH|KWH|MISCHER_AUF|MISCHER_ZU|VENTIL|DREHZAHL|COLOR|ANIMATION)\()?#\.?(#*)\)?/g, function(number,tmp,modifier,fractions) {
      				switch(modifier) {
      					case "MISCHER_AUF":
      						return converter.mixerOn(data[value.frame][value.type]);
@@ -251,6 +252,9 @@ var actualValues =
      						return converter.kwh(data[value.frame][value.type]).toFixed(fractions.length);
      					case "DREHZAHL":
      						return converter.speed(data[value.frame][value.type]);
+						case "COLOR":
+							type = "color";
+							return converter.color(data[value.frame][value.type]);
      					case "ANIMATION":
      						for(var i in $(value.path))
      						{
@@ -281,7 +285,13 @@ var actualValues =
      			
      		if(text != null)
      		{
-     			$(value.path).text(text);
+				switch(type) {
+					case "color":
+						$(value.path).attr("style","stop-color:"+text);
+						break;
+					default:
+						$(value.path).text(text);
+				}
      		}
 			
 		}
@@ -332,6 +342,34 @@ var converter = {
 		}
 		else {
 			return 'ZU';
+		}
+	},
+	color: function(value)
+	{
+		var highColor = menu.selectedItem.options["high_color"];
+		var lowColor = menu.selectedItem.options["low_color"];
+		var highTemp = parseFloat(menu.selectedItem.options["high_temp"]);
+		var lowTemp = parseFloat(menu.selectedItem.options["low_temp"]);
+		if(value > highTemp) {
+			return highColor;
+		}
+		else if(value < lowTemp) {
+			return lowColor;
+		}
+		else {
+			var lr = parseInt("0x"+lowColor.substring(1,3));
+			var lg = parseInt("0x"+lowColor.substring(3,5));
+			var lb = parseInt("0x"+lowColor.substring(5,7));
+			var hr = parseInt("0x"+highColor.substring(1,3));
+			var hg = parseInt("0x"+highColor.substring(3,5));
+			var hb = parseInt("0x"+highColor.substring(5,7));
+			var cr = parseInt(lr + (hr-lr)*(value-lowTemp)/(highTemp-lowTemp)).toString(16);
+			var cg = parseInt(lg + (hg-lg)*(value-lowTemp)/(highTemp-lowTemp)).toString(16);
+			var cb = parseInt(lb + (hb-lb)*(value-lowTemp)/(highTemp-lowTemp)).toString(16);
+			cr = cr.length == 1 ? "0"+cr: cr;
+			cg = cg.length == 1 ? "0"+cg: cg;
+			cb = cb.length == 1 ? "0"+cb: cb;
+			return "#"+cr+cg+cb;
 		}
 	}
 }
