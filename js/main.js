@@ -236,7 +236,7 @@ var actualValues =
 			try {
      			var value = actualValues.values[i];
 				var type  = "value";
-     			var text = value.format.replace(/((DIGITAL|MWH|KWH|MISCHER_AUF|MISCHER_ZU|VENTIL|DREHZAHL|COLOR|ANIMATION)\()?#\.?(#*)\)?/g, function(number,tmp,modifier,fractions) {
+     			var text = value.format.replace(/((DIGITAL|MWH|KWH|MISCHER_AUF|MISCHER_ZU|VENTIL|DREHZAHL|GRADCOLOR|ANIMATION)\()?#\.?(#*)\)?/g, function(number,tmp,modifier,fractions) {
      				switch(modifier) {
      					case "MISCHER_AUF":
      						return converter.mixerOn(data[value.frame][value.type]);
@@ -252,8 +252,8 @@ var actualValues =
      						return converter.kwh(data[value.frame][value.type]).toFixed(fractions.length);
      					case "DREHZAHL":
      						return converter.speed(data[value.frame][value.type]);
-						case "COLOR":
-							type = "color";
+						case "GRADCOLOR":
+							type = "gradcolor";
 							return converter.color(data[value.frame][value.type]);
      					case "ANIMATION":
      						for(var i in $(value.path))
@@ -286,7 +286,7 @@ var actualValues =
      		if(text != null)
      		{
 				switch(type) {
-					case "color":
+					case "gradcolor":
 						$(value.path).attr("style","stop-color:"+text);
 						break;
 					default:
