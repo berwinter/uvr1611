@@ -21,7 +21,7 @@ Die Features sind:
 Downloads
 ------
 
-* [Stable (v95)](https://github.com/berwinter/uvr1611/archive/v95.zip)
+* [Stable (v96)](https://github.com/berwinter/uvr1611/archive/v96.zip)
 * [Development](https://github.com/berwinter/uvr1611/archive/master.zip)
 
 Vorteile der Anwendung
