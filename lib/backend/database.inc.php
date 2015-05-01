@@ -105,7 +105,7 @@ class Database
 		if(	$result = $this->mysqli->query($sql)) {
 			while($r = $result->fetch_array(MYSQL_ASSOC)) {
 				$rows[$r["frame"]] = $r;
-				$rows["time"] = $r["date"];
+				$rows["time"] = date("h:i:s",strtotime($r["date"]));
 			}
 			$result->close();
 		}

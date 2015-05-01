@@ -146,7 +146,7 @@ var menu = {
 			case "schema":
 				toolbar.hideDateNavigation();
 				toolbar.showSlider();
-				actualValues.fetchData();
+				actualValues.fetchData(actualValues.date);
 				break;
 			case "weather":
 				toolbar.hideDateNavigation();
@@ -201,8 +201,12 @@ var weather =
 				menu.selectedItem["container"].find("table td.weathervalue:eq(1)").text(data.main.humidity + "%");
 				menu.selectedItem["container"].find("table td.weathervalue:eq(2)").text(data.clouds.all + "%");
 				menu.selectedItem["container"].find("table td.weathervalue:eq(3)").text(data.wind.speed + " km/h");
-				if(data.rain["1h"]) {
-					menu.selectedItem["container"].find("table td.weathervalue:eq(4)").text(data.rain["1h"] + " mm");
+				menu.selectedItem["container"].find("table td.weathervalue:eq(4)").text("0 mm");
+				if(data.rain) {
+					for(var value in data.rain) {
+						menu.selectedItem["container"].find("table td.weathervalue:eq(4)").text(data.rain[value] + " mm");
+						break;
+					}
 				}
 				menu.selectedItem["container"].find("table td.weathervalue:eq(5)").text(data.main.pressure + " mbar");
 				menu.selectedItem["container"].find("table td.weathervalue:eq(6)").text(timeFormatter.formatValue(new Date(data.sys.sunrise*1000)));

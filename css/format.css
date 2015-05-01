@@ -182,7 +182,7 @@ table.weatherdetail td.leftalign span.temp {
 .weathericon {
 	position: relative;
 	float: right;
-	width: 175px
+	width: 195px
 }
 
 #pages {
@@ -218,6 +218,14 @@ table.weatherdetail td.leftalign span.temp {
 	text-align:center;
 	font-size: 1.5em;
 }
+
+#slider {
+	position:absolute;
+	margin-top: 10px;
+	left: 20%;
+	width: 60%;
+}
+
 #buttonset {
 	right: 10px;
 	position:absolute;
