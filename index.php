@@ -11,6 +11,17 @@
 		$name = $config->app->name;
 	}
 	catch(Exception $ex) {}
+	$address = "";
+	try {
+		$address = $config->uvr1611->address;
+	}
+	catch(Exception $ex) {}
+	$http_port = "";
+	try {
+		$http_port = $config->uvr1611->http_port;
+	}
+	catch(Exception $ex) {}
+			
 	echo '<?xml version="1.0" encoding="UTF-8"?>';
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -33,6 +44,13 @@
 
   <body>
 	<div id="contact"><?php include("VERSION"); ?> <a href="https://github.com/berwinter/uvr1611" target="_blank">GitHub</a> <a href="mailto:<?php echo $email; ?>">Kontakt</a></div>
+	<div id="login">
+		<form method="post" action="<?php echo "http://".$address.":".$http_port."/main.html"; ?>" target="_blank">
+			<input name="blu" id="bl_login_u" type="radio" value="1" checked="checked"/>
+			<input name="blp" class="text ui-widget-content ui-corner-all" id="bl_login_p" type="password" size="10" maxlength="8"/>
+			<input name="bll" id="bl_login_submit" type="submit" value="Login " />
+		</form>
+	</div>
 		<svg id="logo" xmlns="http://www.w3.org/2000/svg"  width="280" height="60">
 		  <g transform="translate(0,-992.36218)">
 		    <text style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#666666;fill-opacity:1;stroke:none" x="0.49456322" y="1004.2011">
@@ -56,10 +74,12 @@
 	<div id="toolbar">
 		<button id="home">Hauptmenü</button>
 		<button id="backToChart">Zurück</button>
+		<div id="slider"></div>
 		<input id="datepicker"/>
 		<div id="period">
 			<input type="radio" id="week1" name="week" value="day" checked="checked"/><label for="week1">Tag</label>
 			<input type="radio" id="week2" name="week" value="week" /><label for="week2">Woche</label>
+			<input type="radio" id="week3" name="week" value="year" /><label for="week3">Jahr</label>
 		</div>
 		<div id="grouping">
 			<input type="radio" id="month1" name="month" value="days" checked="checked"/><label for="month1">Tage</label>

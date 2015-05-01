@@ -98,6 +98,20 @@ class Database
 		      ." $data->power1, $data->power2, $data->energy1, $data->energy2)";
 	}
 	
+	public function queryLatest($date)
+	{
+		$sql = "SELECT *, min(subtab.diff) as mindiff FROM (SELECT *, ABS(UNIX_TIMESTAMP(date)-$date) as diff FROM t_data WHERE date > CURDATE() ORDER BY diff LIMIT 8) AS subtab GROUP BY subtab.frame;";
+		$rows = array();
+		if(	$result = $this->mysqli->query($sql)) {
+			while($r = $result->fetch_array(MYSQL_ASSOC)) {
+				$rows[$r["frame"]] = $r;
+				$rows["time"] = $r["date"];
+			}
+			$result->close();
+		}
+		return $rows;
+	}
+	
 	/**
 	 * Query the analog chart with given id and date
 	 * @param Date $date

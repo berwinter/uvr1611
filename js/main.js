@@ -145,21 +145,25 @@ var menu = {
 		switch(menu.selectedItem["type"]) {
 			case "schema":
 				toolbar.hideDateNavigation();
+				toolbar.showSlider();
 				actualValues.fetchData();
 				break;
 			case "weather":
 				toolbar.hideDateNavigation();
+				toolbar.hideSlider();
 				menu.selectedItem.load(menu.selectedItem["schema"]);
 				break;
 			case "energy":
 				toolbar.showDateNavigation();
 				toolbar.showGrouping();
+				toolbar.hideSlider();
 				menu.selectedItem.load();
 				menu.selectedItem.table.getTable().appendTo("#pages");
 				break;
 			default:
 				toolbar.showDateNavigation();
 				toolbar.showPeriod();
+				toolbar.hideSlider();
 				menu.selectedItem.load();
 				menu.selectedItem.table.getTable().appendTo("#pages");
 				break;
@@ -190,14 +194,16 @@ var weather =
 				menu.selectedItem["container"].find("span.weathertime").text(dateFormatter.formatValue(new Date(data.dt*1000)));
 				menu.selectedItem["container"].find("div.weathericon td.description").text(data.weather[0].description);
 				menu.selectedItem["container"].find("div.weathericon img").attr("src", "images/weather/"+data.weather[0].icon+".png");
-				menu.selectedItem["container"].find("div.weathericon span.temp.actuell").text(data.main.temp + " °C");
-				menu.selectedItem["container"].find("div.weathericon span.temp.max").text(data.main.temp_max + " °C");
-				menu.selectedItem["container"].find("div.weathericon span.temp.min").text(data.main.temp_min + " °C");
-				menu.selectedItem["container"].find("table td.weathervalue:eq(0)").text(data.main.temp + " °C");
+				menu.selectedItem["container"].find("div.weathericon span.temp.actuell").text(data.main.temp.toFixed(2) + " °C");
+				menu.selectedItem["container"].find("div.weathericon span.temp.max").text(data.main.temp_max.toFixed(2) + " °C");
+				menu.selectedItem["container"].find("div.weathericon span.temp.min").text(data.main.temp_min.toFixed(2) + " °C");
+				menu.selectedItem["container"].find("table td.weathervalue:eq(0)").text(data.main.temp.toFixed(2) + " °C");
 				menu.selectedItem["container"].find("table td.weathervalue:eq(1)").text(data.main.humidity + "%");
 				menu.selectedItem["container"].find("table td.weathervalue:eq(2)").text(data.clouds.all + "%");
 				menu.selectedItem["container"].find("table td.weathervalue:eq(3)").text(data.wind.speed + " km/h");
-				menu.selectedItem["container"].find("table td.weathervalue:eq(4)").text(data.rain["1h"] + " mm");
+				if(data.rain["1h"]) {
+					menu.selectedItem["container"].find("table td.weathervalue:eq(4)").text(data.rain["1h"] + " mm");
+				}
 				menu.selectedItem["container"].find("table td.weathervalue:eq(5)").text(data.main.pressure + " mbar");
 				menu.selectedItem["container"].find("table td.weathervalue:eq(6)").text(timeFormatter.formatValue(new Date(data.sys.sunrise*1000)));
 				menu.selectedItem["container"].find("table td.weathervalue:eq(7)").text(timeFormatter.formatValue(new Date(data.sys.sunset*1000)));
@@ -209,22 +215,24 @@ var weather =
 
 var actualValues = 
 {
+	date: null,
 	init: function()
 	{
 		this.fetchData();
 		setTimeout(this.timer, 30000);
 	},
-	fetchData: function()
+	fetchData: function(date)
 	{
+		actualValues.date = (typeof date !== 'undefined' ? date : null);
 		$.ajax({
-			url: "latest.php",
+			url: "latest.php" + (actualValues.date ? "?date="+actualValues.date : ""),
 			dataType:"json",
 			success: this.display
 		});
 	},
 	timer: function()
 	{
-		if(menu.selectedItem && menu.selectedItem["type"] == "schema")
+		if(menu.selectedItem && menu.selectedItem["type"] == "schema" && !self.date)
 		{
 			actualValues.fetchData();
 		}
@@ -235,7 +243,6 @@ var actualValues =
 		for(var i in actualValues.values) {
 			try {
      			var value = actualValues.values[i];
-				var type  = "value";
      			var text = value.format.replace(/((DIGITAL|MWH|KWH|MISCHER_AUF|MISCHER_ZU|VENTIL|DREHZAHL|GRADCOLOR|ANIMATION)\()?#\.?(#*)\)?/g, function(number,tmp,modifier,fractions) {
      				switch(modifier) {
      					case "MISCHER_AUF":
@@ -253,8 +260,9 @@ var actualValues =
      					case "DREHZAHL":
      						return converter.speed(data[value.frame][value.type]);
 						case "GRADCOLOR":
-							type = "gradcolor";
-							return converter.color(data[value.frame][value.type]);
+							var color = converter.color(data[value.frame][value.type]);
+							$(value.path).attr("style","stop-color:"+color);
+							return null;
      					case "ANIMATION":
      						for(var i in $(value.path))
      						{
@@ -285,13 +293,7 @@ var actualValues =
      			
      		if(text != null)
      		{
-				switch(type) {
-					case "gradcolor":
-						$(value.path).attr("style","stop-color:"+text);
-						break;
-					default:
-						$(value.path).text(text);
-				}
+				$(value.path).text(text);
      		}
 			
 		}

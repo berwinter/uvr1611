@@ -5,18 +5,27 @@ header('Cache-Control: no-cache, must-revalidate');
 header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 header('Content-type: application/json; charset=utf-8');
 
-$data = load_cache("uvr1611_latest", Config::getInstance()->app->latestcache);
 
-if(!$data)
-{
-	$uvr = Uvr1611::getInstance();
-	$data = json_encode($uvr->getLatest());
-	save_cache($data,"uvr1611_latest");
+
+if(isset($_GET["date"]) && $_GET["date"] < time()) {
+	$date = $_GET["date"];
+	// connect to database
+	$database = Database::getInstance();
+	echo preg_replace('/"(-?\d+\.?\d*)"/', '$1', json_encode($database->queryLatest($date)));
 }
+else 
+{
+	$data = load_cache("uvr1611_latest", Config::getInstance()->app->latestcache);
 
-echo $data;
+	if(!$data)
+	{
+		$uvr = Uvr1611::getInstance();
+		$data = json_encode($uvr->getLatest());
+		save_cache($data,"uvr1611_latest");
+	}
 
-
+	echo $data;
+}
 
 function save_cache($data, $key) {
 	$key = md5($key);

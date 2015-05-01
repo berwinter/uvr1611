@@ -105,6 +105,17 @@ div.hover > div.icon, div.active > div.icon {
 	color: #444;
 }
 
+#bl_login_u {
+	display: none;
+}
+
+#login {
+	font-size:10px;
+	position:absolute;
+	right:20px;
+	top:35px;
+}
+
 .schema {
 	text-align: center;
 }

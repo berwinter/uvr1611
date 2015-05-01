@@ -12,6 +12,49 @@ var toolbar = {
 		this.buttonset = $("#buttonset");
 		this.period = $("#period");
 		this.grouping = $("#grouping");
+		this.login = $("#bl_login_submit");
+		this.slider = $("#slider");
+		
+		var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth();
+		var yyyy = today.getFullYear();
+		today = Math.round((new Date(yyyy, mm, dd)).getTime()/60000);
+		var maxDate = Math.round((new Date()).getTime()/60000);
+		var tooltip = $('<div></div>').css({
+		    position: 'absolute',
+		    top: 25,
+		    left: -10
+		}).hide();
+		this.slider.slider({
+			range: "min",
+			min: today,
+			max: maxDate,
+			value: maxDate,
+			step: 1,
+			slide: function(e, ui) {
+				var hours = ''+Math.floor((ui.value-today) / 60);
+				var minutes = ''+(ui.value - today - (hours * 60));
+
+				if(hours.length == 1) hours = '0' + hours;
+				if(minutes.length == 1) minutes = '0' + minutes;
+				tooltip.text(hours+":"+minutes);
+			},
+			change: function(e, ui) {
+				if(ui.value < maxDate) {
+					actualValues.fetchData(ui.value*60);
+				}
+				else {
+					actualValues.fetchData();
+				}
+			}
+		}).find(".ui-slider-handle").append(tooltip).hover(function() {
+			tooltip.show()
+		}, function() {
+			tooltip.hide()
+		});
+		
+		this.login.button();
 		
 		// home button
 		this.home.button({
@@ -127,6 +170,14 @@ var toolbar = {
 	{
 		this.grouping.hide();
 		this.period.show();
+	},
+	showSlider: function()
+	{
+		this.slider.show();
+	},
+	hideSlider: function()
+	{
+		this.slider.hide();
 	},
 	showGrouping: function()
 	{
