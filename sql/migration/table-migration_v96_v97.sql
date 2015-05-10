@@ -1,4 +1,4 @@
-ALTER TABLE `uvr1611-test`.`t_menu` 
+ALTER TABLE `t_menu` 
 ADD COLUMN `view` VARCHAR(50) NULL AFTER `schema`;
 
 CREATE TABLE `t_users` (
