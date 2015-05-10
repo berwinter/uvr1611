@@ -11,7 +11,10 @@ $type = "analog1";
 if(isset($_GET["type"])) {
 	$type = $_GET["type"];
 }
-
-echo preg_replace('/"(-?\d+\.?\d*)"/', '$1', json_encode($database->queryMinmax($date,$frame,$type)));
-
-
+include_once("lib/login/session.inc.php");
+if($database->isProtected($chartId) == false || login_check()) {
+    echo preg_replace('/"(-?\d+\.?\d*)"/', '$1', json_encode($database->queryMinmax($date,$frame,$type)));
+}
+else {
+	echo "{status: \"access denied\"}";
+}

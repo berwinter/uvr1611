@@ -9,6 +9,7 @@ var menu = {
 		    success: function(jsonData){
 		    	actualValues.values = jsonData.values;
 		    	menu.items = jsonData.menu;
+				menu.loggedin = jsonData.loggedin;
 				var $menu = $("<div></div>");
 				var $pages = $("<div><div id=\"chart_container\"><div id=\"step_chart\"></div><div id=\"line_chart\"></div><div id=\"minmax_chart\"></div></div><div id=\"energy_container\"><div id=\"bar_chart\"></div></div></div>");
 				$pages.find("#minmax_chart").hide();
@@ -57,6 +58,9 @@ var menu = {
 					}
 					$item.data(item);
 					$menu.append($item);
+					if(!item.view) {
+						$item.addClass("protected");
+					}
 				}
 
 				$menu.find("div.item").hover(function() {
@@ -84,10 +88,34 @@ var menu = {
 	},
 	display: function()
 	{
-		$("#browser").hide();
-		if(!$("div.item").is(":visible")) {
-			$("div.item").fadeIn('slow');
-		}	
+		$("div.item").hide();
+		if(menu.loggedin) {
+			if(!$("div.item").is(":visible")) {
+				$("div.item").fadeIn('slow');
+			}
+		}
+		else {
+			if(!$("div.item:not(.protected)").is(":visible")) {
+				$("div.item:not(.protected)").fadeIn('slow');
+			}
+		}
+		
+
+	},
+	login: function()
+	{
+		if(menu.selectedItem && menu.selectedItem["type"] == "line") {
+			toolbar.edit.show();
+		}
+		menu.loggedin = true;
+		$("div.item.protected").fadeIn('slow');
+	},
+	logout: function()
+	{
+		menu.loggedin = false;
+		toolbar.edit.hide();
+		$("div.item.protected").fadeOut('slow');
+		$("#indicator").fadeOut();
 	},
 	handle: function()
 	{
@@ -147,11 +175,13 @@ var menu = {
 				toolbar.hideDateNavigation();
 				toolbar.showSlider();
 				actualValues.fetchData(actualValues.date);
+				toolbar.edit.hide();
 				break;
 			case "weather":
 				toolbar.hideDateNavigation();
 				toolbar.hideSlider();
 				menu.selectedItem.load(menu.selectedItem["schema"]);
+				toolbar.edit.hide();
 				break;
 			case "energy":
 				toolbar.showDateNavigation();
@@ -159,6 +189,7 @@ var menu = {
 				toolbar.hideSlider();
 				menu.selectedItem.load();
 				menu.selectedItem.table.getTable().appendTo("#pages");
+				toolbar.edit.hide();
 				break;
 			default:
 				toolbar.showDateNavigation();
@@ -166,6 +197,9 @@ var menu = {
 				toolbar.hideSlider();
 				menu.selectedItem.load();
 				menu.selectedItem.table.getTable().appendTo("#pages");
+				if(menu.loggedin) {
+					toolbar.edit.show();
+				}
 				break;
 		}
 	}
@@ -222,8 +256,7 @@ var actualValues =
 	date: null,
 	init: function()
 	{
-		this.fetchData();
-		setTimeout(this.timer, 30000);
+		setTimeout(actualValues.timer, 30000);
 	},
 	fetchData: function(date)
 	{
@@ -236,7 +269,7 @@ var actualValues =
 	},
 	timer: function()
 	{
-		if(menu.selectedItem && menu.selectedItem["type"] == "schema" && !self.date)
+		if(menu.selectedItem && menu.selectedItem["type"] == "schema" && actualValues.date === null)
 		{
 			actualValues.fetchData();
 		}

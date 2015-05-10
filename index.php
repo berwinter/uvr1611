@@ -45,11 +45,15 @@
   <body>
 	<div id="contact"><?php include("VERSION"); ?> <a href="https://github.com/berwinter/uvr1611" target="_blank">GitHub</a> <a href="mailto:<?php echo $email; ?>">Kontakt</a></div>
 	<div id="login">
-		<form method="post" action="<?php echo "http://".$address.":".$http_port."/main.html"; ?>" target="_blank">
-			<input name="blu" id="bl_login_u" type="radio" value="1" checked="checked"/>
-			<input name="blp" class="text ui-widget-content ui-corner-all" id="bl_login_p" type="password" size="10" maxlength="8"/>
-			<input name="bll" id="bl_login_submit" type="submit" value="Login " />
+		<form id="bl_login_form" method="post" action="<?php echo "http://".$address.":".$http_port."/main.html"; ?>" target="_blank">
+			<input name="blu" type="hidden" value="1" checked="checked"/>
+			<input name="blp" type="hidden" size="10" maxlength="8"/>
+			<input name="bll" type="hidden" value="Login"/>
 		</form>
+		<input name="password" class="text ui-widget-content ui-corner-all" id="login_password" type="password" size="12"/>
+		<button id="bl_login">BL-Net</button>
+		<button id="dl_login">Login</button><br/>
+		<span id="login_message"></span>
 	</div>
 		<svg id="logo" xmlns="http://www.w3.org/2000/svg"  width="280" height="60">
 		  <g transform="translate(0,-992.36218)">
@@ -74,6 +78,7 @@
 	<div id="toolbar">
 		<button id="home">Hauptmenü</button>
 		<button id="backToChart">Zurück</button>
+		<button id="editChart">Ändern</button>
 		<div id="slider"></div>
 		<input id="datepicker"/>
 		<div id="period">
@@ -98,6 +103,20 @@
 	</div>
 	<div id="menu">
 		<div id="indicator"></div>
+	</div>
+	<div id="edit_chart_dialog" title="Diagramm ändern">
+		<table><tr><td>Aktive Linien:
+			<ul id="activeLines" class="editBox">
+				<li class="ui-state-default">Item 1</li>
+				<li class="ui-state-default">Item 2</li>
+			</ul>
+		</td><td>Verfügbare Linien:
+			<ul id="availableLines" class="editBox">
+				<li class="ui-state-default">Item 1</li>
+				<li class="ui-state-default">Item 2</li>
+			<ul>
+		</td></tr>
+		</table>
 	</div>
 	</body>
 </html>

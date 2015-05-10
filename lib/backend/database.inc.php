@@ -105,7 +105,7 @@ class Database
 		if(	$result = $this->mysqli->query($sql)) {
 			while($r = $result->fetch_array(MYSQL_ASSOC)) {
 				$rows[$r["frame"]] = $r;
-				$rows["time"] = date("h:i:s",strtotime($r["date"]));
+				$rows["time"] = date("H:i:s",strtotime($r["date"]));
 			}
 			$result->close();
 		}
@@ -385,10 +385,10 @@ class Database
 	public function getAppConfig()
 	{
 		// get menu items
-		$statement = $this->mysqli->prepare("SELECT id, name, type, t_menu.schema, unit ".
+		$statement = $this->mysqli->prepare("SELECT id, name, type, t_menu.schema, unit, t_menu.view ".
 											"FROM t_menu ORDER BY t_menu.order;");
 		$statement->execute();
-		$statement->bind_result($id, $name, $type, $schema, $unit);
+		$statement->bind_result($id, $name, $type, $schema, $unit, $view);
 		
 		$rows = array("menu" => array(),
 				      "values" => array());
@@ -399,12 +399,14 @@ class Database
 				$rows["menu"][] = array("id" => $id,
 						                "name" => $name,
 										"type" => $type,
+										"view" => ($view == "yes"),
 										"schema" => $schema);
 			}
 			else {
 				$rows["menu"][] = array("id" => $id,
 										"name" => $name,
 										"type" => $type,
+										"view" => ($view == "yes"),
 										"unit" => $unit);
 			}
 		}
@@ -473,5 +475,110 @@ class Database
 		}
 		$statement->close();
 		return $rows;
+	}
+	
+	
+	public function editChart($chartId, $names) {
+		$statement = $this->mysqli->prepare("DELETE FROM t_names_of_charts WHERE chart_id = ?;");
+		$statement->bind_param('i', $chartId);
+		$statement->execute();
+		
+		$statement = $this->mysqli->prepare("INSERT IGNORE INTO t_names_of_charts (chart_id, type, frame, t_names_of_charts.order) VALUES (?,?,?,?)");
+		$statement->bind_param('issi', $id, $type, $frame, $order);
+		
+		foreach($names as $name) {
+			$id = $chartId;
+			$type = $name["type"];
+			$frame = $name["frame"];
+			$order = $name["index"];
+			$statement->execute();
+		}
+		$statement->close();
+	}
+	
+	public function getNames()
+	{
+		$statement = $this->mysqli->prepare("SELECT id, name, type, frame FROM t_names;");
+		$statement->execute();
+		$statement->bind_result($id, $name, $type, $frame);
+		
+		$row = array();
+		while($statement->fetch()) {
+			$rows[] = array("id" => $id,
+							"name" => $name,
+							"frame" => $frame,
+							"type" => $type);
+		}
+		$statement->close();
+		return $rows;
+		
+	}
+	
+	public function getUser($username)
+	{
+	    if ($stmt = $this->mysqli->prepare("SELECT id, username, password, salt 
+					  FROM t_users WHERE username = ? LIMIT 1")) {
+	        $stmt->bind_param('s', $username); 
+	        $stmt->execute();    
+	        $stmt->store_result();
+
+	        // get variables from result.
+	        $stmt->bind_result($user_id, $username, $password, $salt);
+	        $stmt->fetch();
+	        if ($stmt->num_rows == 1) {	
+				return array("user_id" => $user_id,
+							 "username" => $username,
+						 	 "password" => $password,
+						     "salt" => $salt);
+			}
+		}
+		return null;
+	}
+	
+	public function getPassword($user_id)
+	{
+	    if ($stmt = $this->mysqli->prepare("SELECT password 
+					  FROM t_users WHERE id = ? LIMIT 1")) {
+	        $stmt->bind_param('i', $user_id);
+	        $stmt->execute();  
+	        $stmt->store_result();
+
+	        // get variables from result.
+	        $stmt->bind_result($password);
+	        $stmt->fetch();
+	        if ($stmt->num_rows == 1) {	
+				return $password;
+			}
+		}
+		return null;
+	}
+	
+	public function changePassword($user, $password)
+	{
+	    if ($stmt = $this->mysqli->prepare("UPDATE t_users SET password = ?, salt = ? WHERE username = ?;")) {
+			$salt = hash('sha512', uniqid(openssl_random_pseudo_bytes(16), TRUE));
+			$password = hash('sha512', $password . $salt);
+	        $stmt->bind_param('sss', $password, $salt, $user);
+	        $stmt->execute();
+			return true;
+		}
+		return false;
+	}
+	
+	public function isProtected($chart_id)
+	{
+	    if ($stmt = $this->mysqli->prepare("SELECT view FROM t_menu WHERE id = ? LIMIT 1")) {
+	        $stmt->bind_param('i', $chart_id);
+	        $stmt->execute();  
+	        $stmt->store_result();
+
+	        // get variables from result.
+	        $stmt->bind_result($view);
+	        $stmt->fetch();
+	        if ($stmt->num_rows == 1 && $view!="yes") {	
+				return true;
+			}
+		}
+		return false;
 	}
 }

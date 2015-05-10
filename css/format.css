@@ -105,10 +105,6 @@ div.hover > div.icon, div.active > div.icon {
 	color: #444;
 }
 
-#bl_login_u {
-	display: none;
-}
-
 #login {
 	font-size:10px;
 	position:absolute;
@@ -242,6 +238,13 @@ table.weatherdetail td.leftalign span.temp {
 	position:absolute;
 }
 
+#editChart {
+	margin-top:2px;
+	left: 140px;
+	display:block;
+	position:absolute;
+}
+
 #backToChart {
 	margin-top:2px;
 	left: 10px;
@@ -321,4 +324,38 @@ table.chartinfo div.value {
 
 table.chartinfo div.timestamp {
 	font-size: 0.8em;
+}
+
+#edit_chart_dialog {
+	display:none;
+}
+
+#edit_chart_dialog > table {
+	width: 100%;
+	height: 100%;
+	table-layout: fixed;
+	font-size: 0.8em;
+	border-collapse:collapse;
+}
+
+#edit_chart_dialog > table td {
+	padding: 5px;
+}
+#edit_chart_dialog > table > tr {
+	height: 100%;
+}
+
+#availableLines, #activeLines {
+	display: block;
+	list-style-type: none;
+	margin-top: 5px;
+	padding: 5px;
+	border: solid 1px #DDD;
+	height: 100%;
+}
+
+#availableLines li, #activeLines li {
+  margin: 0 2px 2px 2px;
+  padding: 2px;
+  font-size: 1.2em;
 }

@@ -44,6 +44,8 @@ if(isset($_GET["grouping"])) {
 // connect to database
 $database = Database::getInstance();
 
+
+
 // check if required date is today and last update is older than 10 minutes
 // -> so we need to fetch new values
 if($date == date("Y-m-d") && ($database->lastDataset() + Config::getInstance()->app->chartcache) < time()) {
@@ -75,3 +77,4 @@ if($date == date("Y-m-d") && ($database->lastDataset() + Config::getInstance()->
 		echo "{'error':'".$e->getMessage()."'}";
 	}
 }
+
