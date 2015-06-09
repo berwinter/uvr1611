@@ -1,0 +1,77 @@
+<!--
+
+  How to use Google JS Visualization Api offline, step by step
+
+  this approach might work with other libraries loaded with google.load, after all it's still JavaScript!!!
+
+-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>
+      Google Visualization API Sample
+    </title>
+    <link src="gviz_tooltip.css" rel="stylesheet">
+    <!-- step 1: Run with these uncommented, with the inspector open on Network panel -->
+    <!--
+      <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+      <script type="text/javascript">
+        google.load('visualization', '1', {packages: ['corechart']});
+      </script>
+    -->
+
+
+    <script type="text/javascript" src="jsapi.js"></script>
+    <!--
+      step 2: Look for a request similar to: http://www.google.com/uds/api/visualization/1.0/9eca2fc9082ae71a955f5f6b22ee82f9/format+en,default,corechart.I.js
+
+      copy the contents (body) of the request to uds_api_contents.js (referenced below)
+    -->
+    <script type="text/javascript" src="uds_api_contents.js"></script>
+
+    <!-- there's no step 3, youknow! -->
+
+    <script type="text/javascript">
+      function drawVisualization() {
+        var data = google.visualization.arrayToDataTable([
+          ['x', 'Antani', 'Sblinda', 'Prematurata'],
+          ['A',   1,       1,           0.5],
+          ['B',   2,       0.5,         1],
+          ['C',   4,       1,           0.5],
+          ['D',   8,       0.5,         1],
+          ['E',   7,       1,           0.5],
+          ['F',   7,       0.5,         1],
+          ['G',   8,       1,           0.5],
+          ['H',   4,       0.5,         1],
+          ['I',   2,       1,           0.5],
+          ['J',   3.5,     0.5,         1],
+          ['K',   3,       1,           0.5],
+          ['L',   3.5,     0.5,         1],
+          ['M',   1,       1,           0.5],
+          ['N',   1,       0.5,         1]
+        ]);
+
+        new google.visualization.LineChart(document.getElementById('visualization')).
+        draw(
+          data,
+          {
+            curveType: "function",
+            width: 500, height: 400,
+            vAxis: { maxValue: 10 }
+          }
+        );
+      }
+
+
+      google.setOnLoadCallback(drawVisualization);
+    </script>
+  </head>
+  <body style="font-family: Arial;border: 0 none;">
+    <div id="visualization" style="width: 500px; height: 400px;"></div>
+  </body>
+</html>
+​
+<!-- original non-offline code taken from: http://code.google.com/apis/ajax/playground/#line_chart
+ -->
