@@ -14,6 +14,7 @@ Die Features sind:
 * Ertragsdiagramme (Monats und Tagesgruppierung)
 * Zoomen in den Diagrammen
 * Übersichtstabellen zu den Diagrammen
+* Öffentliche und private Diagramme
 * Monatliche Trendwerte
 * Aktuelles Wetter
 
@@ -83,6 +84,13 @@ Damit die Daten automatisch vom BL-Net geholt werden, kann ein cron-Job mit folg
 	
 Die Einrichtung des vorstehenden Beispiels  ist abhängig vom Betriebssystem des Servers und muss u.U. entsprechend angepasst werden. 
 Sollten die Daten auch weiterhin über Winsol ausgelesen werden ist zu beachten, dass bei der Löschung des Datenspeichers (aktiviert über Winsol und/oder Cron-Job) ggf. Datenverluste auftreten können. Hier muss ausprobiert werden, welche Einstellungen am besten geeignet sind.
+
+
+Login und Freigabe
+------
+
+Standardmäßig sind die Diagramme nur für angemeldete Benutzer sichtbar. Das Standard-Passwort ist `1234` und sollte unbedingt nach dem Setup durch Aufrufen des Scripts `changePassword.php` geändert werden. Die Berechtigungen für einzelne Charts können in der Tabelle `t_menu` angepasst werden. Dazu muss für das jeweilige Diagramm das Feld `view` auf `yes` gesetzt werden. Als angemeldeter Benutzer hat man auch die Möglichkeit die Diagramme direkt zu bearbeiten und Linien hinzuzufügen. 
+
 
 Anpassen der Anwendung
 ------

@@ -334,10 +334,11 @@ var dialog = {
 		$("#activeLines > li").each(function(i) {
 			analog.push({index: i+1, name: $(this).data("name"), type: $(this).data("type"), frame: $(this).data("frame")});
 		});
+		var digital = menu.selectedItem.columns.digital;
 		$.ajax({
 		    type: "POST",
 		    url: "editChart.php",
-			data: {chartid: menu.selectedItem.id, names: analog},
+			data: {chartid: menu.selectedItem.id, names: analog.concat(digital)},
 	        dataType:"json",
 			success: function(data) {
 				menu.selectedItem.columns.analog = analog;
