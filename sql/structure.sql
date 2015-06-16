@@ -77,7 +77,7 @@ CREATE TABLE `t_menu` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL,
   `unit` varchar(10) DEFAULT NULL,
-  `type` varchar(20) DEFAULT NOT NULL,
+  `type` varchar(20) NOT NULL,
   `order` tinyint(4) DEFAULT NULL,
   `schema` varchar(200) DEFAULT NULL,
   `view` varchar(50) DEFAULT NULL,
