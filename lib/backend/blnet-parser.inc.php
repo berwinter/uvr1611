@@ -7,7 +7,7 @@
  * @copyright  Copyright (c) Bertram Winter bertram.winter@gmail.com
  * @license    GPLv3 License
  */
-class Parser
+class BlnetParser
 {
 	/**
 	 * Parser constant
