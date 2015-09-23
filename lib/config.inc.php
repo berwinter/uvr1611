@@ -62,7 +62,7 @@ class Config
 	 */
     public function __get($name)
     {
-        throw new Exception('call to undefined property: '.$name);
+        return "";
     }
 }
     

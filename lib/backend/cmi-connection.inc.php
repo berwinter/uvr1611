@@ -1,16 +1,15 @@
 <?php
 /**
- * Uvr1611 Connection (Singleton)
+ * CMI Connection
  *
- * Provides access to the bootloader for stored datasets and actuell values
+ * Provides access to the CMI for stored datasets and latest values
  *
  * @copyright  Copyright (c) Bertram Winter bertram.winter@gmail.com
  * @license    GPLv3 License
  */
-//include_once("lib/config.inc.php");
-//include_once("lib/backend/cmi-parser.inc.php");
-//include_once("lib/backend/database.inc.php");
-include_once("cmi-parser.inc.php");
+include_once("lib/config.inc.php");
+include_once("lib/backend/cmi-parser.inc.php");
+include_once("lib/backend/database.inc.php");
 
 
 class CmiConnection
@@ -24,13 +23,15 @@ class CmiConnection
 	private $count = 0;
 	private $days = array();
 
-	private function __construct()
+	public function __construct()
 	{
-		//$this->config = Config::getInstance()->uvr1611;
+		$this->config = Config::getInstance()->uvr1611;
 	}
 
 	public function getLatest()
 	{
+		$database = Database::getInstance();
+		return $database->queryLatest(time());
 	}
 	
 	public function endRead()
@@ -46,16 +47,18 @@ class CmiConnection
 	
 	public function fetchData()
 	{
+		$this->getCount();
 		foreach($this->days as $day) {
-			$data = $this->getData($day);
+			$this->getData($day);
+			$data = $this->data;
 			$pos = strpos($data, self::NEWLINE, 0)+2;
-			$temp = unpack("v2count", substr($data, $pos+2, 4));
+			$temp = unpack("v2count", substr($data, $pos, 4));
 			$count = $temp["count1"] + $temp["count2"];
-			$start = $pos+10+self::DATASET_SIZE*$count;
-			$size = $parser->getSize();
-			$end = strlen($data);
-			while($start<$end) {
-				yield $parser->parse(substr($data, $end, -$size));
+			$start = $pos+8+self::DATASET_SIZE*$count;
+			$size = $this->parser->getSize();
+			$end = strlen($data)-1*$size;
+			while($start<=$end) {
+				yield $this->parser->parse(substr($data, $end, $size));
 				$end -= $size;
 			}
 		}
@@ -66,9 +69,9 @@ class CmiConnection
 		if($this->count == 0) {
 			$this->getData("/LOG/infoh.log");
 			$header = $this->readInfoHeader();
-			$this->parser = new Parser();
+			$this->parser = new CmiParser();
 			foreach($this->getDatasets($header["count"]) as $dataset) {
-				$parser->addDataset($dataset);
+				$this->parser->addDataset($dataset);
 			}
 			$years = explode(self::NEWLINE, trim(substr($this->data, $this->pos)));
 			foreach($years as $year) {
@@ -78,7 +81,7 @@ class CmiConnection
 				foreach ($days as $day) {
 					$temp = explode(" ", $day);
 					$this->days[] = $temp[0];
-					$this->count += int(intval($temp[0])/$parser->getSize());
+					$this->count += intval($temp[0])/$this->parser->getSize();
 				}
 			}
 			rsort($this->days);		
@@ -97,18 +100,22 @@ class CmiConnection
 		$this->pos = strpos($this->data, self::NEWLINE, $this->pos)+2;
 		$this->pos = strpos($this->data, self::NEWLINE, $this->pos)+2;
 		$this->pos = strpos($this->data, self::NEWLINE, $this->pos)+2;
-		$data = unpack("v2count", substr($this->data, $this->pos+2, 4));
+		$data = unpack("v2count", substr($this->data, $this->pos, 4));
 		$this->pos += 4;
 		$header = array();
 		$header["count"] = $data["count1"] + $data["count2"];
 		return $header;
 	}
 	
-	
-	private function getData($url)
-	{
-		$file = fopen(".$url", "r") or die("Unable to open file!");
-		$this->data = fread($file, filesize(".$url"));
-		fclose($file);
+	function getData($url) {
+		$process = curl_init();
+		curl_setopt($process, CURLOPT_URL, "http://$this->config->address:$this->config->port$url");
+		curl_setopt($process, CURLOPT_USERPWD,  "winsol:data");
+		curl_setopt($process, CURLOPT_TIMEOUT, 30); //timeout after 30 seconds
+		curl_setopt($process, CURLOPT_RETURNTRANSFER,1);
+		curl_setopt($process, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+		$this->data = curl_exec($process);
+		$this->pos = 0;
+		curl_close($process);
 	}
 }

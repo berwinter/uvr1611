@@ -5,7 +5,7 @@
  * @copyright  Copyright (c) Bertram Winter bertram.winter@gmail.com
  * @license    GPLv3 License
  */
-include_once("lib/backend/uvr1611-connection.inc.php");
+include_once("lib/backend/uvr1611.inc.php");
 include_once("lib/backend/database.inc.php");
 date_default_timezone_set("Europe/Berlin");
 
@@ -52,13 +52,11 @@ if($date == date("Y-m-d") && ($database->lastDataset() + Config::getInstance()->
 	try {
 		$uvr = Uvr1611::getInstance();
 		$data = Array();
-		$count = $uvr->getCount();
 		$lastDatabaseValue = $database->lastDataset();
-		for($i=0; $i < $count; $i++) {
+		foreach($uvr->fetchData() as $value) {
 			// fetch a set of dataframes and insert them into the database
-			$value = $uvr->fetchData();
 			if($value !== false) {
-		    	if(strtotime($value["frame1"]->date) < $lastDatabaseValue) {
+		    	if(strtotime($value["frame1"]["date"]) < $lastDatabaseValue) {
 		    		break;
 		    	}
 		    	$data[] = $value;

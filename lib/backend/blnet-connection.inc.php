@@ -1,8 +1,8 @@
 <?php
 /**
- * Uvr1611 Connection (Singleton)
+ * BL-net Connection
  *
- * Provides access to the bootloader for stored datasets and actuell values
+ * Provides access to the bootloader for stored datasets and latest values
  *
  * @copyright  Copyright (c) Bertram Winter bertram.winter@gmail.com
  * @license    GPLv3 License
@@ -49,7 +49,7 @@ class BlnetConnection
 	/**
 	 * Constructor
 	 */
-	private function __construct()
+	public function __construct()
 	{
 		$this->config = Config::getInstance()->uvr1611;
 		$this->checkMode();
@@ -128,7 +128,8 @@ class BlnetConnection
 	 */
 	public function fetchData()
 	{
-		if($this->count > 0) {
+		$this->getCount();
+		while($this->count > 0) {
 			$this->connect();
 			create_pid();
 			
@@ -150,10 +151,12 @@ class BlnetConnection
 					$this->address = $this->addressEnd;
 				$this->count--;
 				close_pid();
-				return $this->splitDatasets($data);
+				yield $this->splitDatasets($data);
 			}
-			close_pid();
-			throw new Exception("Could not get data!");
+			else {
+				close_pid();
+				throw new Exception("Could not get data!");
+			}
 		}
 	}
 	
@@ -337,15 +340,15 @@ class BlnetConnection
 		switch($this->mode) {
 			case self::CAN_MODE:
 				for($i=0;$i<$this->canFrames;$i++) {
-					$frames["frame".($i+1)] = new BlnetParser(substr($data, 3+self::DATASET_SIZE*$i, self::DATASET_SIZE));
+					$frames["frame".($i+1)] = (array)(new BlnetParser(substr($data, 3+self::DATASET_SIZE*$i, self::DATASET_SIZE)));
 				}
 				break;
 			case self::DL_MODE:
-				$frames["frame1"] = new BlnetParser(substr($data, 0, self::DATASET_SIZE));
+				$frames["frame1"] = (array)(new BlnetParser(substr($data, 0, self::DATASET_SIZE)));
 				break;
 			case self::DL2_MODE:
-				$frames["frame1"] = new BlnetParser(substr($data, 0, self::DATASET_SIZE));
-				$frames["frame2"] = new BlnetParser(substr($data, 3+self::DATASET_SIZE, self::DATASET_SIZE));
+				$frames["frame1"] = (array)(new BlnetParser(substr($data, 0, self::DATASET_SIZE)));
+				$frames["frame2"] = (array)(new BlnetParser(substr($data, 3+self::DATASET_SIZE, self::DATASET_SIZE)));
 				break;
 		}
 
@@ -422,7 +425,7 @@ function create_pid()
 	$path = '/tmp/uvr1611-logger.pid';
 	if(file_exists($path)) {
 		// if PID is older than an hour remove it
-		if(time() > (filemtime($path) + 3600)) {
+		if(time() > (filemtime($path) + 300)) {
 			$pid = file_get_contents($path);
 			exec("kill $pid");
 		}
@@ -439,5 +442,8 @@ function create_pid()
  */
 function close_pid()
 {
-	unlink('/tmp/uvr1611-logger.pid');
+	$path = '/tmp/uvr1611-logger.pid';
+	if(file_exists($path)) {
+		unlink($path);
+	}
 }
