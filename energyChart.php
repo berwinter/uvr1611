@@ -1,8 +1,16 @@
 <?php
-include_once 'lib/commonChart.inc.php';include_once("lib/login/session.inc.php");
-if($database->isProtected($chartId) == false || login_check()) {
-    echo preg_replace('/"(-?\d+\.?\d*)"/', '$1', json_encode($database->queryEnergy($date,$chartId,$grouping)));
+include_once 'lib/commonChart.inc.php';
+include_once("lib/login/session.inc.php");
+include_once("lib/error.inc.php");
+
+try {
+	if($database->isProtected($chartId) == false || login_check()) {
+	    echo preg_replace('/"(-?\d+\.?\d*)"/', '$1', json_encode($database->queryEnergy($date,$chartId,$grouping)));
+	}
+	else {
+		echo "{status: \"access denied\"}";
+	}
 }
-else {
-	echo "{status: \"access denied\"}";
+catch(Exception $e) {
+	sendAjaxError($e);
 }

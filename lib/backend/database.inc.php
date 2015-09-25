@@ -36,10 +36,13 @@ class Database
 	private function __construct()
 	{
 		$this->config = Config::getInstance();
-		$this->mysqli = new mysqli($this->config->mysql->server,
+		$this->mysqli = @new mysqli($this->config->mysql->server,
 								   $this->config->mysql->user,
 								   $this->config->mysql->password,
 								   $this->config->mysql->database);
+		if($this->mysqli->connect_errno) {
+			throw new Exception("Could not connect to database. Please check settings in config.ini.");
+		}
 		$this->mysqli->set_charset("utf8");
 	}
 	

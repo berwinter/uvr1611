@@ -65,4 +65,3 @@ class Config
         return "";
     }
 }
-    

@@ -118,5 +118,13 @@
 		</td></tr>
 		</table>
 	</div>
+	<div id="error" class="ui-widget">
+		<div class="ui-state-error ui-corner-all" style="padding: 0.3em;">
+			<span id="errorClose" class="ui-icon ui-icon-close" style="float: right; margin-left:0.3em;"></span>
+			<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right:0.3em;"></span>
+				<span id="errorMessage"><strong>Error</strong></span>
+			</p>
+		</div>
+	</div>
 	</body>
 </html>

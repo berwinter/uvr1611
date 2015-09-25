@@ -359,3 +359,11 @@ table.chartinfo div.timestamp {
   padding: 2px;
   font-size: 1.2em;
 }
+
+#error {
+	position: fixed;
+	bottom: 5px;
+	left: 10px;
+	right: 10px;
+	display: none;
+}

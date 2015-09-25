@@ -94,7 +94,7 @@ class BlnetConnection
 		if(strlen($latest)>0) {
 			return $this->splitLatest($latest);
 		}
-		throw new Exception("Could not get latest data!");
+		throw new Exception("Could not get latest data.");
 	}
 	
 	/**
@@ -153,7 +153,7 @@ class BlnetConnection
 				return $this->splitDatasets($data);
 			}
 			close_pid();
-			throw new Exception("Could not get data!");
+			throw new Exception("Could not get data.");
 		}
 	}
 	
@@ -252,7 +252,7 @@ class BlnetConnection
 			case self::DL2_MODE:
 				return;
 		}
-		throw new Exception('BL-Net mode is not supported!');
+		throw new Exception('BL-Net mode is not supported.');
 	}
 	
 	/**
@@ -323,7 +323,7 @@ class BlnetConnection
 		}
 
 		$this->disconnect();
-		throw new Exception('Error while querying command!\nCommand: '.bin2hex($cmd));
+		throw new Exception('Error while querying command.\nCommand: '.bin2hex($cmd));
 	}
 	
 	/**
@@ -427,7 +427,7 @@ function create_pid()
 			exec("kill $pid");
 		}
 		else {
-			throw new Exception("Another process is accessing the bl-net!");
+			throw new Exception("Another process is accessing the bl-net.");
 		}
 
 	}

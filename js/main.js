@@ -416,7 +416,24 @@ var converter = {
 google.load('visualization', '1', {'packages':['corechart']});
 menu.init();
 
+$(document).ajaxError(function(event, request, settings) {
+	try {
+		var response = $.parseJSON(request.responseText);
+		var message = response.message;
+	}
+	catch(e) {
+		var message = "Unknown error.";
+	}
+	$(document).ready(function() {
+		$("#errorMessage").html("<strong>Error</strong> "+message);
+		$("#error").slideDown();
+	});
+});
+
 $(document).ready(function() {
+	$("#errorClose").click(function (){
+		$("#error").slideUp();
+	});
 	actualValues.init();
 	toolbar.init();
 	

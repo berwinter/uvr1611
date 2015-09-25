@@ -6,15 +6,21 @@
  * @license    GPLv3 License
  */
 include_once("lib/login/session.inc.php");
+include_once("lib/error.inc.php");
 
-header('Cache-Control: no-cache, must-revalidate');
-header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-header('Content-type: application/json; charset=utf-8');
-
-if(isset($_POST["user"], $_POST["password"]) && login($_POST["user"], $_POST["password"])) {
-	echo "{\"status\": \"successful\"}";
+try {
+	header('Cache-Control: no-cache, must-revalidate');
+	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+	header('Content-type: application/json; charset=utf-8');
+	
+	if(isset($_POST["user"], $_POST["password"]) && login($_POST["user"], $_POST["password"])) {
+		echo "{\"status\": \"successful\"}";
+	}
+	else
+	{
+		echo "{\"status\": \"password incorrect\"}";
+	}
 }
-else
-{
-	echo "{\"status\": \"password incorrect\"}";
+catch(Exception $e) {
+	sendAjaxError($e);
 }
