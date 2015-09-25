@@ -128,8 +128,7 @@ class BlnetConnection
 	 */
 	public function fetchData()
 	{
-		$this->getCount();
-		while($this->count > 0) {
+		if($this->count > 0) {
 			$this->connect();
 			create_pid();
 			
@@ -151,12 +150,10 @@ class BlnetConnection
 					$this->address = $this->addressEnd;
 				$this->count--;
 				close_pid();
-				yield $this->splitDatasets($data);
+				return $this->splitDatasets($data);
 			}
-			else {
-				close_pid();
-				throw new Exception("Could not get data!");
-			}
+			close_pid();
+			throw new Exception("Could not get data!");
 		}
 	}
 	

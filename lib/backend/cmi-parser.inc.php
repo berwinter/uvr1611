@@ -87,33 +87,30 @@ class CmiDataset
 class CmiParser
 {	
 	private $datasets = array();
+	private $format = "Cdays/Cmonths/Cyears/Cseconds/Cminutes/Chours/C2none/";
+	private $size = 14;
 	
 	public function addDataset($string) {
-		$this->datasets[] = new CmiDataset($string);
+		$dataset = new CmiDataset($string);
+		$this->format .= $dataset->getFormat()."/";
+		$this->size += $dataset->getSize();
+		$this->datasets[] = $dataset;
 	}
 	
 	public function getFormatString()
 	{
-		$format = "Cdays/Cmonths/Cyears/Cseconds/Cminutes/Chours/C2none/";
-		foreach($this->datasets as $dataset) {
-			$format .= $dataset->getFormat()."/"; 
-		}
-		return $format;
+		return $this->format;
 	}
 	
 	public function getSize()
 	{
-		$size = 0;
-		foreach($this->datasets as $dataset) {
-			$size += $dataset->getSize(); 
-		}
-		return $size+14;
+		return $this->size;
 	}
 	
-	public function parse($data)
+	public function parse($string)
 	{
 		$result = array();
-		$data = unpack($this->getFormatString(), $data);	
+		$data = unpack($this->getFormatString(), $string);	
 		foreach($this->datasets as $dataset) {
 			$frame = $dataset->getFrame();
 			$name = $dataset->getName();
@@ -135,11 +132,6 @@ class CmiParser
 				$result[$key]["energy2"] = $result[$key]["kWh2"]+$result[$key]["MWh2"]*1000;
 				unset($result[$key]["kWh2"]);
 				unset($result[$key]["MWh2"]);
-			}
-			foreach(array("analog1", "analog2","analog3","analog4","analog5","analog6","analog7","analog8","analog9", "analog10", "analog11", "analog12", "analog13", "analog14", "analog15", "analog16", "digital1", "digital2","digital3","digital4","digital5","digital6","digital7","digital8","digital9", "digital10", "digital11", "digital12", "digital13", "digital14", "digital15", "digital16","speed1","speed2","speed3","speed4","power1","power2","energy1","energy2") as $k) {
-				if(!array_key_exists($k, $result[$key])) {
-					$result[$key][$k] = NULL;
-				}
 			}
 		}
 		return $result;

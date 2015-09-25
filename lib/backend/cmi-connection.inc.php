@@ -22,6 +22,10 @@ class CmiConnection
 	private $parser;
 	private $count = 0;
 	private $days = array();
+	private $day = 0;
+	private $start = 0;
+	private $end = 0;
+	private $size = 0;
 
 	public function __construct()
 	{
@@ -47,21 +51,23 @@ class CmiConnection
 	
 	public function fetchData()
 	{
-		$this->getCount();
-		foreach($this->days as $day) {
-			$this->getData($day);
-			$data = $this->data;
-			$pos = strpos($data, self::NEWLINE, 0)+2;
-			$temp = unpack("v2count", substr($data, $pos, 4));
-			$count = $temp["count1"] + $temp["count2"];
-			$start = $pos+8+self::DATASET_SIZE*$count;
-			$size = $this->parser->getSize();
-			$end = strlen($data)-1*$size;
-			while($start<=$end) {
-				yield $this->parser->parse(substr($data, $end, $size));
-				$end -= $size;
+		if($this->start>=$this->end) {
+			// get next day
+			$day = $this->days[$this->day];
+			if($day == null) {
+				return false;
 			}
+			$this->getData($day);
+			$this->day++;
+			$this->pos = strpos($this->data, self::NEWLINE, 0)+2;
+			$temp = unpack("v2count", substr($this->data, $this->pos, 4));
+			$count = $temp["count1"] + $temp["count2"];
+			$this->start = $this->pos+8+self::DATASET_SIZE*$count;
+			$this->size = $this->parser->getSize();
+			$this->end = strlen($this->data);
 		}
+		$this->end -= $this->size;
+		return $this->parser->parse(substr($this->data, $this->end, $this->size));
 	}
 	
 	public function getCount()
@@ -80,20 +86,25 @@ class CmiConnection
 				$days = explode(self::NEWLINE, trim(substr($this->data, $this->pos+self::DATASET_SIZE*$header["count"])));
 				foreach ($days as $day) {
 					$temp = explode(" ", $day);
+					18+self::DATASET_SIZE*$header["count"];
 					$this->days[] = $temp[0];
-					$this->count += intval($temp[0])/$this->parser->getSize();
+					$count = (intval($temp[1])-(18+self::DATASET_SIZE*$header["count"]))/$this->parser->getSize();
+					$this->count += $count;
 				}
 			}
+			$this->day = 0;
 			rsort($this->days);		
 		}
 		return $this->count;		
 	}
 	
 	private function getDatasets($count) {
+		$datasets = array();
 		for($i=0;$i<$count;$i++) {
-			yield substr($this->data, $this->pos, self::DATASET_SIZE);
+			$datasets[] = substr($this->data, $this->pos, self::DATASET_SIZE);
 			$this->pos += self::DATASET_SIZE;
 		}
+		return $datasets;
 	}
 	
 	private function readInfoHeader() {
@@ -109,7 +120,9 @@ class CmiConnection
 	
 	function getData($url) {
 		$process = curl_init();
-		curl_setopt($process, CURLOPT_URL, "http://$this->config->address:$this->config->port$url");
+		$ip = $this->config->address;
+		$port = $this->config->port;
+		curl_setopt($process, CURLOPT_URL, "http://$ip:$port$url");
 		curl_setopt($process, CURLOPT_USERPWD,  "winsol:data");
 		curl_setopt($process, CURLOPT_TIMEOUT, 30); //timeout after 30 seconds
 		curl_setopt($process, CURLOPT_RETURNTRANSFER,1);
