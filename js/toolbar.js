@@ -18,6 +18,8 @@ var toolbar = {
 		this.slider = $("#slider");
 		this.edit = $("#editChart");
 		this.editDialog = $("#edit_chart_dialog");
+		this.editTab = $("#edit_chart_tab");
+		
 		
 		var today = new Date();
 		var dd = today.getDate();
@@ -75,15 +77,24 @@ var toolbar = {
 			minWidth: 500,
 			minHeight: 400,
 			width: 500,
-			height: 400,
+			height: 600,
+			dialogClass: "dialogBox",
 	        buttons: {
 	          "Speichern": dialog.save
 	        },
-			open: dialog.open
+			open: function() {
+				dialog.open(menu.selectedItem);
+			}
 		});
 		
-		$( "#activeLines, #availableLines" ).sortable({
-		      connectWith: ".editBox"
+		this.editTab.tabs();
+		
+		$("#edit_analog ul.activeLines, #edit_analog ul.availableLines").sortable({
+		      connectWith: "#edit_analog ul.editBox"
+		}).disableSelection();
+		
+		$("#edit_digital ul.activeLines, #edit_digital ul.availableLines").sortable({
+		      connectWith: "#edit_digital ul.editBox"
 		}).disableSelection();
 		  
 		this.edit.button({
@@ -287,13 +298,21 @@ var toolbar = {
 
 var dialog = {
 	names: null,
-	open: function() {
-		$("#availableLines, #activeLines").empty();
-		$activeLines = $("#activeLines");
-		for(var i in menu.selectedItem.columns.analog) {
-			var item = menu.selectedItem.columns.analog[i];
+	item: null,
+	open: function(chart) {
+		dialog.item = chart;
+		$("#edit_chart_dialog ul.editBox").empty();
+		var $activeAnalogLines = $("#edit_analog ul.activeLines");
+		for(var i in dialog.item.columns.analog) {
+			var item = dialog.item.columns.analog[i];
 			var $item = $("<li class=\"ui-state-default\">"+item.name+"</li>").data(item);
-			$activeLines.append($item);
+			$activeAnalogLines.append($item);
+		}
+		var $activeDigitalLines = $("#edit_digital ul.activeLines");
+		for(var i in dialog.item.columns.digital) {
+			var item = dialog.item.columns.digital[i];
+			var $item = $("<li class=\"ui-state-default\">"+item.name+"</li>").data(item);
+			$activeDigitalLines.append($item);
 		}
 		
 		if(dialog.names != null) {
@@ -311,39 +330,62 @@ var dialog = {
 		}
 	},
 	showAvaliable: function() {
-		$availableLines = $("#availableLines");
+		var $availableAnalogLines = $("#edit_analog ul.availableLines");
 		for(var i in dialog.names) {
 			var item = dialog.names[i];
-			if(item.type.indexOf("digital") == -1 && item.type.indexOf("energy") == -1 && !dialog.find(item.frame, item.type)) {
-				var $item = $("<li class=\"ui-state-default\">"+item.name+"</li>").data(item);
-				$availableLines.append($item);
+			if(item.type.indexOf("analog") == 0 || item.type.indexOf("speed") == 0 || item.type.indexOf("power") == 0) {
+				if(dialog.filter(item.frame, item.type)) {
+					var $item = $("<li class=\"ui-state-default\">"+item.name+"</li>").data(item);
+					$availableAnalogLines.append($item);
+				}
+			}
+		}
+		var $availableDigitalLines = $("#edit_digital ul.availableLines");
+		for(var i in dialog.names) {
+			var item = dialog.names[i];
+			if(item.type.indexOf("digital") == 0) {
+				if(dialog.filter(item.frame, item.type)) {
+					var $item = $("<li class=\"ui-state-default\">"+item.name+"</li>").data(item);
+					$availableDigitalLines.append($item);
+				}
 			}
 		}
 	},
-	find: function(frame, type) {
-		for(var i in menu.selectedItem.columns.analog) {
-			var item = menu.selectedItem.columns.analog[i];
+	filter: function(frame, type) {
+		for(var i in dialog.item.columns.analog) {
+			var item = dialog.item.columns.analog[i];
 			if(item.frame == frame && item.type == type) {
-				return true;
+				return false;
 			}
 		}
-		return false;
+		return true;
 	},
 	save: function() {
 		var analog = [];
-		$("#activeLines > li").each(function(i) {
-			analog.push({index: i+1, name: $(this).data("name"), type: $(this).data("type"), frame: $(this).data("frame")});
+		var lines = [];
+		$("#edit_analog ul.activeLines > li").each(function(i) {
+			var line = {index: i+1, name: $(this).data("name"), type: $(this).data("type"), frame: $(this).data("frame")};
+			analog.push(line);
+			lines.push(line);
 		});
-		var digital = menu.selectedItem.columns.digital;
+		var digital = [];
+		$("#edit_digital ul.activeLines > li").each(function(i) {
+			var line = {index: i+1+analog.length, name: $(this).data("name"), type: $(this).data("type"), frame: $(this).data("frame")};
+			digital.push(line);
+			lines.push(line);
+		});
+
 		$.ajax({
 		    type: "POST",
 		    url: "editChart.php",
-			data: {chartid: menu.selectedItem.id, names: analog.concat(digital)},
+			data: {chartid: dialog.item.id, names: lines},
 	        dataType:"json",
 			success: function(data) {
-				menu.selectedItem.columns.analog = analog;
-				menu.selectedItem["table"] = new Table(menu.selectedItem);
+				dialog.item.columns.analog = analog;
+				dialog.item.columns.digital = digital;
+				dialog.item["table"] = new Table(dialog.item);
 				menu.showContent();
+				toolbar.editDialog.dialog("close");
 			}
 		});
 	}

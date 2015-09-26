@@ -133,7 +133,13 @@ class CmiParser
 				unset($result[$key]["kWh2"]);
 				unset($result[$key]["MWh2"]);
 			}
+			foreach(array("analog1", "analog2","analog3","analog4","analog5","analog6","analog7","analog8","analog9", "analog10", "analog11", "analog12", "analog13", "analog14", "analog15", "analog16", "digital1", "digital2","digital3","digital4","digital5","digital6","digital7","digital8","digital9", "digital10", "digital11", "digital12", "digital13", "digital14", "digital15", "digital16","speed1","speed2","speed3","speed4","power1","power2","energy1","energy2") as $k) {
+				if(!array_key_exists($k, $result[$key])) {
+					$result[$key][$k] = "NULL";
+				}
+			}
 		}
+
 		return $result;
 	}
 }

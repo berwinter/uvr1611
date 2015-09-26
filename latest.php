@@ -22,8 +22,10 @@ try {
 		if(!$data)
 		{
 			$uvr = Uvr1611::getInstance();
-			$data = json_encode($uvr->getLatest());
-			save_cache($data,"uvr1611_latest");
+			$latest = $uvr->getLatest();
+			$latest["info"]["cached"] = false;
+			$data = json_encode($latest);
+			save_cache($latest,"uvr1611_latest");
 		}
 	
 		echo $data;
@@ -34,14 +36,17 @@ catch(Exception $e) {
 }
 
 function save_cache($data, $key) {
+	$temp = sys_get_temp_dir();
 	$key = md5($key);
-	$data = serialize($data);
-	file_put_contents('/tmp/'.$key, $data);
+	$data["info"]["cached"] = true;
+	$data = serialize(json_encode($data));
+	file_put_contents("$temp/$key", $data);
 }
 
 function load_cache($key, $expire) {
+	$temp = sys_get_temp_dir();
 	$key = md5($key);
-	$path = '/tmp/'.$key;
+	$path = "$temp/$key";
 	if(file_exists($path))
 	{
 		if(time() < (filemtime($path) + $expire)) {

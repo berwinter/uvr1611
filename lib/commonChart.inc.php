@@ -51,23 +51,29 @@ $database = Database::getInstance();
 if($date == date("Y-m-d") && ($database->lastDataset() + Config::getInstance()->app->chartcache) < time()) {
 	$uvr = Uvr1611::getInstance();
 	$data = Array();
-	$count = $uvr->getCount();
 	$lastDatabaseValue = $database->lastDataset();
-	for($i=0; $i < $count; $i++) {
-		// fetch a set of dataframes and insert them into the database
-		$value = $uvr->fetchData();
-		if($value !== false) {
-	    	if(strtotime($value["frame1"]["date"]) < $lastDatabaseValue) {
-	    		break;
-	    	}
-	    	$data[] = $value;
-	    	if(count($data) == 64) {
-			    $database->insertData($data);
-			    $data = Array();
+	try {
+		$count = $uvr->startRead();
+		for($i=0; $i < $count; $i++) {
+			// fetch a set of dataframes and insert them into the database
+			$value = $uvr->fetchData();
+			if($value !== false) {
+		    	if(strtotime($value["frame1"]["date"]) < $lastDatabaseValue) {
+		    		break;
+		    	}
+		    	$data[] = $value;
+		    	if(count($data) == 64) {
+				    $database->insertData($data);
+				    $data = Array();
+			    }
 		    }
-	    }
+		}
+		$uvr->endRead();
 	}
-	$uvr->endRead();
+	catch(Exception $e) {
+		$uvr->endRead(false);
+		throw $e;
+	}
 	// insert all data into database
 	$database->insertData($data);
 	$database->updateTables();

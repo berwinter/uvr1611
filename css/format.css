@@ -11,7 +11,7 @@ body {
 	right:0;
 	bottom:0;
 	top:100%;
-	position:fixed;
+	position:absolute;
 	background-color: #FFF;
 	display:none;
 }
@@ -92,14 +92,16 @@ div.hover > div.icon, div.active > div.icon {
 	margin-top:-210px;
 	width:400px;
 	height:80px;
+	z-index: 90;
 	position: absolute;
 }
 
 #contact {
 	color: #444;
-	position:absolute;
+	position:fixed;
 	right:20px;
 	top:10px;
+	z-index: 90;
 }
 #contact > a{
 	color: #444;
@@ -107,9 +109,10 @@ div.hover > div.icon, div.active > div.icon {
 
 #login {
 	font-size:10px;
-	position:absolute;
+	position:fixed;
 	right:20px;
 	top:35px;
+	z-index: 90;
 }
 
 .schema {
@@ -200,7 +203,7 @@ table.weatherdetail td.leftalign span.temp {
 	border-bottom: 1px solid #DDD;
 	background-color: #EEE;
 	height: 35px;
-	position:absolute;
+	position:fixed;
 	width:100%;
 }
 
@@ -326,26 +329,40 @@ table.chartinfo div.timestamp {
 	font-size: 0.8em;
 }
 
+div.dialogBox {
+	font-size: 0.9em;
+}
+
 #edit_chart_dialog {
 	display:none;
 }
 
-#edit_chart_dialog > table {
+#edit_chart_tab table {
 	width: 100%;
 	height: 100%;
 	table-layout: fixed;
-	font-size: 0.8em;
 	border-collapse:collapse;
 }
 
-#edit_chart_dialog > table td {
+#edit_chart_tab  table > thead > tr {
+	height: 20px;
+}
+
+#edit_chart_tab table th {
+	padding: 5px;
+	text-align: left;
+	font-weight: normal;
+}
+
+#edit_chart_tab table td {
 	padding: 5px;
 }
-#edit_chart_dialog > table > tr {
+
+#edit_chart_tab table > tbody > tr {
 	height: 100%;
 }
 
-#availableLines, #activeLines {
+ul.availableLines, ul.activeLines {
 	display: block;
 	list-style-type: none;
 	margin-top: 5px;
@@ -354,10 +371,9 @@ table.chartinfo div.timestamp {
 	height: 100%;
 }
 
-#availableLines li, #activeLines li {
+ul.availableLines > li, ul.activeLines > li {
   margin: 0 2px 2px 2px;
   padding: 2px;
-  font-size: 1.2em;
 }
 
 #error {

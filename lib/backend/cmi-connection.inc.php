@@ -8,6 +8,7 @@
  * @license    GPLv3 License
  */
 include_once("lib/config.inc.php");
+include_once("lib/backend/uvr1611.inc.php");
 include_once("lib/backend/cmi-parser.inc.php");
 include_once("lib/backend/database.inc.php");
 
@@ -34,14 +35,30 @@ class CmiConnection
 
 	public function getLatest()
 	{
+		create_pid();
+		$this->getCount();
 		$database = Database::getInstance();
-		return $database->queryLatest(time());
+		$frames = $this->fetchData();
+		foreach($frames as $key => $frame) {
+			$current_energy = $database->getCurrentEnergy($key);
+			$frames[$key]["current_energy1"] = $current_energy[0];
+			$frames[$key]["current_energy2"] = $current_energy[1];
+		}
+		close_pid();
+		return $frames;
 	}
 	
-	public function endRead()
+	public function startRead()
 	{
+		create_pid();
+		return $this->getCount();
+	}
+	
+	public function endRead($success = true)
+	{
+		close_pid();
 		// reset data if configured
-		if($this->config->reset) {
+		if($success && $this->config->reset) {
 			$this->getData("/LOG/clear.log");
 		}
 		$this->count = 0;

@@ -1,26 +1,10 @@
 <?php 
 	include_once("lib/config.inc.php");
 	$config = Config::getInstance();
-	$email = "";
-	try {
-		$email = $config->app->email;
-	}
-	catch(Exception $ex) {}
-	$name = "";
-	try {
-		$name = $config->app->name;
-	}
-	catch(Exception $ex) {}
-	$address = "";
-	try {
-		$address = $config->uvr1611->address;
-	}
-	catch(Exception $ex) {}
-	$http_port = "";
-	try {
-		$http_port = $config->uvr1611->http_port;
-	}
-	catch(Exception $ex) {}
+	$email = $config->app->email;
+	$name = $config->app->name;
+	$address = $config->uvr1611->address;
+	$http_port = $config->uvr1611->http_port;
 			
 	echo '<?xml version="1.0" encoding="UTF-8"?>';
 ?>
@@ -45,13 +29,26 @@
   <body>
 	<div id="contact"><?php include("VERSION"); ?> <a href="https://github.com/berwinter/uvr1611" target="_blank">GitHub</a> <a href="mailto:<?php echo $email; ?>">Kontakt</a></div>
 	<div id="login">
+
+		<?php
+		if($config->uvr1611->blnet_login) {
+		?>
 		<form id="bl_login_form" method="post" action="<?php echo "http://".$address.":".$http_port."/main.html"; ?>" target="_blank">
 			<input name="blu" type="hidden" value="1" checked="checked"/>
 			<input name="blp" type="hidden" size="10" maxlength="8"/>
 			<input name="bll" type="hidden" value="Login"/>
 		</form>
+		<?php
+		}
+		?>
 		<input name="password" class="text ui-widget-content ui-corner-all" id="login_password" type="password" size="12"/>
+		<?php
+		if($config->uvr1611->blnet_login) {
+		?>
 		<button id="bl_login">BL-Net</button>
+		<?php
+		}
+		?>
 		<button id="dl_login">Login</button><br/>
 		<span id="login_message"></span>
 	</div>
@@ -105,18 +102,52 @@
 		<div id="indicator"></div>
 	</div>
 	<div id="edit_chart_dialog" title="Diagramm ändern">
-		<table><tr><td>Aktive Linien:
-			<ul id="activeLines" class="editBox">
-				<li class="ui-state-default">Item 1</li>
-				<li class="ui-state-default">Item 2</li>
+		<div id="edit_chart_tab">
+		  <ul>
+		    <li><a href="#edit_analog">Analog</a></li>
+		    <li><a href="#edit_digital">Digital</a></li>
+		  </ul>
+		  <div id="edit_analog">
+		  <table>
+			<thead>
+			<tr>
+				<th>Aktive Linien:</th>
+				<th>Verfügbare Linien:</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+			<td>
+			<ul class="activeLines editBox">
 			</ul>
-		</td><td>Verfügbare Linien:
-			<ul id="availableLines" class="editBox">
-				<li class="ui-state-default">Item 1</li>
-				<li class="ui-state-default">Item 2</li>
+			</td><td>
+			<ul class="availableLines editBox">
+			<ul>
+		  </td></tr>
+		  </tbody>
+		  </table>
+		  </div>
+		  <div id="edit_digital">
+		  <table>
+			<thead>
+			<tr>
+				<th>Aktive Linien:</th>
+				<th>Verfügbare Linien:</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+			<td>
+			<ul class="activeLines editBox">
+			</ul>
+			</td><td>
+			<ul class="availableLines editBox">
 			<ul>
 		</td></tr>
+		</tbody>
 		</table>
+		  </div>
+		</div>
 	</div>
 	<div id="error" class="ui-widget">
 		<div class="ui-state-error ui-corner-all" style="padding: 0.3em;">

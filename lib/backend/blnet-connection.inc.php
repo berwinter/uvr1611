@@ -8,6 +8,7 @@
  * @license    GPLv3 License
  */
 include_once("lib/config.inc.php");
+include_once("lib/backend/uvr1611.inc.php");
 include_once("lib/backend/blnet-parser.inc.php");
 include_once("lib/backend/database.inc.php");
 
@@ -27,7 +28,7 @@ class BlnetConnection
 	const END_READ = "\xAD";
 	const RESET_DATA = "\xAF";
 	const WAIT_TIME = 0xBA;
-	const MAX_RETRYS = 4;
+	const MAX_RETRYS = 10;
 	const DATASET_SIZE = 61;
 	const LATEST_SIZE = 56;
 	
@@ -36,6 +37,7 @@ class BlnetConnection
 	 * Privates
 	 */
 	private $config;
+	private $debug;
 	private $sock = null;
 	private $count=-1;
 	private $address=0;
@@ -51,7 +53,9 @@ class BlnetConnection
 	 */
 	public function __construct()
 	{
-		$this->config = Config::getInstance()->uvr1611;
+		$config = Config::getInstance();
+		$this->config = $config->uvr1611;
+		$this->debug = $config->app->debug;
 		$this->checkMode();
 	}
 
@@ -65,7 +69,8 @@ class BlnetConnection
 		$this->connect();
 		$this->getCount();
 		create_pid();
-		$latest = "";
+		$frames = array();
+		$info = array();
 		// for all can frames
 		for($j=1; $j<=$this->canFrames; $j++) {
 			// build command
@@ -77,39 +82,56 @@ class BlnetConnection
 				if($this->checksum($data)) {
 					$binary = unpack("C*",$data);
 					if($binary[1] == self::WAIT_TIME) {
+						$info["sleep"]["frame$j"][] = $binary[2];
 						$this->disconnect();
 						// wait some seconds for data
 						sleep($binary[2]);
 						$this->connect();
 					}
 					else {	
-						$latest .= $data;
+						$info["got"]["frame$j"] = $i;
+						$frames = array_merge($frames, $this->splitLatest($data, "frame$j"));
 						break;
 					}
+				}
+				if($i==self::MAX_RETRYS-1) {
+					$frames["frame$k"] = "timeout";
 				}
 			}
 		}
 		close_pid();
 		$this->disconnect();
-		if(strlen($latest)>0) {
-			return $this->splitLatest($latest);
+		if(count($frames)>0) {
+			$frames["time"] = date("H:i:s");
+			if($this->debug) {
+				$frames["info"] = $info;
+			}
+			return $frames;
 		}
 		throw new Exception("Could not get latest data.");
 	}
 	
 	/**
+	 * Start read on the bootloader
+	 */
+	public function startRead()
+	{
+		create_pid();
+		return $this->getCount();
+	}
+	
+	/**
 	 * End read and reset memory on the bootloader
 	 */
-	public function endRead()
+	public function endRead($success = true)
 	{
 		$this->connect();
-		create_pid();
 		// send end read command
 		if($this->query(self::END_READ, 1) != self::END_READ) {
 			throw new Exception("End read command failed.");
 		}
 		// reset data if configured
-		if($this->config->reset) {
+		if($success && $this->config->reset) {
 			if($this->query(self::RESET_DATA, 1) != self::RESET_DATA) {
 				throw new Exception("Could not reset memory.");
 			}
@@ -130,7 +152,6 @@ class BlnetConnection
 	{
 		if($this->count > 0) {
 			$this->connect();
-			create_pid();
 			
 			// build address for bootloader
 			$address1 = $this->address & 0xFF;
@@ -149,10 +170,8 @@ class BlnetConnection
 				if($this->address < 0)
 					$this->address = $this->addressEnd;
 				$this->count--;
-				close_pid();
 				return $this->splitDatasets($data);
 			}
-			close_pid();
 			throw new Exception("Could not get data.");
 		}
 	}
@@ -165,7 +184,6 @@ class BlnetConnection
 	{
 		if($this->count == -1) {
 			$this->connect();
-			create_pid();
 			$data = $this->query(self::GET_HEADER, 21);
 			
 			if($this->checksum($data)) {
@@ -231,7 +249,6 @@ class BlnetConnection
 					$this->address = $endaddress;
 				}
 			}
-			close_pid();
 		}
 		return $this->count;
 	}
@@ -354,7 +371,9 @@ class BlnetConnection
 			$start = 3;
 		}
 		if(substr($data, $start, self::DATASET_SIZE-6) == str_repeat("\x00",self::DATASET_SIZE-6)) {
-			$this->logDataset($data, $frames);
+			if($this->debug) {
+				$this->logDataset($data, $frames);
+			}
 			return false;
 		}
 		else {
@@ -369,7 +388,8 @@ class BlnetConnection
 		$text .= "Count: ".$this->count."\n";
 		$text .= "Data: ".bin2hex($data)."\n";
 		$text .= "Frame: ".print_r($frames,true)."\n\n";
-		file_put_contents("/tmp/uvr1611-logger.log", $text, FILE_APPEND);
+		$temp = sys_get_temp_dir();
+		file_put_contents("$temp/uvr1611-logger.log", $text, FILE_APPEND);
 	}
 	
 	/**
@@ -377,19 +397,17 @@ class BlnetConnection
 	 * @param string $data
 	 * @return Parser
 	 */
-	private function splitLatest($data)
+	private function splitLatest($data, $frame)
 	{
 		// connect to database
 		$database = Database::getInstance();
 		$frames = array();
 		switch($this->mode) {
 			case self::CAN_MODE:
-				for($i=0;$i<$this->canFrames;$i++) {
-					$frames["frame".($i+1)] = (array)(new BlnetParser(substr($data, 1+(1+self::LATEST_SIZE)*$i, self::LATEST_SIZE)));
-					$current_energy = $database->getCurrentEnergy("frame".($i+1));
-					$frames["frame".($i+1)]["current_energy1"] = $current_energy[0];
-					$frames["frame".($i+1)]["current_energy2"] = $current_energy[1];
-				}
+				$frames[$frame] = (array)(new BlnetParser(substr($data, 1, self::LATEST_SIZE)));
+				$current_energy = $database->getCurrentEnergy($frame);
+				$frames[$frame]["current_energy1"] = $current_energy[0];
+				$frames[$frame]["current_energy2"] = $current_energy[1];
 				break;
 			case self::DL_MODE:
 				$frames["frame1"] = (array)(new BlnetParser(substr($data, 1, self::LATEST_SIZE)));
@@ -408,39 +426,6 @@ class BlnetConnection
 				$frames["frame2"]["current_energy2"] = $current_energy[1];
 				break;
 		}
-		$frames["time"] = date("H:i:s");
 		return $frames;
-	}
-}
-
-/**
- * Create a PID file
- * @throws Exception
- */
-function create_pid()
-{
-	$path = '/tmp/uvr1611-logger.pid';
-	if(file_exists($path)) {
-		// if PID is older than an hour remove it
-		if(time() > (filemtime($path) + 300)) {
-			$pid = file_get_contents($path);
-			exec("kill $pid");
-		}
-		else {
-			throw new Exception("Another process is accessing the bl-net.");
-		}
-
-	}
-	file_put_contents($path, getmypid());
-}
-
-/**
- * Remove the PID file
- */
-function close_pid()
-{
-	$path = '/tmp/uvr1611-logger.pid';
-	if(file_exists($path)) {
-		unlink($path);
 	}
 }

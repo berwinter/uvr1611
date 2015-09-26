@@ -121,7 +121,7 @@ var menu = {
 	{
 		var id = location.hash.substr(1);
 		if(id == "home" || menu.items[id]==null){
-			$("#logo").animate({'top':'50%','left':'50%'});
+			$("#logo").animate({'top':'50%','left':'50%'}).css({'position': 'absolute'});
 			$("#menu").fadeIn();
 			$("body").animate({'background-color':'#EEE'});
 			$("#content").animate({'top':'100%'},function(){
@@ -148,7 +148,7 @@ var menu = {
 					indicator.animate({'top':top});
 				}
 				indicator.animate({'left':left}, function() {
-					$("#logo").animate({'top':230,'left':230});
+					$("#logo").animate({'top':230,'left':230}).css({'position': 'fixed'});
 					$("#menu").fadeOut();
 					$("body").animate({'background-color':'#FFF'});
 					$("#content").show().animate({'top':90}, function() {
@@ -278,8 +278,8 @@ var actualValues =
 	display: function(data)
 	{
 		for(var i in actualValues.values) {
+ 			var value = actualValues.values[i];
 			try {
-     			var value = actualValues.values[i];
      			var text = value.format.replace(/((DIGITAL|MWH|KWH|MISCHER_AUF|MISCHER_ZU|VENTIL|DREHZAHL|GRADCOLOR|ANIMATION)\()?#\.?(#*)\)?/g, function(number,tmp,modifier,fractions) {
      				switch(modifier) {
      					case "MISCHER_AUF":
@@ -325,10 +325,18 @@ var actualValues =
      			});
 			}
 			catch(e) {
-				var text = "ERROR";
+				if(e instanceof TypeError) {
+					var text = null;
+				}
+				else {
+					var text = "ERROR";
+					var message = "Could not format "+data[value.frame][value.type]+" of "+value.frame+"."+value.type+" using "+value.format+".";
+					$("#errorMessage").html("<strong>Error</strong> "+message);
+					$("#error").slideDown();					
+				}
 			}
      			
-     		if(text != null)
+     		if(text !== null && text !== "null" && text.indexOf("undefined") == -1)
      		{
 				$(value.path).text(text);
      		}

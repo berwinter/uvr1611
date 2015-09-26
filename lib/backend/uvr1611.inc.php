@@ -32,3 +32,37 @@ class Uvr1611
 		return self::$instance;
 	}
 }
+
+/**
+ * Create a PID file
+ * @throws Exception
+ */
+function create_pid()
+{
+	$temp = sys_get_temp_dir();
+	$path = "$temp/uvr1611-logger.pid";
+	if(file_exists($path)) {
+		// if PID is older than an hour remove it
+		if(time() > (filemtime($path) + 300)) {
+			$pid = file_get_contents($path);
+			exec("kill $pid");
+		}
+		else {
+			throw new Exception("Another process is accessing the bl-net.");
+		}
+
+	}
+	file_put_contents($path, getmypid());
+}
+
+/**
+ * Remove the PID file
+ */
+function close_pid()
+{
+	$temp = sys_get_temp_dir();
+	$path = "$temp/uvr1611-logger.pid";
+	if(file_exists($path)) {
+		unlink($path);
+	}
+}

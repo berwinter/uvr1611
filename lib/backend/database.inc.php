@@ -62,9 +62,8 @@ class Database
 		
 		$values = Array();
 		foreach ($data as $dataset) {
-			while ($frame = current($dataset)) {
-				$values[] = $this->getValuesFormDataset($frame, key($dataset));
-				next($dataset);
+			foreach($dataset as $key => $frame) {
+				$values[] = $this->getValuesFormDataset($frame, $key);
 			}
 		}
 		
@@ -109,6 +108,9 @@ class Database
 			while($r = $result->fetch_array(MYSQL_ASSOC)) {
 				$rows[$r["frame"]] = $r;
 				$rows["time"] = date("H:i:s",strtotime($r["date"]));
+				$current_energy = $database->getCurrentEnergy($r["frame"]);
+				$rows[$r["frame"]]["current_energy1"] = $current_energy[0];
+				$rows[$r["frame"]]["current_energy2"] = $current_energy[1];
 			}
 			$result->close();
 		}
