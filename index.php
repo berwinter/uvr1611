@@ -1,4 +1,10 @@
 <?php 
+	if(file_exists("install.php")) {
+		header("HTTP/1.1 307 Temporary Redirect");
+		header("Location: install.php");
+		exit();
+	}
+
 	include_once("lib/config.inc.php");
 	$config = Config::getInstance();
 	$email = $config->app->email;

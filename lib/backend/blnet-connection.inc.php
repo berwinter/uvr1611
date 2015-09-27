@@ -11,7 +11,7 @@ include_once("lib/config.inc.php");
 include_once("lib/backend/uvr1611.inc.php");
 include_once("lib/backend/blnet-parser.inc.php");
 include_once("lib/backend/database.inc.php");
-
+error_reporting(0);
 
 class BlnetConnection
 {

@@ -1,8 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `uvr1611`;
-USE `uvr1611`;
+/*
+	Create tables
+*/
 
-DROP TABLE IF EXISTS `t_chartoptions`;
-CREATE TABLE `t_chartoptions` (
+CREATE TABLE IF NOT EXISTS `t_chartoptions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `chard_id` int(11) NOT NULL,
   `property` varchar(120) NOT NULL,
@@ -10,9 +10,7 @@ CREATE TABLE `t_chartoptions` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-
-DROP TABLE IF EXISTS `t_users`;
-CREATE TABLE `t_users` (
+CREATE TABLE IF NOT EXISTS `t_users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
   `password` varchar(128) NOT NULL,
@@ -20,10 +18,8 @@ CREATE TABLE `t_users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username_UNIQUE` (`username`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-INSERT INTO `t_users` (`id`,`username`,`password`,`salt`) VALUES (0,'admin','40e2776165475d893e923da0fc9039569bad50e7f88e0ff07e11ad8bffd51019c7c0ab2709395c3599f4bebd6a6bd927e9c9470a638e1eef8e8cb971061d7412','80125411a211653c6b76a9c5b9b12b6406a4a53ab61543d31abf626cda4a58ba5c8d2411a5011ad2b61de2cecd07e02b6ec9ad7a2513299d977e34b5c3f76df0');
 
-DROP TABLE IF EXISTS `t_data`;
-CREATE TABLE `t_data` (
+CREATE TABLE IF NOT EXISTS `t_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` datetime NOT NULL,
   `frame` enum('frame1','frame2','frame3','frame4','frame5','frame6','frame7','frame8') NOT NULL,
@@ -71,9 +67,7 @@ CREATE TABLE `t_data` (
   UNIQUE KEY `UNIQUE` (`date`,`frame`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
-
-DROP TABLE IF EXISTS `t_menu`;
-CREATE TABLE `t_menu` (
+CREATE TABLE IF NOT EXISTS `t_menu` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL,
   `unit` varchar(10) DEFAULT NULL,
@@ -84,8 +78,7 @@ CREATE TABLE `t_menu` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `t_schema`;
-CREATE TABLE `t_schema` (
+CREATE TABLE IF NOT EXISTS `t_schema` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `path` varchar(200) NOT NULL,
   `frame` enum('frame1','frame2','frame3','frame4','frame5','frame6','frame7','frame8') NOT NULL,
@@ -95,8 +88,7 @@ CREATE TABLE `t_schema` (
   KEY `index` (`frame`,`type`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `t_names`;
-CREATE TABLE `t_names` (
+CREATE TABLE IF NOT EXISTS `t_names` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `frame` enum('frame1','frame2','frame3','frame4','frame5','frame6','frame7','frame8') NOT NULL,
   `type` enum('analog1','analog2','analog3','analog4','analog5','analog6','analog7','analog8','analog9','analog10','analog11','analog12','analog13','analog14','analog15','analog16','digital1','digital2','digital3','digital4','digital5','digital6','digital7','digital8','digital9','digital10','digital11','digital12','digital13','digital14','digital15','digital16','speed1','speed2','speed3','speed4','energy1','energy2','power1','power2') NOT NULL,
@@ -106,8 +98,7 @@ CREATE TABLE `t_names` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `t_names_of_charts`;
-CREATE TABLE `t_names_of_charts` (
+CREATE TABLE IF NOT EXISTS `t_names_of_charts` (
   `chart_id` int(11) NOT NULL,
   `type` enum('analog1','analog2','analog3','analog4','analog5','analog6','analog7','analog8','analog9','analog10','analog11','analog12','analog13','analog14','analog15','analog16','digital1','digital2','digital3','digital4','digital5','digital6','digital7','digital8','digital9','digital10','digital11','digital12','digital13','digital14','digital15','digital16','speed1','speed2','speed3','speed4','energy1','energy2','power1','power2') NOT NULL,
   `frame` enum('frame1','frame2','frame3','frame4','frame5','frame6','frame7','frame8') NOT NULL,
@@ -115,8 +106,7 @@ CREATE TABLE `t_names_of_charts` (
   PRIMARY KEY (`chart_id`,`type`,`frame`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `t_energies`;
-CREATE TABLE `t_energies` (
+CREATE TABLE IF NOT EXISTS `t_energies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` datetime NOT NULL,
   `frame` enum('frame1','frame2','frame3','frame4','frame5','frame6','frame7','frame8') NOT NULL,
@@ -126,8 +116,7 @@ CREATE TABLE `t_energies` (
   UNIQUE KEY `UNIQUE` (`date`,`frame`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
-DROP TABLE IF EXISTS `t_max`;
-CREATE TABLE `t_max` (
+CREATE TABLE IF NOT EXISTS `t_max` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` datetime NOT NULL,
   `frame` enum('frame1','frame2','frame3','frame4','frame5','frame6','frame7','frame8') NOT NULL,
@@ -157,8 +146,7 @@ CREATE TABLE `t_max` (
   UNIQUE KEY `UNIQUE` (`date`,`frame`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
-DROP TABLE IF EXISTS `t_min`;
-CREATE TABLE `t_min` (
+CREATE TABLE IF NOT EXISTS `t_min` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` datetime NOT NULL,
   `frame` enum('frame1','frame2','frame3','frame4','frame5','frame6','frame7','frame8') NOT NULL,
@@ -188,26 +176,29 @@ CREATE TABLE `t_min` (
   UNIQUE KEY `UNIQUE` (`date`,`frame`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
-DROP VIEW IF EXISTS `v_max`;
-CREATE VIEW `v_max` AS select cast(`t_data`.`date` as date) AS `date`,max(`t_data`.`analog1`) AS `analog1`,max(`t_data`.`analog2`) AS `analog2`,max(`t_data`.`analog3`) AS `analog3`,max(`t_data`.`analog4`) AS `analog4`,max(`t_data`.`analog5`) AS `analog5`,max(`t_data`.`analog6`) AS `analog6`,max(`t_data`.`analog7`) AS `analog7`,max(`t_data`.`analog8`) AS `analog8`,max(`t_data`.`analog9`) AS `analog9`,max(`t_data`.`analog10`) AS `analog10`,max(`t_data`.`analog11`) AS `analog11`,max(`t_data`.`analog12`) AS `analog12`,max(`t_data`.`analog13`) AS `analog13`,max(`t_data`.`analog14`) AS `analog14`,max(`t_data`.`analog15`) AS `analog15`,max(`t_data`.`analog16`) AS `analog16`,max(`t_data`.`speed1`) AS `speed1`,max(`t_data`.`speed2`) AS `speed2`,max(`t_data`.`speed3`) AS `speed3`,max(`t_data`.`speed4`) AS `speed4`,max(`t_data`.`power1`) AS `power1`,max(`t_data`.`power2`) AS `power2`,`t_data`.`frame` AS `frame` from `t_data` where ((`t_data`.`date` >= cast((select max(`t_max`.`date`) from `t_max`) as date)) or ((select count(0) from `t_max`) = 0)) group by cast(`t_data`.`date` as date),`t_data`.`frame`;
 
-DROP VIEW IF EXISTS `v_min`;
+/*
+	Create views
+*/
+CREATE VIEW  `v_max` AS select cast(`t_data`.`date` as date) AS `date`,max(`t_data`.`analog1`) AS `analog1`,max(`t_data`.`analog2`) AS `analog2`,max(`t_data`.`analog3`) AS `analog3`,max(`t_data`.`analog4`) AS `analog4`,max(`t_data`.`analog5`) AS `analog5`,max(`t_data`.`analog6`) AS `analog6`,max(`t_data`.`analog7`) AS `analog7`,max(`t_data`.`analog8`) AS `analog8`,max(`t_data`.`analog9`) AS `analog9`,max(`t_data`.`analog10`) AS `analog10`,max(`t_data`.`analog11`) AS `analog11`,max(`t_data`.`analog12`) AS `analog12`,max(`t_data`.`analog13`) AS `analog13`,max(`t_data`.`analog14`) AS `analog14`,max(`t_data`.`analog15`) AS `analog15`,max(`t_data`.`analog16`) AS `analog16`,max(`t_data`.`speed1`) AS `speed1`,max(`t_data`.`speed2`) AS `speed2`,max(`t_data`.`speed3`) AS `speed3`,max(`t_data`.`speed4`) AS `speed4`,max(`t_data`.`power1`) AS `power1`,max(`t_data`.`power2`) AS `power2`,`t_data`.`frame` AS `frame` from `t_data` where ((`t_data`.`date` >= cast((select max(`t_max`.`date`) from `t_max`) as date)) or ((select count(0) from `t_max`) = 0)) group by cast(`t_data`.`date` as date),`t_data`.`frame`;
+
 CREATE VIEW `v_min` AS select cast(`t_data`.`date` as date) AS `date`,min(`t_data`.`analog1`) AS `analog1`,min(`t_data`.`analog2`) AS `analog2`,min(`t_data`.`analog3`) AS `analog3`,min(`t_data`.`analog4`) AS `analog4`,min(`t_data`.`analog5`) AS `analog5`,min(`t_data`.`analog6`) AS `analog6`,min(`t_data`.`analog7`) AS `analog7`,min(`t_data`.`analog8`) AS `analog8`,min(`t_data`.`analog9`) AS `analog9`,min(`t_data`.`analog10`) AS `analog10`,min(`t_data`.`analog11`) AS `analog11`,min(`t_data`.`analog12`) AS `analog12`,min(`t_data`.`analog13`) AS `analog13`,min(`t_data`.`analog14`) AS `analog14`,min(`t_data`.`analog15`) AS `analog15`,min(`t_data`.`analog16`) AS `analog16`,min(`t_data`.`speed1`) AS `speed1`,min(`t_data`.`speed2`) AS `speed2`,min(`t_data`.`speed3`) AS `speed3`,min(`t_data`.`speed4`) AS `speed4`,min(`t_data`.`power1`) AS `power1`,min(`t_data`.`power2`) AS `power2`,`t_data`.`frame` AS `frame` from `t_data` where ((`t_data`.`date` >= cast((select max(`t_min`.`date`) from `t_min`) as date)) or ((select count(0) from `t_min`) = 0)) group by cast(`t_data`.`date` as date),`t_data`.`frame`;
 
-DROP VIEW IF EXISTS `v_minmaxdate`;
 CREATE VIEW `v_minmaxdate` AS select `t_data`.`date` AS `date`,min(`t_data`.`date`) AS `min`,max(`t_data`.`date`) AS `max`,`t_data`.`frame` AS `frame` from `t_data` where ((`t_data`.`date` >= cast((select max(`t_energies`.`date`) from `t_energies`) as date)) or ((select count(0) from `t_energies`) = 0)) group by cast(`t_data`.`date` as date), `t_data`.`frame`;
 
-DROP VIEW IF EXISTS `v_energies`;
 CREATE VIEW `v_energies` AS select cast(`v_minmaxdate`.`date` as date) AS `date`,(`max`.`energy1` - `min`.`energy1`) AS `energy1`,(`max`.`energy2` - `min`.`energy2`) AS `energy2`,`v_minmaxdate`.`frame` AS `frame` from ((`v_minmaxdate` left join `t_data` `min` on(((`min`.`date` = `v_minmaxdate`.`min`) and (`min`.`frame` = `v_minmaxdate`.`frame`)))) left join `t_data` `max` on(((`max`.`date` = `v_minmaxdate`.`max`) and (`max`.`frame` = `v_minmaxdate`.`frame`))));
 
 
+/*
+	Create procedures
+*/
 DROP PROCEDURE IF EXISTS `p_energies`;
 DROP PROCEDURE IF EXISTS `p_minmax`;
-delimiter $$
+DELIMITER //
 CREATE PROCEDURE `p_energies`()
 BEGIN
     REPLACE INTO t_energies (date, energy1, energy2, frame) SELECT * FROM v_energies;
-END$$
+END //
 
 CREATE PROCEDURE `p_minmax`()
 BEGIN
@@ -215,12 +206,11 @@ BEGIN
     analog9, analog10, analog11, analog12, analog13, analog14, analog15, analog16, speed1, speed2, speed3, speed4, power1, power2, frame) SELECT * FROM v_min;
     REPLACE INTO t_max (date, analog1, analog2, analog3, analog4, analog5, analog6, analog7, analog8,
     analog9, analog10, analog11, analog12, analog13, analog14, analog15, analog16, speed1, speed2, speed3, speed4, power1, power2, frame) SELECT * FROM v_max;
-END$$
+END //
+DELIMITER ;
 
 
-
-
-
-
-
-
+/*
+	Insert default data
+*/
+INSERT IGNORE INTO `t_users` (`id`,`username`,`password`,`salt`) VALUES (0,'admin','40e2776165475d893e923da0fc9039569bad50e7f88e0ff07e11ad8bffd51019c7c0ab2709395c3599f4bebd6a6bd927e9c9470a638e1eef8e8cb971061d7412','80125411a211653c6b76a9c5b9b12b6406a4a53ab61543d31abf626cda4a58ba5c8d2411a5011ad2b61de2cecd07e02b6ec9ad7a2513299d977e34b5c3f76df0');
