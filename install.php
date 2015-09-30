@@ -58,16 +58,15 @@ try {
 				break;
 		}
 	}
+	if (!needDatabaseUpdate($conn, $database)) {
+		$check["update"] = true;
+	}
 }
 catch (Exception $e) {
 	$error = $e->getMessage();
 }
 finally {
 	$conn->close();
-}
-
-if (!needDatabaseUpdate($conn, $database)) {
-	$check["update"] = true;
 }
 
 function finishSetup() {
@@ -88,7 +87,8 @@ function loadDemo($conn, $database) {
 	$result = $conn->multi_query($sql);
 	if (!$result) {
 	    throw new Exception("Konnte Demo Daten nicht laden: " . $conn->error);
-	} 
+	}
+	while($conn->next_result());
 	return "Demo Daten erfolgreich geladen.";
 }
 
@@ -103,22 +103,27 @@ function createDatabase($conn, $database) {
 	$result = $conn->multi_query($sql);
 	if (!$result) {
 	    throw new Exception("Konnte Tabellen nicht erstellen: " . $conn->error);
-	} 
+	}
+	while($conn->next_result());
 	return "Datenbank '$database' erfolgreich angelegt.";
 }
 
 function needDatabaseUpdate($conn, $database) {
 	$database = $conn->real_escape_string($database);
-	$result = $conn->query("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME = 'view' AND TABLE_NAME = 't_menu' AND TABLE_SCHEMA = '$database';");
-	if($result && $result->num_rows == 0) {
+	$result = $conn->query("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME = 'view' AND TABLE_NAME = 't_menu' AND TABLE_SCHEMA = '$database';");	
+	if(!$result || $result->num_rows == 0) {
 		return true;
 	}
 	$result = $conn->query("SELECT * FROM INFORMATION_SCHEMA.STATISTICS WHERE INDEX_NAME = 'UNIQUE' AND TABLE_NAME = 't_schema' AND TABLE_SCHEMA = '$database';");
-	if($result && $result->num_rows != 0) {
+	if(!$result || $result->num_rows != 0) {
 		return true;
 	}
 	$result = $conn->query("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME = 'type' AND TABLE_NAME = 't_menu' AND TABLE_SCHEMA = '$database' AND NOT DATA_TYPE = 'varchar';");
-	if($result && $result->num_rows != 0) {
+	if(!$result || $result->num_rows != 0) {
+		return true;
+	}
+	$result = $conn->query("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME IN ('t_chartoptions','t_users','t_data','t_menu','t_schema','t_names','t_names_of_charts','t_energies','t_max','t_min') AND TABLE_SCHEMA = '$database';");
+	if(!$result || $result->num_rows != 10) {
 		return true;
 	}
 	return false;
@@ -130,23 +135,24 @@ function updateDatabase($conn, $database) {
 	$result = $conn->multi_query($sql);
 	if (!$result) {
 	    throw new Exception("Konnte Tabellen nicht erstellen: " . $conn->error);
-	} 
+	}
+	while($conn->next_result());
 	$result = $conn->query("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME = 'view' AND TABLE_NAME = 't_menu' AND TABLE_SCHEMA = '$database';");
-	if($result && $result->num_rows == 0) {
+	if(!$result || $result->num_rows == 0) {
 		$result = $conn->query("ALTER TABLE `t_menu` ADD COLUMN `view` VARCHAR(50) NULL AFTER `schema` ;");
 		if($result) {
 			throw new Exception("Konnte Tabelle 't_menu' nicht aktualisieren: " . $conn->error);
 		}
 	}
 	$result = $conn->query("SELECT * FROM INFORMATION_SCHEMA.STATISTICS WHERE INDEX_NAME = 'UNIQUE' AND TABLE_NAME = 't_schema' AND TABLE_SCHEMA = '$database';");
-	if($result && $result->num_rows != 0) {
+	if(!$result || $result->num_rows != 0) {
 		$result = $conn->query("ALTER TABLE `t_schema` DROP INDEX `UNIQUE`;");
 		if($result) {
 			throw new Exception("Konnte Tabelle 't_schema' nicht aktualisieren: " . $conn->error);
 		}
 	}
 	$result = $conn->query("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME = 'type' AND TABLE_NAME = 't_menu' AND TABLE_SCHEMA = '$database' AND NOT DATA_TYPE = 'varchar';");
-	if($result && $result->num_rows != 0) {
+	if(!$result || $result->num_rows != 0) {
 		$result = $conn->query("ALTER TABLE `t_menu` CHANGE COLUMN `type` `type` VARCHAR(20) NOT NULL ;");
 		if($result) {
 			throw new Exception("Konnte Tabelle 't_menu' nicht aktualisieren: " . $conn->error);
