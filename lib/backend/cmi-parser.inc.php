@@ -36,6 +36,8 @@ class CmiDataset
 	const RAD = 0x0002;
 	const HOURS = 0x000f;
 	const COUNT = 0x0011;
+	const LONG_SIGN = 0x80000000;
+	const SHORT_SIGN = 0x8000;
 		
 	
 	public function __construct($string) {
@@ -58,7 +60,8 @@ class CmiDataset
 	public function getValue($value) {
 		switch ($this->data["type"]) {
 			case self::PT1000:
-			case self::TEMP: 
+			case self::TEMP:
+				return (($value^SELF::SHORT_SIGN)-SELF::SHORT_SIGN)/10;
 			case self::KWH:
 				return $value/10;
 			case self::VOL:

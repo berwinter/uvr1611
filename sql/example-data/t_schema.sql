@@ -1,9 +1,3 @@
-/*
--- Query: SELECT * FROM uvr1611.t_schema
-LIMIT 0, 1000
-
--- Date: 2013-03-31 17:20
-*/
 INSERT INTO `t_schema` (`id`,`path`,`frame`,`type`,`format`) VALUES (1,'#speicher1_oben > tspan','frame1','analog1','#.# °C');
 INSERT INTO `t_schema` (`id`,`path`,`frame`,`type`,`format`) VALUES (2,'#speicher1_unten > tspan','frame1','analog2','#.# °C');
 INSERT INTO `t_schema` (`id`,`path`,`frame`,`type`,`format`) VALUES (3,'#speicher2_oben > tspan','frame1','analog3','#.# °C');

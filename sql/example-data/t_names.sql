@@ -1,9 +1,3 @@
-/*
--- Query: SELECT * FROM uvr1611.t_names
-LIMIT 0, 1000
-
--- Date: 2013-03-31 17:19
-*/
 INSERT INTO `t_names` (`id`,`frame`,`type`,`name`) VALUES (1,'frame1','analog1','Speicher 1 Oben');
 INSERT INTO `t_names` (`id`,`frame`,`type`,`name`) VALUES (4,'frame1','analog2','Speicher 1 Unten');
 INSERT INTO `t_names` (`id`,`frame`,`type`,`name`) VALUES (5,'frame1','analog3','Speicher 2 Oben');

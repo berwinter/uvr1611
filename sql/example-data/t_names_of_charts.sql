@@ -1,9 +1,3 @@
-/*
--- Query: SELECT * FROM uvr1611.t_names_of_charts
-LIMIT 0, 1000
-
--- Date: 2013-03-31 17:19
-*/
 INSERT INTO `t_names_of_charts` (`chart_id`,`type`,`frame`,`order`) VALUES (2,'analog1','frame1',1);
 INSERT INTO `t_names_of_charts` (`chart_id`,`type`,`frame`,`order`) VALUES (2,'analog2','frame1',2);
 INSERT INTO `t_names_of_charts` (`chart_id`,`type`,`frame`,`order`) VALUES (2,'analog3','frame1',3);

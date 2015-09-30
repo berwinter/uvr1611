@@ -194,11 +194,10 @@ CREATE VIEW `v_energies` AS select cast(`v_minmaxdate`.`date` as date) AS `date`
 */
 DROP PROCEDURE IF EXISTS `p_energies`;
 DROP PROCEDURE IF EXISTS `p_minmax`;
-DELIMITER //
 CREATE PROCEDURE `p_energies`()
 BEGIN
     REPLACE INTO t_energies (date, energy1, energy2, frame) SELECT * FROM v_energies;
-END //
+END ;
 
 CREATE PROCEDURE `p_minmax`()
 BEGIN
@@ -206,9 +205,7 @@ BEGIN
     analog9, analog10, analog11, analog12, analog13, analog14, analog15, analog16, speed1, speed2, speed3, speed4, power1, power2, frame) SELECT * FROM v_min;
     REPLACE INTO t_max (date, analog1, analog2, analog3, analog4, analog5, analog6, analog7, analog8,
     analog9, analog10, analog11, analog12, analog13, analog14, analog15, analog16, speed1, speed2, speed3, speed4, power1, power2, frame) SELECT * FROM v_max;
-END //
-DELIMITER ;
-
+END ;
 
 /*
 	Insert default data

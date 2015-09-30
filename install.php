@@ -31,6 +31,7 @@ $conn = @new mysqli($servername, $username, $password);
 if (!$conn->connect_error) {
 	$check["mysql"] = true;
 }
+$conn->set_charset("utf8");
 
 if ($conn->select_db($database)) {
 	$check["database"] = true;
@@ -44,6 +45,10 @@ try {
 				break;
 			case "install":
 				$message = createDatabase($conn, $database);
+				$check["database"] = true;
+				break;
+			case "demo":
+				$message = loadDemo($conn, $database);
 				break;
 			case "update":
 				$message = updateDatabase($conn, $database);
@@ -61,7 +66,6 @@ finally {
 	$conn->close();
 }
 
-
 if (!needDatabaseUpdate($conn, $database)) {
 	$check["update"] = true;
 }
@@ -74,6 +78,18 @@ function finishSetup() {
 	header("HTTP/1.1 301 Moved Permanently");
 	header("Location: index.php");
 	exit();
+}
+
+function loadDemo($conn, $database) {
+	$sql = file_get_contents("sql/example-data/t_names_of_charts.sql");
+	$sql .= file_get_contents("sql/example-data/t_menu.sql");
+	$sql .= file_get_contents("sql/example-data/t_names.sql");
+	$sql .= file_get_contents("sql/example-data/t_schema.sql");
+	$result = $conn->multi_query($sql);
+	if (!$result) {
+	    throw new Exception("Konnte Demo Daten nicht laden: " . $conn->error);
+	} 
+	return "Demo Daten erfolgreich geladen.";
 }
 
 function createDatabase($conn, $database) {
@@ -157,8 +173,8 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 	<link rel="stylesheet" type="text/css" href="css/format.css">
 	<link rel="stylesheet" type="text/css" href="css/smoothness/jquery-ui-1.9.2.custom.min.css">
     <style>
-      #logo { margin-top:-285px; }
-	  #menu { height: 400px; color: #555;}
+      #logo { margin-top:-300px; }
+	  #menu { height: 440px; color: #555;}
 	  #output {margin-top: 10px; color: #C22;}
 	  #success {margin-top: 10px;}
 	  #form { width: 100%; table-layout: fixed;	border-collapse:collapse;}
@@ -195,6 +211,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 		  </g>
 		</svg>
 	<div id="menu">
+		<p><strong>Achtung!</strong> Die Verwendung dieses Skripts kann im Fehlerfall zu Datenverlust führen. Wichtige Daten sollten zuvor gesichert werden. Nach Abschluss der Installation sollte dieses Skript unbedingt gelöscht werden, um den Datenlogger vor unberechtigem Zugriff zu schützen.</p>
 		<h3>Status</h3>
 		<ul id="status">
 			<?php 
@@ -243,11 +260,17 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 				<td class="buttons" colspan="2">
 				<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="submit" name="action" value="reset">Passwort zurücksetzen</button>
 				<?php 
-				if(!$check["database"]) {
+				if(!$check["mysql"]) {
+					echo '<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="submit" name="action" value="test">Verbindung testen</button>';		
+				}			
+				else if(!$check["database"]) {
 					echo '<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="submit" name="action" value="install">Datenbank anlegen</button>';
 				}
 				else if(!$check["update"]) {
 					echo '<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="submit" name="action" value="update">Datenbank updaten</button>';
+				}
+				else {
+					echo '<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="submit" name="action" value="demo">Lade Demo Daten</button>';
 				}
 				?>
 				<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="submit" name="action" value="finish">Installation abschließen</button>
