@@ -109,7 +109,7 @@ class Database
 			while($r = $result->fetch_array(MYSQL_ASSOC)) {
 				$rows[$r["frame"]] = $r;
 				$rows["time"] = date("H:i:s",strtotime($r["date"]));
-				$current_energy = $database->getCurrentEnergy($r["frame"]);
+				$current_energy = self::getCurrentEnergy($r["frame"]);
 				$rows[$r["frame"]]["current_energy1"] = $current_energy[0];
 				$rows[$r["frame"]]["current_energy2"] = $current_energy[1];
 			}

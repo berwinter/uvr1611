@@ -90,6 +90,7 @@ var menu = {
 	{
 		$("div.item").hide();
 		if(menu.loggedin) {
+			$("span", toolbar.dlLogin).text("Logout");
 			if(!$("div.item").is(":visible")) {
 				$("div.item").fadeIn('slow');
 			}
@@ -217,7 +218,8 @@ var weather =
 			data: {
 				q: city,
 				units: "metric",
-				lang: "de"
+				lang: "de",
+				APPID: "d52055d220da19721ebbf38948479e3c"
 			},
 			success: function(data)
 			{

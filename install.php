@@ -58,16 +58,15 @@ try {
 				break;
 		}
 	}
-	if (!needDatabaseUpdate($conn, $database)) {
-		$check["update"] = true;
-	}
 }
 catch (Exception $e) {
 	$error = $e->getMessage();
 }
-finally {
-	$conn->close();
+
+if (!needDatabaseUpdate($conn, $database)) {
+	$check["update"] = true;
 }
+$conn->close();
 
 function finishSetup() {
 	@unlink("install.php");

@@ -1,4 +1,5 @@
 <?php 
+	error_reporting(0);
 	if(file_exists("install.php")) {
 		header("HTTP/1.1 307 Temporary Redirect");
 		header("Location: install.php");
