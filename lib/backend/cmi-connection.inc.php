@@ -31,6 +31,9 @@ class CmiConnection
 	public function __construct()
 	{
 		$this->config = Config::getInstance()->uvr1611;
+		if(!function_exists('curl_version')) {
+			throw new Exception("Requires PHP-CURL for CMI communication.");
+		}
 	}
 
 	public function getLatest()

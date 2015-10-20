@@ -173,7 +173,7 @@ class CmiParser
 				$result["frame$i"]["energy1"] = $frame["kWh1"]+$frame["MWh1"]*1000;	
 			}
 			else {
-				$result["frame$i"]["energy2"] = "NULL";
+				$result["frame$i"]["energy1"] = "NULL";
 			}
 			if(array_key_exists("kWh2", $frame)) {
 				$result["frame$i"]["energy2"] = $frame["kWh2"]+$frame["MWh2"]*1000;

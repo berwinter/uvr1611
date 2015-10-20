@@ -178,10 +178,10 @@ table.weatherdetail td.leftalign span.temp {
 	font-size:2em;
 }
 
-.weathericon {
+.weathericon, .weathersun {
 	position: relative;
 	float: right;
-	width: 195px
+	width: 200px
 }
 
 #pages {

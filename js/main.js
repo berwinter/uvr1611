@@ -30,7 +30,7 @@ var menu = {
 							break;
 						case 'weather':
 							$item.find("div.icon").addClass("weather");
-							var $container = $('<div class="weatherinfo"><div class="weathericon"><img></img><table class="weatherdetail"><tr><td collspan=2 class="description"><td><tr><tr><td class="leftalign"rowspan=2><span class="temp actuell"></span></td><td class="rightalign">Max: <span class="temp max"></span></td></tr><tr><td class="rightalign">Min: <span class="temp min"></span></td></tr></table></div><h2></h2><div class="weatherdetail"><span class="weathercity"></span> - <span class="weathertime"></span></div><h3>Details</h3><table><tr><td class="weatherprop">Temperatur:</td><td class="weathervalue"></td></tr><tr><td class="weatherprop">Luftfeuchtigkeit:</td><td class="weathervalue"></td></tr><tr><td class="weatherprop">Bewölkung:</td><td class="weathervalue"></td></tr><tr><td class="weatherprop">Wind:</td><td class="weathervalue"></td></tr><tr><td class="weatherprop">Niederschlag:</td><td class="weathervalue"></td></tr><tr><td class="weatherprop">Luftdruck:</td><td class="weathervalue"></td></tr><tr><td class="weatherprop">Sonnenaufgang:</td><td class="weathervalue"></td></tr><tr><td class="weatherprop">Sonnenuntergang:</td><td class="weathervalue"></td></tr></table></div>');
+							var $container = $('<div class="weatherinfo"><div class="weathericon"><img></img><table class="weatherdetail"><tr><td collspan=2 class="description"><td><tr><tr><td class="leftalign"rowspan=2><span class="temp actuell"></span></td><td class="rightalign">Max: <span class="temp max"></span></td></tr><tr><td class="rightalign">Min: <span class="temp min"></span></td></tr></table></div><h2></h2><div class="weatherdetail"><span class="weathercity"></span> - <span class="weathertime"></span></div><h3>Details</h3><table><tr><td class="weatherprop">Temperatur:</td><td class="weathervalue"></td></tr><tr><td class="weatherprop">Luftfeuchtigkeit:</td><td class="weathervalue"></td></tr><tr><td class="weatherprop">Bewölkung:</td><td class="weathervalue"></td></tr><tr><td class="weatherprop">Wind:</td><td class="weathervalue"></td></tr><tr><td class="weatherprop">Niederschlag:</td><td class="weathervalue"></td></tr><tr><td class="weatherprop">Luftdruck:</td><td class="weathervalue"></td></tr><tr><td class="weatherprop">Sonnenaufgang:</td><td class="weathervalue"></td></tr><tr><td class="weatherprop">Sonnenuntergang:</td><td class="weathervalue"></td></tr></table><div class="weathersun"></div></div>');
 							item["load"] = weather.fetch;
 							$pages.append($container);
 							item["container"] = $container;
@@ -227,7 +227,8 @@ var weather =
 				var timeFormatter = new google.visualization.DateFormat({pattern: "HH:mm"});
 				menu.selectedItem["container"].find("h2").text(data.name);
 				menu.selectedItem["container"].find("span.weathercity").text(data.sys.country);
-				menu.selectedItem["container"].find("span.weathertime").text(dateFormatter.formatValue(new Date(data.dt*1000)));
+				var currTime = new Date(data.dt*1000);
+				menu.selectedItem["container"].find("span.weathertime").text(dateFormatter.formatValue(currTime));
 				menu.selectedItem["container"].find("div.weathericon td.description").text(data.weather[0].description);
 				menu.selectedItem["container"].find("div.weathericon img").attr("src", "images/weather/"+data.weather[0].icon+".png");
 				menu.selectedItem["container"].find("div.weathericon span.temp.actuell").text(data.main.temp.toFixed(2) + " °C");
@@ -245,11 +246,99 @@ var weather =
 					}
 				}
 				menu.selectedItem["container"].find("table td.weathervalue:eq(5)").text(data.main.pressure + " mbar");
-				menu.selectedItem["container"].find("table td.weathervalue:eq(6)").text(timeFormatter.formatValue(new Date(data.sys.sunrise*1000)));
-				menu.selectedItem["container"].find("table td.weathervalue:eq(7)").text(timeFormatter.formatValue(new Date(data.sys.sunset*1000)));
+				var sunRise = new Date(data.sys.sunrise*1000);
+				menu.selectedItem["container"].find("table td.weathervalue:eq(6)").text(timeFormatter.formatValue(sunRise));
+				var sunSet = new Date(data.sys.sunset*1000);
+				menu.selectedItem["container"].find("table td.weathervalue:eq(7)").text(timeFormatter.formatValue(sunSet));
+				var sun = menu.selectedItem["container"].find("div.weathersun").load("images/weather/sun.svg", function() {
+					weather.calcSun($(this), currTime, sunRise, sunSet);
+				});
 			}
 		});	
-    }
+    },
+	calcSun: function(sun, currTime, sunRise, sunSet) {
+		var timeFormatter = new google.visualization.DateFormat({pattern: "HH:mm"});
+		var radius = 60;
+		if (currTime < sunRise) {
+			var x = 0;
+			var y = 0;
+			var currTimeText = "";
+			var xpos = 40+x;
+			var ypos = 70-y;
+			var sunFill = "M40,70";
+		}
+		else if (currTime > sunSet) {
+			var x = 2*radius;
+			var y = 0;
+			var currTimeText = "";
+			var xpos = 40+x;
+			var ypos = 70-y;
+			var sunFill = "M40,70 C40,36.86 66.86,10 100,10 C133.14,10 160,36.86 160,70 z";
+		}
+		else {
+			var x = 2*radius*(currTime-sunRise)/(sunSet-sunRise);
+			var y = Math.sqrt(x*(2*radius-x));
+			var xpos = 40+x;
+			var ypos = 70-y;
+			if (x < radius) {
+				var ratio = y/(radius-x);
+				if (ratio < 0.1) {
+					var sunFill = "M40,70 L"+xpos+","+ypos+" L"+xpos+",70 z";
+				}
+				else if (ratio > 2.65) {
+					var l = 0.552285;
+					var dx = l*y;
+					var dy = l*(radius-x);
+					var sunFill = "M40,70 C40,"+(70-l*radius)+" "+(xpos-dx)+","+(ypos+dy)+" "+xpos+","+ypos+" L"+xpos+",70 z";
+				}
+				else {
+					var l = 0.092+0.173*y/(radius-x);
+					var dx = l*y;
+					var dy = l*(radius-x);
+					var sunFill = "M40,70 C40,"+(70-l*radius)+" "+(xpos-dx)+","+(ypos+dy)+" "+xpos+","+ypos+" L"+xpos+",70 z";
+				}
+			}
+			else if (x > radius) {
+				var ratio = (x-radius)/y;
+				if (ratio < 0.1) {
+					var sunFill = "M40,70 C40,37 67,10 100,10 L"+xpos+","+ypos+" L"+xpos+",70 z";
+				}
+				else if (ratio > 2.65) {
+					var l = 0.552285;
+					var dx = l*y;
+					var dy = l*(x-radius);
+					var sunFill = "M40,70 C40,37 67,10 100,10 C"+(100+l*radius)+",10 "+(xpos-dx)+","+(ypos-dy)+" "+xpos+","+ypos+" L"+xpos+",70 z";
+				}
+				else {
+					var l = 0.092+0.173*(x-radius)/y;
+					var dx = l*y;
+					var dy = l*(x-radius);
+					var sunFill = "M40,70 C40,37 67,10 100,10 C"+(100+l*radius)+",10 "+(xpos-dx)+","+(ypos-dy)+" "+xpos+","+ypos+" L"+xpos+",70 z";
+				}
+			}
+			else {
+				var sunFill = "M40,70 C40,37 67,10 100,10 L100,70 z";
+			}
+			var currTimeText = timeFormatter.formatValue(currTime);
+		}
+		sun.find("#sunrise_time > tspan").text(timeFormatter.formatValue(sunRise));
+		sun.find("#sunset_time > tspan").text(timeFormatter.formatValue(sunSet));
+		sun.find("#current_dot").attr("transform","matrix(3, 0, 0, 3, "+xpos+", "+ypos+")");
+		sun.find("#current_marker").attr("d","M"+xpos+",70 L"+xpos+","+ypos);
+		sun.find("#current_fill").attr("d",sunFill);
+		sun.find("#current_time > tspan").text(currTimeText);
+		if(x < 20) {
+			var xpos = 60;
+		}
+		else if (x > 100) {
+			var xpos = 140;
+		}
+		else {
+			var xpos = 40+x;
+		}
+		sun.find("#current_time").attr("transform","matrix(1, 0, 0, 1, "+xpos+", 80)");
+		
+	}
 }
 
 

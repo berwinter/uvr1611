@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="200" height="100" viewBox="0, 0, 200, 100">
+  <g>
+    <path id="current_fill" fill="#FFF3AA" fill-opacity="0.5"/>
+    <path id="current_marker" fill-opacity="0" stroke="#616264" stroke-width="1" stroke-dasharray="3,2"/>
+    <path d="M30,70 L170,70" fill-opacity="0" stroke="#616264" stroke-width="1"/>
+	<path d="M40,70 C40,36.86 66.86,10 100,10 C133.14,10 160,36.86 160,70" fill-opacity="0" stroke="#616264" stroke-width="1" stroke-dasharray="3,2"/>
+    <g id="current_dot" transform="matrix(3, 0, 0, 3, 40, 20)">
+      <path d="M-1,0 C-1,0.55 -0.55,1 0,1 C0.55,1 1,0.55 1,0 C1,-0.55 0.55,-1 0,-1 C-0.55,-1 -1,-0.55 -1,0 z" fill="#FFE12B" stroke="#FFC200" stroke-width="0.5"/>
+    </g>
+    <g transform="matrix(2, 0, 0, 2, 40, 70)">
+      <path d="M-1,0 C-1,0.55 -0.55,1 0,1 C0.55,1 1,0.55 1,0 C1,-0.55 0.55,-1 0,-1 C-0.55,-1 -1,-0.55 -1,0 z" fill="#616264"/>
+    </g>
+    <g transform="matrix(2, 0, 0, 2, 160, 70)">
+      <path d="M-1,0 C-1,0.55 -0.55,1 0,1 C0.55,1 1,0.55 1,0 C1,-0.55 0.55,-1 0,-1 C-0.55,-1 -1,-0.55 -1,0 z" fill="#616264"/>
+    </g>
+    <text id="sunrise_time" transform="matrix(1, 0, 0, 1, 30, 80)">
+      <tspan x="-9.731" y="3" font-family="Arial" font-size="10" fill="#616264"></tspan>
+    </text>
+    <text id="sunset_time" transform="matrix(1, 0, 0, 1, 170, 80)">
+      <tspan x="-12.512" y="3" font-family="Arial" font-size="10" fill="#616264"></tspan>
+    </text>
+    <text id="current_time" transform="matrix(1, 0, 0, 1, 140, 80)">
+      <tspan x="-12.512" y="3" font-family="Arial" font-size="10" fill="#616264"></tspan>
+    </text>
+  </g>
+</svg>

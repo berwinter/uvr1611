@@ -115,6 +115,9 @@ class Database
 			}
 			$result->close();
 		}
+		else {
+			throw new Exception("Could not find any data in database.");
+		}
 		return $rows;
 	}
 	
@@ -367,8 +370,14 @@ class Database
 	public function lastDataset()
 	{
 		$result = $this->mysqli->query("SELECT MAX(date) FROM t_data;");
-		$last = $result->fetch_array();
-		$result->close();
+		if ($result) {
+			$last = $result->fetch_array();
+			$result->close();
+		}
+		else {
+			$last = array(0 => "2000-01-01");
+		}
+
 		return strtotime($last[0]);
 	}
 	
@@ -379,8 +388,14 @@ class Database
 	public function getCurrentEnergy($frame)
 	{
 		$result = $this->mysqli->query("SELECT energy1, energy2 FROM t_energies WHERE frame = '$frame' ORDER BY date DESC LIMIT 1;");
-		$data = $result->fetch_array(MYSQLI_NUM);
-		$result->close();
+		if ($result) {
+			$data = $result->fetch_array(MYSQLI_NUM);
+			$result->close();
+		}
+		else {
+			$data = array(0 => 0.0, 1 => 0.0);
+		}
+
 		return $data;
 	}
 	

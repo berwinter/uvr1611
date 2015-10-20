@@ -24,7 +24,7 @@ Die Features sind:
 Downloads
 ------
 
-* [Stable (v2.0)](https://github.com/berwinter/uvr1611/archive/v200.zip)
+* [Stable (v2.01)](https://github.com/berwinter/uvr1611/archive/v201.zip)
 * [Stable (v0.96)](https://github.com/berwinter/uvr1611/archive/v96.zip)
 * [Development](https://github.com/berwinter/uvr1611/archive/master.zip)
 
@@ -38,7 +38,7 @@ Installation
 
 Für die Anwendung wird ein Webserver mit PHP und ein MySQL Datenbank-Server benötigt. Die benötigten Pakete können unter Debian/Ubuntu mit folgendem Befehl installiert werden:
 
-	sudo apt-get install lighttpd php5-cgi mysql-server mysql-client php5-mysql
+	sudo apt-get install lighttpd php5-cgi mysql-server mysql-client php5-mysql php5-curl
 	sudo lighttpd-enable-mod fastcgi-php
 	sudo service lighttpd force-reload
 
