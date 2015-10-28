@@ -1,7 +1,7 @@
 UVR1611 Data Logger Pro
 ======
 
-[![PayPal donate button](https://img.shields.io/badge/paypal-donate-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5M59ZZNRBEWKG "Spenden für dieses Projekt mit Paypal")
+[![PayPal spenden](https://img.shields.io/badge/paypal-spenden-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5M59ZZNRBEWKG "Spenden für dieses Projekt mit Paypal") [![Amazon Wunschliste](https://img.shields.io/badge/amazon-wunschliste-blue.svg)](https://www.amazon.de/registry/wishlist/1GOPK9GBCPNI0 "Bertram's Wunschliste")
 
 Der *UVR1611 Datalogger Pro* ist ein webbasierender Datenlogger für die Universalregelungen UVR1611 und UVR16x2. Die Daten werden mit Hilfe des BL-NET oder CMI über den CAN oder DL abgerufen.
 

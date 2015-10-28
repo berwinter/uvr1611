@@ -371,12 +371,14 @@ var actualValues =
 		for(var i in actualValues.values) {
  			var value = actualValues.values[i];
 			try {
-     			var text = value.format.replace(/((DIGITAL|MWH|KWH|MISCHER_AUF|MISCHER_ZU|VENTIL|DREHZAHL|GRADCOLOR|ANIMATION)\()?#\.?(#*)\)?/g, function(number,tmp,modifier,fractions) {
+     			var text = value.format.replace(/((DIGITAL|MWH|KWH|MISCHER_AUF|MISCHER_ZU|VENTIL|DRAINBACK|DREHZAHL|GRADCOLOR|ANIMATION)\()?#\.?(#*)\)?/g, function(number,tmp,modifier,fractions) {
      				switch(modifier) {
      					case "MISCHER_AUF":
      						return converter.mixerOn(data[value.frame][value.type]);
      					case "MISCHER_ZU":
      						return converter.mixerOff(data[value.frame][value.type]);
+                        case "DRAINBACK":
+     						return converter.drainback(data[value.frame][value.type]);
      					case "VENTIL":
      						return converter.valve(data[value.frame][value.type]);
      					case "DIGITAL":
@@ -473,13 +475,22 @@ var converter = {
 	{
 		return (value/30*100).toFixed()+"%";
 	},
-	valve: function(value)
+	drainback: function(value)
 	{
 		if(value == 1) {
-			return 'OFFEN';
+			return 'Solarkreislauf';
 		}
 		else {
-			return 'ZU';
+			return 'Drain Back';
+		}
+	},
+    valve: function(value)
+	{
+		if(value == 1) {
+			return 'Ein';
+		}
+		else {
+			return 'Aus';
 		}
 	},
 	color: function(value)
