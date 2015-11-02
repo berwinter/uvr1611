@@ -121,8 +121,8 @@ function needDatabaseUpdate($conn, $database) {
 	if(!$result || $result->num_rows != 0) {
 		return true;
 	}
-	$result = $conn->query("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME IN ('t_chartoptions','t_users','t_data','t_menu','t_schema','t_names','t_names_of_charts','t_energies','t_max','t_min') AND TABLE_SCHEMA = '$database';");
-	if(!$result || $result->num_rows != 10) {
+	$result = $conn->query("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME IN ('t_chartoptions','t_users','t_data','t_menu','t_schema','t_names','t_names_of_charts','t_energies','t_max','t_min','t_digital_times','t_digital_counts') AND TABLE_SCHEMA = '$database';");
+	if(!$result || $result->num_rows != 12) {
 		return true;
 	}
 	return false;

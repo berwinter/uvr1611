@@ -24,7 +24,7 @@ Die Features sind:
 Downloads
 ------
 
-* [Stable (v2.01)](https://github.com/berwinter/uvr1611/archive/v201.zip)
+* [Stable (v2.10)](https://github.com/berwinter/uvr1611/archive/v210.zip)
 * [Stable (v0.96)](https://github.com/berwinter/uvr1611/archive/v96.zip)
 * [Development](https://github.com/berwinter/uvr1611/archive/master.zip)
 

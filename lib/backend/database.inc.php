@@ -69,6 +69,102 @@ class Database
 		}
 		
 		$this->mysqli->query($insert.join(',',$values));
+		$this->updateDigitalStat($data);
+	}
+	
+	/**
+	 * Udpates digital statistics tables
+	 */
+	public function updateDigitalStat(&$data)
+	{
+		$stats = Array();
+		foreach ($data as $dataset) {
+			foreach($dataset as $key => $frame) {
+				$time = strtotime($frame["date"]);
+				$date = date("Y-m-d", $time);
+				
+				foreach(Array("digital1", "digital2", "digital3", "digital4", "digital5", "digital6", "digital7", "digital8", "digital9", "digital10", "digital11", "digital12", "digital13", "digital14", "digital15", "digital16") as $d) {
+					if (!isset($stats[$date][$key][$d])) {
+						$stats[$date][$key][$d] = Array("count" => 0, "on" => 0.0, "time" => $time);
+					}
+					// switched on
+					else if ($stats[$date][$key][$d]["last"] == 0 && $frame[$d] != 0) {
+						$stats[$date][$key][$d]["time"] = $time;
+					}
+					// switched off
+					else if ($stats[$date][$key][$d]["last"] != 0 && $frame[$d] == 0) {
+						$stats[$date][$key][$d]["on"] += $stats[$date][$key][$d]["time"] - $time;
+						$stats[$date][$key][$d]["count"]++;
+					}
+					// store last
+					$stats[$date][$key][$d]["last"] = $frame[$d];					
+				}
+				$lastTime = $time;
+			}
+		}
+		// finalize stats and save to database
+		foreach ($stats as $dt => $date) {
+			foreach ($date as $f => $frame) {
+				foreach ($frame as $k => $d) {
+					if ($d["last"] != 0) {
+						$frame[$k]["on"] += $d["time"] - $lastTime;
+					}
+				}
+				$sql = "INSERT INTO t_digital_times (date, frame, "
+				      ."digital1, digital2, digital3, digital4, digital5, digital6, digital7, digital8, "
+				      ."digital9, digital10, digital11, digital12, digital13, digital14, digital15, digital16) "
+				      ."VALUES ( '$dt', '$f', "
+		      		  ."{$frame["digital1"]["on"]}, {$frame["digital2"]["on"]}, {$frame["digital3"]["on"]}, {$frame["digital4"]["on"]}, "
+		      		  ."{$frame["digital5"]["on"]}, {$frame["digital6"]["on"]}, {$frame["digital7"]["on"]}, {$frame["digital8"]["on"]}, "
+		              ."{$frame["digital9"]["on"]}, {$frame["digital10"]["on"]}, {$frame["digital11"]["on"]}, {$frame["digital12"]["on"]}, "
+		              ."{$frame["digital13"]["on"]}, {$frame["digital14"]["on"]}, {$frame["digital15"]["on"]}, {$frame["digital16"]["on"]}"
+					  .") ON DUPLICATE KEY UPDATE "
+					  ."digital1=digital1+{$frame["digital1"]["on"]}, "
+					  ."digital2=digital2+{$frame["digital2"]["on"]}, "
+					  ."digital3=digital3+{$frame["digital3"]["on"]}, "
+					  ."digital4=digital4+{$frame["digital4"]["on"]}, "
+					  ."digital5=digital5+{$frame["digital5"]["on"]}, "
+					  ."digital6=digital6+{$frame["digital6"]["on"]}, "
+					  ."digital7=digital7+{$frame["digital7"]["on"]}, "
+					  ."digital8=digital8+{$frame["digital8"]["on"]}, "
+					  ."digital9=digital9+{$frame["digital9"]["on"]}, "
+					  ."digital10=digital10+{$frame["digital10"]["on"]}, "
+					  ."digital11=digital11+{$frame["digital11"]["on"]}, "
+					  ."digital12=digital12+{$frame["digital12"]["on"]}, "
+					  ."digital13=digital13+{$frame["digital13"]["on"]}, "
+					  ."digital14=digital14+{$frame["digital14"]["on"]}, "
+					  ."digital15=digital15+{$frame["digital15"]["on"]}, "
+					  ."digital16=digital16+{$frame["digital16"]["on"]};";
+				$this->mysqli->query($sql);
+				
+				$sql = "INSERT INTO t_digital_counts (date, frame, "
+				      ."digital1, digital2, digital3, digital4, digital5, digital6, digital7, digital8, "
+				      ."digital9, digital10, digital11, digital12, digital13, digital14, digital15, digital16) "
+				      ."VALUES ( '$dt', '$f', "
+		      		  ."{$frame["digital1"]["count"]}, {$frame["digital2"]["count"]}, {$frame["digital3"]["count"]}, {$frame["digital4"]["count"]}, "
+		      		  ."{$frame["digital5"]["count"]}, {$frame["digital6"]["count"]}, {$frame["digital7"]["count"]}, {$frame["digital8"]["count"]}, "
+		              ."{$frame["digital9"]["count"]}, {$frame["digital10"]["count"]}, {$frame["digital11"]["count"]}, {$frame["digital12"]["count"]}, "
+		              ."{$frame["digital13"]["count"]}, {$frame["digital14"]["count"]}, {$frame["digital15"]["count"]}, {$frame["digital16"]["count"]}"
+					  .") ON DUPLICATE KEY UPDATE "
+					  ."digital1=digital1+{$frame["digital1"]["count"]}, "
+					  ."digital2=digital2+{$frame["digital2"]["count"]}, "
+					  ."digital3=digital3+{$frame["digital3"]["count"]}, "
+					  ."digital4=digital4+{$frame["digital4"]["count"]}, "
+					  ."digital5=digital5+{$frame["digital5"]["count"]}, "
+					  ."digital6=digital6+{$frame["digital6"]["count"]}, "
+					  ."digital7=digital7+{$frame["digital7"]["count"]}, "
+					  ."digital8=digital8+{$frame["digital8"]["count"]}, "
+					  ."digital9=digital9+{$frame["digital9"]["count"]}, "
+					  ."digital10=digital10+{$frame["digital10"]["count"]}, "
+					  ."digital11=digital11+{$frame["digital11"]["count"]}, "
+					  ."digital12=digital12+{$frame["digital12"]["count"]}, "
+					  ."digital13=digital13+{$frame["digital13"]["count"]}, "
+					  ."digital14=digital14+{$frame["digital14"]["count"]}, "
+					  ."digital15=digital15+{$frame["digital15"]["count"]}, "
+					  ."digital16=digital16+{$frame["digital16"]["count"]};";
+				$this->mysqli->query($sql);
+			}
+		}
 	}
 	
 	/**
@@ -171,6 +267,55 @@ class Database
 			$result->close();
 		}
 		return $rows;
+	}
+	
+	/**
+	 * Query the digital stats with given id and date
+	 * @param Date $date
+	 * @param int $chartId
+	 * @param int $period
+	 * @return Array
+	 */
+	public function queryDigitalStats($date, $chartId, $period)
+	{
+		// get the digtal columns of a chart
+		$statement = $this->mysqli->prepare("SELECT frame, type FROM t_names_of_charts ".
+											"WHERE chart_id=? AND type LIKE 'digital%' ORDER BY t_names_of_charts.order ASC;");
+		$statement->bind_param('i', $chartId);
+		
+		$statement->execute();
+		$statement->bind_result($frame, $name);
+				
+		// build sql queries
+		$sql = array();
+		while($statement->fetch()) {
+			$sql[$frame][$name]["time"] = "SELECT SUM($name) FROM t_digital_times WHERE frame = '$frame' AND date >= DATE_SUB(\"$date\", INTERVAL $period DAY) ".
+					"AND date < DATE_ADD(\"$date\", INTERVAL 1 DAY);";
+			$sql[$frame][$name]["count"] = "SELECT SUM($name) FROM t_digital_counts WHERE frame = '$frame' AND date >= DATE_SUB(\"$date\", INTERVAL $period DAY) ".
+					"AND date < DATE_ADD(\"$date\", INTERVAL 1 DAY);";
+		}
+		$statement->close();
+		
+		// query results
+		$data = array();
+		foreach($sql as $f => $frame) {
+			foreach($frame as $n => $name) {
+				if(	$result = $this->mysqli->query($name["time"])) {
+					if($r = $result->fetch_array(MYSQLI_NUM)) {
+						$data[$f][$n]["time"] = $r[0];
+					}
+					$result->close();
+				}
+				if(	$result = $this->mysqli->query($name["count"])) {
+					if($r = $result->fetch_array(MYSQLI_NUM)) {
+						$data[$f][$n]["count"] = $r[0];
+					}
+					$result->close();
+				}
+			}
+		}
+		
+		return $data;
 	}
 	
 	/**

@@ -176,6 +176,53 @@ CREATE TABLE IF NOT EXISTS `t_min` (
   UNIQUE KEY `UNIQUE` (`date`,`frame`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
+CREATE TABLE IF NOT EXISTS `t_digital_times` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` datetime NOT NULL,
+  `frame` enum('frame1','frame2','frame3','frame4','frame5','frame6','frame7','frame8') NOT NULL,
+  `digital1` float DEFAULT NULL,
+  `digital2` float DEFAULT NULL,
+  `digital3` float DEFAULT NULL,
+  `digital4` float DEFAULT NULL,
+  `digital5` float DEFAULT NULL,
+  `digital6` float DEFAULT NULL,
+  `digital7` float DEFAULT NULL,
+  `digital8` float DEFAULT NULL,
+  `digital9` float DEFAULT NULL,
+  `digital10` float DEFAULT NULL,
+  `digital11` float DEFAULT NULL,
+  `digital12` float DEFAULT NULL,
+  `digital13` float DEFAULT NULL,
+  `digital14` float DEFAULT NULL,
+  `digital15` float DEFAULT NULL,
+  `digital16` float DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQUE` (`date`,`frame`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
+
+CREATE TABLE IF NOT EXISTS `t_digital_counts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` datetime NOT NULL,
+  `frame` enum('frame1','frame2','frame3','frame4','frame5','frame6','frame7','frame8') NOT NULL,
+  `digital1` int(3) DEFAULT NULL,
+  `digital2` int(3) DEFAULT NULL,
+  `digital3` int(3) DEFAULT NULL,
+  `digital4` int(3) DEFAULT NULL,
+  `digital5` int(3) DEFAULT NULL,
+  `digital6` int(3) DEFAULT NULL,
+  `digital7` int(3) DEFAULT NULL,
+  `digital8` int(3) DEFAULT NULL,
+  `digital9` int(3) DEFAULT NULL,
+  `digital10` int(3) DEFAULT NULL,
+  `digital11` int(3) DEFAULT NULL,
+  `digital12` int(3) DEFAULT NULL,
+  `digital13` int(3) DEFAULT NULL,
+  `digital14` int(3) DEFAULT NULL,
+  `digital15` int(3) DEFAULT NULL,
+  `digital16` int(3) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQUE` (`date`,`frame`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 /*
 	Create views

@@ -312,6 +312,11 @@ table.chartinfo > tbody > tr > td {
 	text-align: center;
 }
 
+table.chartinfo > tbody > tr > td:first-child  {
+	text-align: left;
+	width: 200px;
+}
+
 table.chartinfo > tbody > tr > td.header {
 	text-align: left;
 	padding-left: 10px;

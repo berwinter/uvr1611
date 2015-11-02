@@ -110,9 +110,8 @@ var lineChart = {
 			table.push(tableRow);
 		}
 
-
+		this.options.series = {};
 		if (menu.selectedItem.options) {
-			this.options.series = {};
 			if(menu.selectedItem.options["low_threshold"]) {
 				this.options.series[columns.length-1] = {color: '#888', lineDashStyle: [4, 4],visibleInLegend: false, enableInteractivity: false};
 				columns.push({type:'number', calc: function() { return parseFloat(menu.selectedItem.options["low_threshold"]);}});
@@ -137,7 +136,7 @@ var lineChart = {
 			}
 		}
 		// set diagram start and end date	
-		var tempDate = new Date(toolbar.date.getFullYear() + "-" + (toolbar.date.getMonth() + 1) + "-" + toolbar.date.getDate());
+		var tempDate = new Date(toolbar.date.getFullYear(), toolbar.date.getMonth(), toolbar.date.getDate());
 		this.startDate = (toolbar.getPeriod() == "day" ? new Date(tempDate.getTime()+tempDate.getTimezoneOffset()*60*1000) : new Date(tempDate.getTime() - 6*24*60*60*1000+tempDate.getTimezoneOffset()*60*1000));
 		this.endDate = new Date(this.startDate.getTime() + (toolbar.getPeriod() == "day" ? 24*60*60*1000: 7*24*60*60*1000)+1);
 		// check if there is data

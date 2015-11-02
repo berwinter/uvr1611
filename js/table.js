@@ -3,7 +3,7 @@ function Table(item)
 	var $table = $("<table><thead></thead><tbody></tbody></table>");
 	$table.find('thead').append("<tr><th /><th>Minimum</th><th>Maximum</th><th>Mittelwert</th></tr>");
 	$table.addClass("chartinfo");
-	
+		
 	var data = [];
 	for(var i in item.columns.analog) {
 		data[i] = {name: item.columns.analog[i].name, color: lineChart.options.colors[i]};
@@ -27,6 +27,19 @@ function Table(item)
 		$("#line_chart").hide();
 	});
 
+	if(item.columns.digital.length > 0) {
+		var $digitalTable = $("<table><thead></thead><tbody></tbody></table>");
+		$digitalTable.find('thead').append("<tr><th /><th>Laufzeit</th><th>Ein/Aus</th></tr>");
+		$digitalTable.addClass("chartinfo");
+		var data = [];
+		for(var i in item.columns.digital) {
+			data[i] = {name: item.columns.digital[i].name, color: lineChart.digitalOptions.colors[i]};
+		}
+	
+		for(var i in data) {
+			$digitalTable.find('tbody').append('<tr><td><svg xmlns="http://www.w3.org/2000/svg" height="15" width="200"><g><text text-anchor="start" x="21" y="12.75" font-family="Arial" font-size="15" stroke="none" stroke-width="0" fill="#222222">'+data[i].name+'</text><rect width="15" height="15" stroke="none" stroke-width="0" fill="'+data[i].color+'"/></g></svg></td><td><div class="value"></div></td><td><div class="value"></div></td></tr>');
+		}
+	}
 	
 	this.fill = function(data, vFormat)
 	{
@@ -44,10 +57,30 @@ function Table(item)
 			$(this).find("td:eq(2)").data({row: data[index].max.row, column: data[index].max.column});
 			$(this).find("td:eq(3) > div.value").text(numberFormatter.formatValue(data[index].avg.value));
 		});
+		
+		// fill digital table
+		$.ajax({
+			url: "digitalStats.php",
+			data: {
+				date: (toolbar.date.getFullYear() + "-" + (toolbar.date.getMonth() + 1) + "-" + toolbar.date.getDate()),
+				id: menu.selectedItem.id,
+				period: toolbar.getPeriod()
+			},
+			dataType: "json",
+			success: function(jsonData) {
+				$digitalTable.find("tbody > tr").each(function(index) {
+					var frame = menu.selectedItem.columns.digital[index].frame;
+					var type = menu.selectedItem.columns.digital[index].type;
+					var time = Math.floor(jsonData[frame][type]["time"]/3600)+"h "+Math.floor((jsonData[frame][type]["time"]%3600)/60)+"min "+(jsonData[frame][type]["time"]%60)+ "sec";
+					$(this).find("td:eq(1) > div.value").text(time);
+					$(this).find("td:eq(2) > div.value").text(jsonData[frame][type]["count"]);
+				});
+			}
+		});
 	}
 	this.getTable = function()
 	{
-		return $table;
+		return $table.add($digitalTable);
 	}
 }
 function EnergyTable(item)
