@@ -31,7 +31,16 @@ class CmiDataset
 						  6 => "analog4",    7 => "analog5",    8 => "analog6",
 						  9 => "power2",    10 => "kWh2",      11 => "MWh2",
 						 12 => "analog1",   13 => "analog2",   14 => "analog3",
-						 15 => "power1",    16 => "kWh1",      17 => "MWh1"));
+						 15 => "power1",    16 => "kWh1",      17 => "MWh1"),
+		"canez" =>  array(0 => "analog1",    1 => "analog2",    2 => "analog3",
+						  3 => "analog4",    4 => "analog5",    5 => "analog6",
+                          6 => "analog7",    7 => "analog8",    8 => "analog9",
+				  		  9 => "analog10",  10 => "analog11",  11 => "analog12",
+						 12 => "analog13",  13 => "analog14",  14 => "analog15",
+				         15 => "analog16",  34 => "power1",    35 => "kWh1",
+						 36 => "MWh1",      37 => "power2",    38 => "kWh2",
+						 39 => "MWh2",      40 => "power2",    41 => "kWh2",
+					     42 => "MWh2"));
 						 
 						 
 	private $units = array(
@@ -51,6 +60,7 @@ class CmiDataset
 	const ENERGY = 0x0b;
 	const UVR = 0x80;
 	const CAN_BC = 0x84;
+	const CAN_EZ = 0x85;
 		
 	
 	public function __construct($string) {
@@ -81,7 +91,7 @@ class CmiDataset
 			$value = -(($value^self::LONG_MASK)+1); 
 		}
 		
-		if ($this->data["device"] == self::UVR) {
+		if ($this->data["device"] == self::UVR || $this->data["device"] == self::CAN_EZ) {
 			switch ($this->data["unit"]) {
 				case self::ENERGY:
 					return $value/10;
@@ -103,6 +113,7 @@ class CmiDataset
 	public function getName() {
 		switch ($this->data["device"]) {
 			case self::UVR:
+			case self::CAN_EZ:
 				return $this->mapping["uvr"][$this->data["id1"]];
 			case self::CAN_BC:
 				return $this->mapping["canbc"][$this->data["id1"]];
@@ -121,6 +132,13 @@ class CmiDataset
 				}
 				else {
 					return "f".$this->data["frame"].":".$this->data["canid"].":2";					
+				}
+			case self::CAN_EZ:
+				if($this->data["id1"] > 39) {
+					return "f".($this->data["frame"]+1).":".$this->data["canid"];
+				}
+				else {
+					return "f".$this->data["frame"].":".$this->data["canid"];					
 				}
 			default:
 					throw new Exception(sprintf("Device with code 0x%02x and CAN id %d not supported.", $this->data["device"], $this->data["canid"]));

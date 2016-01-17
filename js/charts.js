@@ -137,7 +137,7 @@ var lineChart = {
 		}
 		// set diagram start and end date	
 		var tempDate = new Date(toolbar.date.getFullYear(), toolbar.date.getMonth(), toolbar.date.getDate());
-		this.startDate = (toolbar.getPeriod() == "day" ? new Date(tempDate.getTime()+tempDate.getTimezoneOffset()*60*1000) : new Date(tempDate.getTime() - 6*24*60*60*1000+tempDate.getTimezoneOffset()*60*1000));
+		this.startDate = (toolbar.getPeriod() == "day" ? new Date(tempDate.getTime()) : new Date(tempDate.getTime() - 6*24*60*60*1000));
 		this.endDate = new Date(this.startDate.getTime() + (toolbar.getPeriod() == "day" ? 24*60*60*1000: 7*24*60*60*1000)+1);
 		// check if there is data
 		if(this.json.analog[0] && this.json.analog[0][1] != null){

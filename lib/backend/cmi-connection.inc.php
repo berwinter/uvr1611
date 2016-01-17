@@ -48,6 +48,7 @@ class CmiConnection
 			$frames[$key]["current_energy2"] = $current_energy[1];
 		}
 		close_pid();
+		$frames["time"] = date("H:i:s");
 		return $frames;
 	}
 	
