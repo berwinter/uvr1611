@@ -113,8 +113,9 @@ class CmiDataset
 	public function getName() {
 		switch ($this->data["device"]) {
 			case self::UVR:
-			case self::CAN_EZ:
 				return $this->mapping["uvr"][$this->data["id1"]];
+			case self::CAN_EZ:
+				return $this->mapping["canez"][$this->data["id1"]];
 			case self::CAN_BC:
 				return $this->mapping["canbc"][$this->data["id1"]];
 			default:
