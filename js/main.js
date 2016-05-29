@@ -487,10 +487,10 @@ var converter = {
     valve: function(value)
 	{
 		if(value == 1) {
-			return 'Ein';
+			return 'OFFEN';
 		}
 		else {
-			return 'Aus';
+			return 'ZU';
 		}
 	},
 	color: function(value)

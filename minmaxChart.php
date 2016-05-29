@@ -5,8 +5,8 @@ include_once("lib/error.inc.php");
 try {
 	// get frame
 	$frame = "frame1";
-	if(isset($_GET["frame1"])) {
-		$frame = $_GET["frame1"];
+	if(isset($_GET["frame"])) {
+		$frame = $_GET["frame"];
 	}
 	// get type
 	$type = "analog1";
