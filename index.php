@@ -29,6 +29,7 @@
     <script type="text/javascript" src="js/toolbar.js"></script>
     <script type="text/javascript" src="js/table.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
+	<link rel="manifest" href="manifest.json">
 	<link rel="stylesheet" type="text/css" href="css/format.css">
 	<link rel="stylesheet" type="text/css" href="css/smoothness/jquery-ui-1.9.2.custom.min.css">
   </head>

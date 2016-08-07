@@ -9,6 +9,7 @@
  */
 include_once("lib/config.inc.php");
 include_once("lib/backend/cmi-connection.inc.php");
+include_once("lib/backend/web-connection.inc.php");
 include_once("lib/backend/blnet-connection.inc.php");
 include_once("lib/backend/database.inc.php");
 error_reporting(0);
@@ -24,6 +25,9 @@ class Uvr1611
 			switch($config->logger) {
 				case "cmi": 
 					self::$instance = new CmiConnection();
+					break;
+				case "portal": 
+					self::$instance = new WebConnection();
 					break;
 				default:
 					self::$instance = new BlnetConnection();
