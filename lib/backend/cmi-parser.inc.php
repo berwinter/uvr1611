@@ -12,9 +12,11 @@ error_reporting(0);
 class CmiDataset
 {
 	private $mapping = array(
+		"esr21" =>  array(0 => "analog1",    1 => "analog2",    2 => "analog3",
+						  9 => "digital1",  11 => "speed1"),
 		"uvr" =>    array(0 => "analog1",    1 => "analog2",    2 => "analog3",
 						  3 => "analog4",    4 => "analog5",    5 => "analog6",
-                          6 => "analog7",    7 => "analog8",    8 => "analog9",
+		                  6 => "analog7",    7 => "analog8",    8 => "analog9",
 				  		  9 => "analog10",  10 => "analog11",  11 => "analog12",
 						 12 => "analog13",  13 => "analog14",  14 => "analog15",
 				         15 => "analog16",  16 => "digital1",  17 => "digital2",
@@ -59,6 +61,7 @@ class CmiDataset
 	const POWER = 0x0a;
 	const ENERGY = 0x0b;
 	const UVR = 0x80;
+	const ESR21 = 0x70;
 	const CAN_BC = 0x84;
 	const CAN_EZ = 0x85;
 		
@@ -114,6 +117,8 @@ class CmiDataset
 		switch ($this->data["device"]) {
 			case self::UVR:
 				return $this->mapping["uvr"][$this->data["id1"]];
+			case self::ESR21:
+				return $this->mapping["esr21"][$this->data["id1"]];
 			case self::CAN_EZ:
 				return $this->mapping["canez"][$this->data["id1"]];
 			case self::CAN_BC:
@@ -126,6 +131,7 @@ class CmiDataset
 	public function getFrameId() {
 		switch ($this->data["device"]) {
 			case self::UVR:
+			case self::ESR21:
 				return "f".$this->data["frame"].":".$this->data["canid"];
 			case self::CAN_BC:
 				if($this->data["id1"] < 13) {
