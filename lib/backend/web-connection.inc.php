@@ -25,7 +25,8 @@ class WebConnection extends CmiConnection
 		curl_setopt($process, CURLOPT_RETURNTRANSFER,1);
 		curl_setopt($process, CURLOPT_SSL_VERIFYPEER, true);
 		curl_setopt($process, CURLOPT_SSL_VERIFYHOST, 2);
-		curl_setopt($process, CURLOPT_CAINFO, "config/GeoTrustGlobalCA.crt");
+		$cwd = getcwd();
+		curl_setopt($process, CURLOPT_CAINFO, $cwd."/config/GeoTrustGlobalCA.crt");
 		curl_setopt($process, CURLOPT_COOKIEJAR, "$temp/cmi-cookie.txt");
     	curl_setopt($process, CURLOPT_COOKIEFILE, "$temp/cmi-cookie.txt");
 		$this->login($process, $user, $password);
