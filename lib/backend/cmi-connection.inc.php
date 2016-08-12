@@ -19,7 +19,9 @@ class CmiConnection
 	const NEWLINE = "\x0D\x0A";
 	const DATASET_SIZE = 80;
 	
-	private $config;
+	protected $config;
+	protected $data;
+	protected $pos;
 	private $parser;
 	private $count = 0;
 	private $days = array();
