@@ -259,7 +259,7 @@ class Database
 		$sql .= join(", ", $columns);
 		$sql .= " FROM (SELECT @row :=0) r, t_data AS datasets ";
 		$sql .= join(" ", $joins);
-		$sql .= " WHERE datasets.logger = '$logger' datasets.date > DATE_SUB(\"$date\", INTERVAL $period DAY) ".
+		$sql .= " WHERE datasets.logger = '$logger' AND datasets.date > DATE_SUB(\"$date\", INTERVAL $period DAY) ".
 				"AND datasets.date < DATE_ADD(\"$date\", INTERVAL 1 DAY))".
 				"ranked WHERE rownum %$reduction =1 GROUP BY date;";
 		$statement->close();
@@ -697,7 +697,7 @@ class Database
 
 	public function getLoggerFromChart($chardId)
 	{
-		$statement = $this->mysqli->prepare("SELECT logger FROM t_menu WHERE chard_id = ?;");
+		$statement = $this->mysqli->prepare("SELECT logger FROM t_menu WHERE id = ?;");
 		$statement->bind_param('i', $chartId);
 		$statement->execute();
 		$statement->bind_result($logger);
