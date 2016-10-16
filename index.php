@@ -1,5 +1,5 @@
-<?php 
-	error_reporting(0);
+<?php
+	include_once("lib/error.inc.php");
 	if(file_exists("install.php")) {
 		header("HTTP/1.1 307 Temporary Redirect");
 		header("Location: install.php");
@@ -12,7 +12,7 @@
 	$name = $config->app->name;
 	$address = $config->uvr1611->address;
 	$http_port = $config->uvr1611->http_port;
-			
+
 	echo '<?xml version="1.0" encoding="UTF-8"?>';
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
