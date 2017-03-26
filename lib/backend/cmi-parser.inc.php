@@ -1,7 +1,7 @@
 <?php
 /**
  * Parses a binary string containing a dataset
- * 
+ *
  * Provides access to the values of a dataset as object properties
  *
  * @copyright  Copyright (c) Bertram Winter bertram.winter@gmail.com
@@ -27,7 +27,29 @@ class CmiDataset
 						 30 => "speed1",    31 => "speed2",    32 => "speed3",
 						 33 => "speed4",    34 => "power1",    35 => "kWh1",
 						 36 => "MWh1",      37 => "power2",    38 => "kWh2",
-						 39 => "MWh2"), 
+						 39 => "MWh2"),
+		"uvrx2" =>  array(0 => "unknown",    1 => "unknown",    2 => "unknown",
+						  3 => "unknown",    4 => "unknown",    5 => "unknown",
+		                  6 => "unknown",    7 => "unknown",    8 => "unknown",
+				  		  9 => "unknown",   10 => "unknown",   11 => "unknown",
+						 12 => "unknown",   13 => "unknown",   14 => "unknown",
+				         15 => "unknown",   16 => "unknown",   17 => "unknown",
+					     18 => "unknown",   19 => "unknown",   20 => "unknown",
+						 21 => "unknown",   22 => "unknown",   23 => "unknown",
+					     24 => "unknown",   25 => "unknown",   26 => "unknown",
+						 27 => "unknown",   28 => "unknown",   29 => "unknown",
+						 30 => "unknown",   31 => "unknown",   32 => "unknown",
+						 33 => "unknown",   34 => "unknown",   35 => "unknown",
+						 36 => "unknown",   37 => "unknown",   38 => "unknown",
+						 39 => "unknown",   40 => "unknown",   41 => "unknown",
+						 42 => "unknown",   43 => "unknown",   44 => "unknown",
+						 45 => "unknown",   46 => "unknown",   47 => "unknown",
+						 48 => "unknown",   49 => "unknown",   50 => "unknown",
+						 51 => "unknown",   52 => "unknown",   53 => "unknown",
+						 54 => "unknown",   55 => "unknown",   56 => "unknown",
+						 57 => "unknown",   58 => "unknown",   59 => "unknown",
+						 60 => "unknown",   61 => "unknown",   62 => "unknown",
+						 63 => "unknown"),
 		"canbc" =>  array(0 => "analog1",    1 => "analog2",    2 => "analog3",
 						  3 => "power1",     4 => "kWh1",       5 => "MWh1",
 						  6 => "analog4",    7 => "analog5",    8 => "analog6",
@@ -43,14 +65,14 @@ class CmiDataset
 						 36 => "MWh1",      37 => "power2",    38 => "kWh2",
 						 39 => "MWh2",      40 => "power2",    41 => "kWh2",
 					     42 => "MWh2"));
-						 
-						 
+
+
 	private $units = array(
 		"uvr" =>    array(1 => "°C",    2 => "W/m2",    3 => "l/h",    4 => "Sek",
 	                      5 => "Min",   6 => "l/Pulse", 7 => "Kelvin", 8 => "%",
 					     10 => "kW",   11 => "kWh",     12 => "MWh",  13 => "V",
 					     14 => "mA",   15 => "Stunden", 16 => "Tage", 17 => "Pulse",
-					     19 => "km/h", 20 => "Hz",      21=> "l/min", 22 => "bar"), 
+					     19 => "km/h", 20 => "Hz",      21=> "l/min", 22 => "bar"),
 		"canbc" =>  array(1 => "°C",    3 => "l/h",      4 => "kW",    5 => "kWh",
 		                  6 => "MWh"));
 
@@ -61,20 +83,21 @@ class CmiDataset
 	const POWER = 0x0a;
 	const ENERGY = 0x0b;
 	const UVR = 0x80;
+	const UVRX2 = 0x87;
 	const ESR21 = 0x70;
 	const CAN_BC = 0x84;
 	const CAN_EZ = 0x85;
-		
-	
+
+
 	public function __construct($string) {
 		$this->data = unpack("Csource/Cframe/Ccanid/Cdevice/C3id/C/Cunit/Cformat/Csize/C7", substr($string, 0, 18));
 		$this->desc = trim(substr($string, 18));
 	}
-	
+
 	public function getSize() {
 		return $this->data["size"];
 	}
-	
+
 	public function getFormat() {
 		switch($this->data["size"]) {
 			case 1: return "C".$this->getFrameId().$this->getName();
@@ -82,18 +105,18 @@ class CmiDataset
 			case 4: return "V".$this->getFrameId().$this->getName();
 		}
 	}
-	
+
 	public function getValue($value) {
 		if ($this->data["size"]==1) {
 			return $value;
 		}
 		if ($this->data["size"]==2 && $value&self::SHORT_SIGN) {
-			$value = -(($value^self::SHORT_MASK)+1); 
+			$value = -(($value^self::SHORT_MASK)+1);
 		}
 		if ($this->data["size"]==4 && $value&self::LONG_SIGN) {
-			$value = -(($value^self::LONG_MASK)+1); 
+			$value = -(($value^self::LONG_MASK)+1);
 		}
-		
+
 		if ($this->data["device"] == self::UVR || $this->data["device"] == self::CAN_EZ) {
 			switch ($this->data["unit"]) {
 				case self::ENERGY:
@@ -102,7 +125,7 @@ class CmiDataset
 					return $value/100;
 			}
 		}
-		
+
 		switch ($this->data["format"]) {
 			case 1:
 				return $value/10;
@@ -112,11 +135,13 @@ class CmiDataset
 				return $value;
 		}
 	}
-	
+
 	public function getName() {
 		switch ($this->data["device"]) {
 			case self::UVR:
 				return $this->mapping["uvr"][$this->data["id1"]];
+			case self::UVRX2:
+				return $this->mapping["uvrx2"][$this->data["id1"]];
 			case self::ESR21:
 				return $this->mapping["esr21"][$this->data["id1"]];
 			case self::CAN_EZ:
@@ -127,7 +152,7 @@ class CmiDataset
 				throw new Exception(sprintf("Device with code 0x%02x and CAN id %d not supported.", $this->data["device"], $this->data["canid"]));
 		}
 	}
-	
+
 	public function getFrameId() {
 		switch ($this->data["device"]) {
 			case self::UVR:
@@ -138,44 +163,44 @@ class CmiDataset
 					return "f".$this->data["frame"].":".$this->data["canid"].":1";
 				}
 				else {
-					return "f".$this->data["frame"].":".$this->data["canid"].":2";					
+					return "f".$this->data["frame"].":".$this->data["canid"].":2";
 				}
 			case self::CAN_EZ:
 				if($this->data["id1"] > 39) {
 					return "f".($this->data["frame"]+1).":".$this->data["canid"];
 				}
 				else {
-					return "f".$this->data["frame"].":".$this->data["canid"];					
+					return "f".$this->data["frame"].":".$this->data["canid"];
 				}
 			default:
 					throw new Exception(sprintf("Device with code 0x%02x and CAN id %d not supported.", $this->data["device"], $this->data["canid"]));
-			}		
+			}
 	}
 }
 
 class CmiParser
-{	
+{
 	private $datasets = array();
 	private $format = "Cdays/Cmonths/Cyears/Cseconds/Cminutes/Chours/C2none/";
 	private $size = 14;
-	
+
 	public function addDataset($string) {
 		$dataset = new CmiDataset($string);
 		$this->format .= $dataset->getFormat()."/";
 		$this->size += $dataset->getSize();
 		$this->datasets[] = $dataset;
 	}
-	
+
 	public function getFormatString()
 	{
 		return $this->format;
 	}
-	
+
 	public function getSize()
 	{
 		return $this->size;
 	}
-	
+
 	public function parse($string)
 	{
 		$temp = array();
@@ -184,9 +209,9 @@ class CmiParser
 			$frameId = $dataset->getFrameId();
 			$name = $dataset->getName();
 			$value = $dataset->getValue($data[$frameId.$name]);
-			$temp[$frameId][$name] = $value; 
+			$temp[$frameId][$name] = $value;
 		}
-		
+
 		$result = array();
 		$i = 1;
 		foreach($temp as $frame) {
@@ -195,7 +220,7 @@ class CmiParser
 							  $data["days"],    $data["hours"],
 							  $data["minutes"], $data["seconds"]);
 			if(array_key_exists("kWh1", $frame)) {
-				$result["frame$i"]["energy1"] = $frame["kWh1"]+$frame["MWh1"]*1000;	
+				$result["frame$i"]["energy1"] = $frame["kWh1"]+$frame["MWh1"]*1000;
 			}
 			else {
 				$result["frame$i"]["energy1"] = "NULL";
