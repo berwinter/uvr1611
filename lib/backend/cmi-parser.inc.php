@@ -28,28 +28,21 @@ class CmiDataset
 						 33 => "speed4",    34 => "power1",    35 => "kWh1",
 						 36 => "MWh1",      37 => "power2",    38 => "kWh2",
 						 39 => "MWh2"),
-		"uvrx2" =>  array(0 => "unknown",    1 => "unknown",    2 => "unknown",
-						  3 => "unknown",    4 => "unknown",    5 => "unknown",
-		                  6 => "unknown",    7 => "unknown",    8 => "unknown",
-				  		  9 => "unknown",   10 => "unknown",   11 => "unknown",
-						 12 => "unknown",   13 => "unknown",   14 => "unknown",
-				         15 => "unknown",   16 => "unknown",   17 => "unknown",
-					     18 => "unknown",   19 => "unknown",   20 => "unknown",
-						 21 => "unknown",   22 => "unknown",   23 => "unknown",
-					     24 => "unknown",   25 => "unknown",   26 => "unknown",
-						 27 => "unknown",   28 => "unknown",   29 => "unknown",
-						 30 => "unknown",   31 => "unknown",   32 => "unknown",
-						 33 => "unknown",   34 => "unknown",   35 => "unknown",
-						 36 => "unknown",   37 => "unknown",   38 => "unknown",
-						 39 => "unknown",   40 => "unknown",   41 => "unknown",
-						 42 => "unknown",   43 => "unknown",   44 => "unknown",
-						 45 => "unknown",   46 => "unknown",   47 => "unknown",
-						 48 => "unknown",   49 => "unknown",   50 => "unknown",
-						 51 => "unknown",   52 => "unknown",   53 => "unknown",
-						 54 => "unknown",   55 => "unknown",   56 => "unknown",
-						 57 => "unknown",   58 => "unknown",   59 => "unknown",
-						 60 => "unknown",   61 => "unknown",   62 => "unknown",
-						 63 => "unknown"),
+		"uvrx2" =>  array(0 =>
+						array(0 => "analog1",   1 => "analog2",   2 => "analog3",
+						  	  3 => "analog4",   4 => "analog5",   5 => "analog6",
+		                      6 => "analog7",   7 => "analog8",   8 => "analog9",
+				  		      9 => "analog10", 10 => "analog11", 11 => "analog12",
+						     12 => "analog13", 13 => "analog14", 14 => "analog15",
+				             15 => "analog16"),
+						  1 =>
+						array(0 => "digital1",   1 => "digital2",   2 => "digital3",
+  						  	  3 => "digital4",   4 => "digital5",   5 => "digital6",
+  		                      6 => "digital7",   7 => "digital8",   8 => "digital9",
+  				  		      9 => "digital10", 10 => "digital11", 11 => "digital12",
+  						     12 => "digital13", 13 => "digital14", 14 => "digital15",
+  				             15 => "digital16")
+						),
 		"canbc" =>  array(0 => "analog1",    1 => "analog2",    2 => "analog3",
 						  3 => "power1",     4 => "kWh1",       5 => "MWh1",
 						  6 => "analog4",    7 => "analog5",    8 => "analog6",
@@ -91,7 +84,8 @@ class CmiDataset
 
 	public function __construct($string) {
 		$this->data = unpack("Csource/Cframe/Ccanid/Cdevice/C3id/C/Cunit/Cformat/Csize/C7", substr($string, 0, 18));
-		$this->desc = trim(substr($string, 18));
+		$this->data["desc"] = trim(substr($string, 18));
+		print_r($this->data);
 	}
 
 	public function getSize() {
@@ -141,7 +135,7 @@ class CmiDataset
 			case self::UVR:
 				return $this->mapping["uvr"][$this->data["id1"]];
 			case self::UVRX2:
-				return $this->mapping["uvrx2"][$this->data["id1"]];
+				return $this->mapping["uvrx2"][$this->data["id2"]][$this->data["id1"]%16];
 			case self::ESR21:
 				return $this->mapping["esr21"][$this->data["id1"]];
 			case self::CAN_EZ:
@@ -158,6 +152,8 @@ class CmiDataset
 			case self::UVR:
 			case self::ESR21:
 				return "f".$this->data["frame"].":".$this->data["canid"];
+			case self::UVRX2:
+				return "f".(floor($this->data["id1"]/16)).":".$this->data["canid"];
 			case self::CAN_BC:
 				if($this->data["id1"] < 13) {
 					return "f".$this->data["frame"].":".$this->data["canid"].":1";
