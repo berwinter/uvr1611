@@ -85,7 +85,6 @@ class CmiDataset
 	public function __construct($string) {
 		$this->data = unpack("Csource/Cframe/Ccanid/Cdevice/C3id/C/Cunit/Cformat/Csize/C7", substr($string, 0, 18));
 		$this->data["desc"] = trim(substr($string, 18));
-		print_r($this->data);
 	}
 
 	public function getSize() {
