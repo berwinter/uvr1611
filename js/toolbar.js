@@ -171,10 +171,17 @@ var toolbar = {
 		// init buttonsets
 		this.buttonset.buttonset();
 		this.period.buttonset().change(function(){
-			if(toolbar.getPeriod() == "week") {
-				toolbar.timeInc = 7*86400000;
-			}
-			else {
+			switch(toolbar.getPeriod()) {
+			case 'week':
+				toolbar.timeInc = 86400000*7;
+				break;
+			case 'month':
+				toolbar.timeInc = 86400000*30;
+				break;
+			case 'year':
+				toolbar.timeInc = 86400000*365;
+				break;
+			default:
 				toolbar.timeInc = 86400000;
 			}
 			menu.selectedItem.load();
