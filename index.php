@@ -86,8 +86,9 @@
 				</div>
 				<div id="grouping">
 					<input type="radio" id="month1" name="month" value="days" checked="checked"/><label for="month1">Tage</label>
-					<input type="radio" id="month2" name="month" value="months" /><label for="month2">Monate</label>
-					<input type="radio" id="month3" name="month" value="years" /><label for="month3">Jahre</label>
+					<input type="radio" id="month2" name="month" value="weeks" /><label for="month2">Wochen</label>
+					<input type="radio" id="month3" name="month" value="months" /><label for="month3">Monate</label>
+					<input type="radio" id="month4" name="month" value="years" /><label for="month4">Jahre</label>
 				</div>
 				<div id="buttonset" >
 					<button id="back">Zurück</button>

@@ -425,28 +425,64 @@ class Database
 			$i++;
 		}
 
-		if($grouping=="months") {
-			$sql = "SELECT DATE_FORMAT(temp.date, '%b 20%y') AS date, ";
-			$sql .= join(", ", $sums);
-			$sql .= " FROM (";
-			$sql .= "SELECT datasets.date, ";
-			$sql .= join(", ", $columns);
-			$sql .= " FROM t_energies AS datasets ";
-			$sql .= join(" ", $joins);
-			$sql .= " WHERE datasets.date < DATE_ADD(\"$date\",INTERVAL 1 DAY) ".
-					"AND datasets.date > DATE_SUB(\"$date\", INTERVAL 1 YEAR) ".
-					"GROUP BY datasets.date";
-			$sql .= ") AS temp GROUP BY MONTH(temp.date), YEAR(temp.date) ORDER BY temp.date ASC;";
+		switch($grouping) {
+			case 'years':
+				$sql =
+					"SELECT DATE_FORMAT(temp.date, '%Y ') AS date," . implode(", ", $sums) .
+					" FROM (" .
+					"  SELECT datasets.date, " . implode(", ", $columns) .
+					"   FROM t_energies AS datasets " .
+					implode(" ", $joins) .
+					"   WHERE YEAR(datasets.date)" .
+					"    BETWEEN YEAR(\"$date\")-9" .
+					"        AND YEAR(\"$date\")" .
+					"   GROUP BY datasets.date" .
+			        " ) AS temp" .
+			        " GROUP BY YEAR(temp.date)" .
+			        " ORDER BY temp.date ASC;";
+				break;
+			case 'months':
+				$sql =
+					"SELECT DATE_FORMAT(temp.date, '%b %Y') AS date," . implode(", ", $sums) .
+					" FROM (" .
+					"  SELECT datasets.date, " . implode(", ", $columns) .
+					"   FROM t_energies AS datasets " .
+					implode(" ", $joins) .
+					"   WHERE DATE_FORMAT(datasets.date, '%Y%m')" . 
+					"    BETWEEN PERIOD_ADD(DATE_FORMAT(\"$date\", '%Y%m'),-9)" .
+					"        AND DATE_FORMAT(\"$date\", '%Y%m')" .
+					"   GROUP BY datasets.date" .
+			        " ) AS temp" .
+			        " GROUP BY MONTH(temp.date), YEAR(temp.date)" .
+			        " ORDER BY temp.date ASC;";
+				break;
+			case 'weeks':
+				$sql =
+					"SELECT DATE_FORMAT(temp.date, '%Y-W%u') AS date," . implode(", ", $sums) .
+					" FROM (" .
+					"  SELECT datasets.date, " . implode(", ", $columns) .
+					"   FROM t_energies AS datasets " .
+					implode(" ", $joins) .
+					"   WHERE YEARWEEK(datasets.date,1)" .
+					"    BETWEEN YEARWEEK(DATE_SUB(\"$date\", INTERVAL 9 WEEK),1)" .
+					"        AND YEARWEEK(\"$date\",1)" .
+					"   GROUP BY datasets.date" .
+			        " ) AS temp" .
+			        " GROUP BY YEARWEEK(temp.date,1)" .
+			        " ORDER BY temp.date ASC;";
+				break;
+			default:
+				$sql = 
+					"SELECT DATE_FORMAT(datasets.date, '%d. %b') AS date, " . implode(", ", $columns) .
+					" FROM t_energies AS datasets " .
+					implode(" ", $joins) .
+					" WHERE datasets.date" .
+					"  BETWEEN DATE_SUB(\"$date\", INTERVAL 9 DAY)" .
+					"      AND \"$date\"" .
+					" GROUP BY datasets.date" .
+					" ORDER BY datasets.date ASC;";
 		}
-		else {
-			$sql = "SELECT DATE_FORMAT(datasets.date, '%d. %b') AS date, ";
-			$sql .= join(", ", $columns);
-			$sql .= " FROM t_energies AS datasets ";
-			$sql .= join(" ", $joins);
-			$sql .= " WHERE datasets.date < DATE_ADD(\"$date\",INTERVAL 1 DAY) ".
-					"AND datasets.date > DATE_SUB(\"$date\", INTERVAL 10 DAY) ".
-					"GROUP BY datasets.date ORDER BY datasets.date ASC;";
-		}
+
 		$statement->close();
 
 		// fetch chart data

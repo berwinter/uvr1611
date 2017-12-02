@@ -188,6 +188,9 @@ var toolbar = {
 		});
 		this.grouping.buttonset().change(function(){
 			switch(toolbar.getGrouping()) {
+				case 'weeks':
+					toolbar.timeInc = 86400000*7;
+					break;
 				case 'months':
 					toolbar.timeInc = 86400000*31;
 					break;
