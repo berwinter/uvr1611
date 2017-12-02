@@ -419,42 +419,34 @@ class Database
 		
 		// build chart query
 		while($statement->fetch()) {
-			$sums[] = "SUM($frame.$name)";
-			$columns[] = "$frame.$name";
+			$sums[] = "SUM(c$i)";
+			$columns[] = "$frame.$name AS c$i";
 			$joins[$frame] = "INNER JOIN t_energies AS $frame ON ($frame.date = datasets.date AND $frame.frame=\"$frame\")";
 			$i++;
 		}
 
-		switch($grouping) {
-			case 'years':
-				$sql  =
-					"SELECT DATE_FORMAT(datasets.date, '%Y ') AS date, " . implode(", ", $sums) .
-					" FROM t_energies AS datasets " .
-					implode(" ", $joins) .
-					" WHERE datasets.date < DATE_ADD(\"$date\",INTERVAL 1 DAY)" .
-					"  AND datasets.date > DATE_SUB(\"$date\", INTERVAL 10 YEAR)" .
-					" GROUP BY YEAR(datasets.date)";
-				break;
-			case 'months':
-				$sql  =
-					"SELECT DATE_FORMAT(datasets.date, '%b %Y') AS date, " . implode(", ", $sums) .
-					" FROM t_energies AS datasets " .
-					implode(" ", $joins) .
-					" WHERE datasets.date < DATE_ADD(\"$date\",INTERVAL 1 DAY)" .
-					"  AND datasets.date > DATE_SUB(\"$date\", INTERVAL 1 YEAR)" .
-					" GROUP BY MONTH(datasets.date), YEAR(datasets.date)";
-				break;
-			default:
-				$sql = 
-					"SELECT DATE_FORMAT(datasets.date, '%d. %b') AS date, " . implode(", ", $columns) .
-					" FROM t_energies AS datasets " .
-					implode(" ", $joins) .
-					" WHERE datasets.date < DATE_ADD(\"$date\",INTERVAL 1 DAY)" .
-					"  AND datasets.date > DATE_SUB(\"$date\", INTERVAL 10 DAY)" .
-					" GROUP BY datasets.date";
+		if($grouping=="months") {
+			$sql = "SELECT DATE_FORMAT(temp.date, '%b 20%y') AS date, ";
+			$sql .= join(", ", $sums);
+			$sql .= " FROM (";
+			$sql .= "SELECT datasets.date, ";
+			$sql .= join(", ", $columns);
+			$sql .= " FROM t_energies AS datasets ";
+			$sql .= join(" ", $joins);
+			$sql .= " WHERE datasets.date < DATE_ADD(\"$date\",INTERVAL 1 DAY) ".
+					"AND datasets.date > DATE_SUB(\"$date\", INTERVAL 1 YEAR) ".
+					"GROUP BY datasets.date";
+			$sql .= ") AS temp GROUP BY MONTH(temp.date), YEAR(temp.date) ORDER BY temp.date ASC;";
 		}
-		$sql .= " ORDER BY datasets.date ASC;";
-
+		else {
+			$sql = "SELECT DATE_FORMAT(datasets.date, '%d. %b') AS date, ";
+			$sql .= join(", ", $columns);
+			$sql .= " FROM t_energies AS datasets ";
+			$sql .= join(" ", $joins);
+			$sql .= " WHERE datasets.date < DATE_ADD(\"$date\",INTERVAL 1 DAY) ".
+					"AND datasets.date > DATE_SUB(\"$date\", INTERVAL 10 DAY) ".
+					"GROUP BY datasets.date ORDER BY datasets.date ASC;";
+		}
 		$statement->close();
 
 		// fetch chart data
