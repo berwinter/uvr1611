@@ -81,11 +81,14 @@
 				<div id="period">
 					<input type="radio" id="week1" name="week" value="day" checked="checked"/><label for="week1">Tag</label>
 					<input type="radio" id="week2" name="week" value="week" /><label for="week2">Woche</label>
-					<input type="radio" id="week3" name="week" value="year" /><label for="week3">Jahr</label>
+					<input type="radio" id="week3" name="week" value="month" /><label for="week3">Monat</label>
+					<input type="radio" id="week4" name="week" value="year" /><label for="week4">Jahr</label>
 				</div>
 				<div id="grouping">
 					<input type="radio" id="month1" name="month" value="days" checked="checked"/><label for="month1">Tage</label>
-					<input type="radio" id="month2" name="month" value="months" /><label for="month2">Monate</label>
+					<input type="radio" id="month2" name="month" value="weeks" /><label for="month2">Wochen</label>
+					<input type="radio" id="month3" name="month" value="months" /><label for="month3">Monate</label>
+					<input type="radio" id="month4" name="month" value="years" /><label for="month4">Jahre</label>
 				</div>
 				<div id="buttonset" >
 					<button id="back">Zurück</button>
