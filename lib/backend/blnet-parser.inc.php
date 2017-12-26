@@ -14,12 +14,16 @@ class BlnetParser
 	/**
 	 * Parser constant
 	 */
-	const SIGN_BIT = 0x8000;
-	const POSITIVE_VALUE_MASK = 0x00000FFF;
+	// 1 bit
 	const DIGITAL_ON = 1;
 	const DIGITAL_OFF = 0;
+	// 8 bit
 	const SPEED_ACTIVE = 0x80;
 	const SPEED_MASK = 0x1F;
+	// 16 bit
+	const INT16_POSITIVE_MASK = 0xFFFF;
+	const SIGN_BIT = 0x8000;
+	const POSITIVE_VALUE_MASK = 0x0FFF;
 	const TYPE_MASK = 0x7000;
 	const TYPE_NONE = 0x0000;
 	const TYPE_DIGITAL = 0x1000;
@@ -27,7 +31,8 @@ class BlnetParser
 	const TYPE_VOLUME = 0x3000;
 	const TYPE_RADIATION = 0x4000;
 	const TYPE_RAS = 0x7000;
-	const RAS_POSITIVE_MASK = 0x000001FF;
+	const RAS_POSITIVE_MASK = 0x01FF;
+	// 32 bit
 	const INT32_MASK = 0xFFFFFFFF;
 	const INT32_SIGN = 0x80000000;
 	
@@ -105,19 +110,13 @@ class BlnetParser
 	 */
 	private static function convertAnalog($value)
 	{
-		// calculate result value
-		$result = $value & self::POSITIVE_VALUE_MASK;
-		if($value & self::SIGN_BIT) {
-			$result = -(($result ^ self::POSITIVE_VALUE_MASK)+1);
-		}
-		
 		// choose type
 		switch($value & self::TYPE_MASK)
 		{
 			case self::TYPE_TEMP:
-				return $result/10;
+				return self::calculateValue($value, 0.1);
 			case self::TYPE_VOLUME:
-				return $result*4;
+				return self::calculateValue($value, 4);
 			case self::TYPE_DIGITAL:
 				if($value & self::SIGN_BIT) {
 					return 1;
@@ -126,14 +125,11 @@ class BlnetParser
 					return 0;
 				}
 			case self::TYPE_RAS:
-				$result = $value & self::RAS_POSITIVE_MASK;
-				if($value & self::SIGN_BIT) {
-					return (-(($result ^ self::RAS_POSITIVE_MASK)+1)/10);
-				}
+				return self::calculateValue($value, 0.1, self::RAS_POSITIVE_MASK);
 			case self::TYPE_RADIATION:
 			case self::TYPE_NONE:
 			default:
-				return $result;
+				return self::calculateValue($value);
 		}
 	}
 	
@@ -179,7 +175,8 @@ class BlnetParser
 	private static function convertEnergy($MWh, $kWh, $active, $position)
 	{
 		if($active & $position) {
-			return ($MWh*1000 + $kWh/10);
+			$kWh = self::calculateValue($kWh, 0.1, self::INT16_POSITIVE_MASK);
+			return ($MWh*1000 + $kWh);
 		}
 		else{
 			return "NULL";
@@ -197,15 +194,26 @@ class BlnetParser
 	private static function convertPower($value, $active, $position)
 	{
 		if($active & $position) {
-			if($value & self::INT32_SIGN) {
-				return -(($value ^ self::INT32_MASK)+1) / 2560;
-			}
-			else {
-				return ($value/2560);
-			}
+			return self::calculateValue($value, 1 / 2560, self::INT32_MASK, self::INT32_SIGN);
 		}
 		else {
 			return "NULL";
 		}
+	}
+
+	/**
+	 * Calculate value with multiplier and positive mask
+	 * @param int $value
+	 * @param float $multiplier
+	 * @param int $positivemask
+	 * @return value
+	 */
+	private static function calculateValue($value, $multiplier = 1, $positivemask = self::POSITIVE_VALUE_MASK, $signbit = self::SIGN_BIT)
+	{
+		$result = $value & $positivemask;
+		if($value & $signbit) {
+			$result = -(($result ^ $positivemask) + 1);
+		}
+		return $result * $multiplier;
 	}
 }
