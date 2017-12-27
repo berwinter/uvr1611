@@ -202,7 +202,7 @@ class Database
 		$sql = "SELECT *, min(subtab.diff) as mindiff FROM (SELECT *, ABS(UNIX_TIMESTAMP(date)-$date) as diff FROM t_data WHERE date > CURDATE() ORDER BY diff LIMIT 8) AS subtab GROUP BY subtab.frame;";
 		$rows = array();
 		if(	$result = $this->mysqli->query($sql)) {
-			while($r = $result->fetch_array(MYSQL_ASSOC)) {
+			while($r = $result->fetch_array(MYSQLI_ASSOC)) {
 				$rows[$r["frame"]] = $r;
 				$rows["time"] = date("H:i:s",strtotime($r["date"]));
 				$current_energy = self::getCurrentEnergy($r["frame"]);
