@@ -1,0 +1,18 @@
+web:
+    build: app
+    ports:
+        - "8080:80"
+    volumes:
+        - ./site.conf:/etc/nginx/conf.d/site.conf
+    links:
+        - uvr1611
+        
+uvr1611:
+    build: api
+    links:
+        - database
+
+database:
+    image: mariadb:latest
+    volumes:
+        - ./datadir:/var/lib/mysql

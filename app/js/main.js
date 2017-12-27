@@ -4,7 +4,7 @@ var menu = {
 	init: function()
 	{
 		$.ajax({
-		    url: "menu.php",
+		    url: "api/menu",
 		    dataType:"json",
 		    success: function(jsonData){
 		    	actualValues.values = jsonData.values;
@@ -45,14 +45,14 @@ var menu = {
 							$item.find("div.icon").addClass("chart");
 							item["container"] = $pages.find("#chart_container");
 							item["load"] = lineChart.fetch;
-							item["page"] = "analogChart.php"
+							item["page"] = "api/chart/analog"
 							item["table"] = new Table(item);
 					  		break;
 						case 'power':
 							$item.find("div.icon").addClass("chart");
 							item["container"] = $pages.find("#chart_container");
 							item["load"] = lineChart.fetch;
-							item["page"] = "powerChart.php";
+							item["page"] = "api/chart/power";
 							item["table"] = new Table(item);
 					  		break;
 					}
@@ -353,7 +353,7 @@ var actualValues =
 	{
 		actualValues.date = (typeof date !== 'undefined' ? date : null);
 		$.ajax({
-			url: "latest.php" + (actualValues.date ? "?date="+actualValues.date : ""),
+			url: "api/latest" + (actualValues.date ? "?date="+actualValues.date : ""),
 			dataType:"json",
 			success: this.display
 		});

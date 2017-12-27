@@ -249,7 +249,7 @@ var barChart = {
 	{
 		var chartId = menu.selectedItem["id"];
 		$.ajax({
-			url: "energyChart.php",
+			url: "api/chart/energy",
 			data: {
 				date: (toolbar.date.getFullYear() + "-" + (toolbar.date.getMonth() + 1) + "-" + toolbar.date.getDate()),
 				grouping: toolbar.getGrouping(),
@@ -316,7 +316,7 @@ var minmaxChart = {
 		fetch: function(line)
 		{		
 			$.ajax({
-				url: "minmaxChart.php",
+				url: "api/chart/minmax",
 				data: {
 					date: (toolbar.date.getFullYear() + "-" + (toolbar.date.getMonth() + 1) + "-" + toolbar.date.getDate()),
 					type: menu.selectedItem.columns.analog[line].type,

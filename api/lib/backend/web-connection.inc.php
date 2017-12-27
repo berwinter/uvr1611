@@ -7,11 +7,10 @@
  * @copyright  Copyright (c) Bertram Winter bertram.winter@gmail.com
  * @license    GPLv3 License
  */
-include_once("config.inc.php");
-include_once("uvr1611.inc.php");
-include_once("cmi-parser.inc.php");
-include_once("cmi-connection.inc.php");
-error_reporting(0);
+include_once("lib/config.inc.php");
+include_once("lib/backend/uvr1611.inc.php");
+include_once("lib/backend/cmi-parser.inc.php");
+include_once("lib/backend/cmi-connection.inc.php");
 
 class WebConnection extends CmiConnection
 {	

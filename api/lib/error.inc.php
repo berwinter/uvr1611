@@ -6,6 +6,12 @@
  * @license    GPLv3 License
  */
 include_once("lib/config.inc.php");
+if($config->app->debug) {
+	error_reporting(1);
+}
+else {
+	error_reporting(0);
+}
 
 function sendAjaxError($e){
 	header_remove();

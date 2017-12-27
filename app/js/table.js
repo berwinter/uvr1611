@@ -60,7 +60,7 @@ function Table(item)
 		
 		// fill digital table
 		$.ajax({
-			url: "digitalStats.php",
+			url: "api/chart/digital",
 			data: {
 				date: (toolbar.date.getFullYear() + "-" + (toolbar.date.getMonth() + 1) + "-" + toolbar.date.getDate()),
 				id: menu.selectedItem.id,

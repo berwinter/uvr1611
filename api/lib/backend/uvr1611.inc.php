@@ -12,7 +12,6 @@ include_once("lib/backend/cmi-connection.inc.php");
 include_once("lib/backend/web-connection.inc.php");
 include_once("lib/backend/blnet-connection.inc.php");
 include_once("lib/backend/database.inc.php");
-error_reporting(0);
 
 class Uvr1611
 {

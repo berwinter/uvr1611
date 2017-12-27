@@ -271,7 +271,7 @@ var toolbar = {
 		if(!menu.loggedin) {
 			$.ajax({
 			    type: "POST",
-			    url: "login.php",
+			    url: "api/user/login",
 		        dataType:"json",
 			    data: {"user": "admin", "password": $("#login_password").val()},
 				success: function(data) {
@@ -292,7 +292,7 @@ var toolbar = {
 		else {
 			$.ajax({
 			    type: "POST",
-			    url: "logout.php",
+			    url: "api/user/logout",
 		        dataType:"json",
 				success: function(data) {
 					$("#login_password").val("");
@@ -334,7 +334,7 @@ var dialog = {
 		}
 		else {
 			$.ajax({
-			    url: "names.php",
+			    url: "api/chart/names",
 		        dataType:"json",
 				success: function(data) {
 					dialog.names = data;
@@ -391,7 +391,7 @@ var dialog = {
 
 		$.ajax({
 		    type: "POST",
-		    url: "editChart.php",
+		    url: "api/chart/edit",
 			data: {chartid: dialog.item.id, names: lines},
 	        dataType:"json",
 			success: function(data) {
