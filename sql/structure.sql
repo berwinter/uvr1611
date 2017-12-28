@@ -3,15 +3,15 @@
 */
 
 CREATE TABLE IF NOT EXISTS `t_chartoptions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `chard_id` int(11) NOT NULL,
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `chard_id` int(10) UNSIGNED NOT NULL,
   `property` varchar(120) NOT NULL,
   `value` varchar(120) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `t_users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
   `password` varchar(128) NOT NULL,
   `salt` varchar(128) NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `t_users` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `t_data` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `date` datetime NOT NULL,
   `frame` enum('frame1','frame2','frame3','frame4','frame5','frame6','frame7','frame8') NOT NULL,
   `analog1` float,
@@ -39,26 +39,26 @@ CREATE TABLE IF NOT EXISTS `t_data` (
   `analog14` float,
   `analog15` float,
   `analog16` float,
-  `digital1` char(1),
-  `digital2` char(1),
-  `digital3` char(1),
-  `digital4` char(1),
-  `digital5` char(1),
-  `digital6` char(1),
-  `digital7` char(1),
-  `digital8` char(1),
-  `digital9` char(1),
-  `digital10` char(1),
-  `digital11` char(1),
-  `digital12` char(1),
-  `digital13` char(1),
-  `digital14` char(1),
-  `digital15` char(1),
-  `digital16` char(1),
-  `speed1` int(2),
-  `speed2` int(2),
-  `speed3` int(2),
-  `speed4` int(2),
+  `digital1` bit(1),
+  `digital2` bit(1),
+  `digital3` bit(1),
+  `digital4` bit(1),
+  `digital5` bit(1),
+  `digital6` bit(1),
+  `digital7` bit(1),
+  `digital8` bit(1),
+  `digital9` bit(1),
+  `digital10` bit(1),
+  `digital11` bit(1),
+  `digital12` bit(1),
+  `digital13` bit(1),
+  `digital14` bit(1),
+  `digital15` bit(1),
+  `digital16` bit(1),
+  `speed1` tinyint(2) UNSIGNED,
+  `speed2` tinyint(2) UNSIGNED,
+  `speed3` tinyint(2) UNSIGNED,
+  `speed4` tinyint(2) UNSIGNED,
   `power1` float,
   `power2` float,
   `energy1` decimal(10,1),
@@ -69,11 +69,11 @@ CREATE TABLE IF NOT EXISTS `t_data` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 CREATE TABLE IF NOT EXISTS `t_menu` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL,
   `unit` varchar(10) DEFAULT NULL,
   `type` varchar(20) NOT NULL,
-  `order` tinyint(4) DEFAULT NULL,
+  `order` tinyint(3) UNSIGNED DEFAULT NULL,
   `schema` varchar(200) DEFAULT NULL,
   `view` varchar(50) DEFAULT NULL,
   `logger` varchar(45) NOT NULL DEFAULT 'uvr1611',
@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS `t_menu` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `t_schema` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `path` varchar(200) NOT NULL,
   `frame` enum('frame1','frame2','frame3','frame4','frame5','frame6','frame7','frame8') NOT NULL,
   `type` enum('analog1','analog2','analog3','analog4','analog5','analog6','analog7','analog8','analog9','analog10','analog11','analog12','analog13','analog14','analog15','analog16','digital1','digital2','digital3','digital4','digital5','digital6','digital7','digital8','digital9','digital10','digital11','digital12','digital13','digital14','digital15','digital16','speed1','speed2','speed3','speed4','energy1','energy2','power1','power2','current_energy1','current_energy2') NOT NULL,
@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `t_schema` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `t_names` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `frame` enum('frame1','frame2','frame3','frame4','frame5','frame6','frame7','frame8') NOT NULL,
   `type` enum('analog1','analog2','analog3','analog4','analog5','analog6','analog7','analog8','analog9','analog10','analog11','analog12','analog13','analog14','analog15','analog16','digital1','digital2','digital3','digital4','digital5','digital6','digital7','digital8','digital9','digital10','digital11','digital12','digital13','digital14','digital15','digital16','speed1','speed2','speed3','speed4','energy1','energy2','power1','power2') NOT NULL,
   `name` varchar(200) DEFAULT NULL,
@@ -103,16 +103,16 @@ CREATE TABLE IF NOT EXISTS `t_names` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `t_names_of_charts` (
-  `chart_id` int(11) NOT NULL,
+  `chart_id` int(10) UNSIGNED NOT NULL,
   `type` enum('analog1','analog2','analog3','analog4','analog5','analog6','analog7','analog8','analog9','analog10','analog11','analog12','analog13','analog14','analog15','analog16','digital1','digital2','digital3','digital4','digital5','digital6','digital7','digital8','digital9','digital10','digital11','digital12','digital13','digital14','digital15','digital16','speed1','speed2','speed3','speed4','energy1','energy2','power1','power2') NOT NULL,
   `frame` enum('frame1','frame2','frame3','frame4','frame5','frame6','frame7','frame8') NOT NULL,
-  `order` int(11) DEFAULT NULL,
+  `order` int(10) UNSIGNED DEFAULT NULL,
   `logger` varchar(45) NOT NULL DEFAULT 'uvr1611',
   PRIMARY KEY (`chart_id`,`type`,`frame`,`logger`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `t_energies` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `date` datetime NOT NULL,
   `frame` enum('frame1','frame2','frame3','frame4','frame5','frame6','frame7','frame8') NOT NULL,
   `energy1` decimal(10,1) DEFAULT NULL,
@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `t_energies` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 CREATE TABLE IF NOT EXISTS `t_max` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `date` datetime NOT NULL,
   `frame` enum('frame1','frame2','frame3','frame4','frame5','frame6','frame7','frame8') NOT NULL,
   `analog1` float DEFAULT NULL,
@@ -142,10 +142,10 @@ CREATE TABLE IF NOT EXISTS `t_max` (
   `analog14` float DEFAULT NULL,
   `analog15` float DEFAULT NULL,
   `analog16` float DEFAULT NULL,
-  `speed1` int(2) DEFAULT NULL,
-  `speed2` int(2) DEFAULT NULL,
-  `speed3` int(2) DEFAULT NULL,
-  `speed4` int(2) DEFAULT NULL,
+  `speed1` tinyint(2) UNSIGNED DEFAULT NULL,
+  `speed2` tinyint(2) UNSIGNED DEFAULT NULL,
+  `speed3` tinyint(2) UNSIGNED DEFAULT NULL,
+  `speed4` tinyint(2) UNSIGNED DEFAULT NULL,
   `power1` float DEFAULT NULL,
   `power2` float DEFAULT NULL,
   `logger` varchar(45) NOT NULL DEFAULT 'uvr1611',
@@ -154,7 +154,7 @@ CREATE TABLE IF NOT EXISTS `t_max` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 CREATE TABLE IF NOT EXISTS `t_min` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `date` datetime NOT NULL,
   `frame` enum('frame1','frame2','frame3','frame4','frame5','frame6','frame7','frame8') NOT NULL,
   `analog1` float DEFAULT NULL,
@@ -173,10 +173,10 @@ CREATE TABLE IF NOT EXISTS `t_min` (
   `analog14` float DEFAULT NULL,
   `analog15` float DEFAULT NULL,
   `analog16` float DEFAULT NULL,
-  `speed1` int(2) DEFAULT NULL,
-  `speed2` int(2) DEFAULT NULL,
-  `speed3` int(2) DEFAULT NULL,
-  `speed4` int(2) DEFAULT NULL,
+  `speed1` tinyint(2) UNSIGNED DEFAULT NULL,
+  `speed2` tinyint(2) UNSIGNED DEFAULT NULL,
+  `speed3` tinyint(2) UNSIGNED DEFAULT NULL,
+  `speed4` tinyint(2) UNSIGNED DEFAULT NULL,
   `power1` float DEFAULT NULL,
   `power2` float DEFAULT NULL,
   `logger` varchar(45) NOT NULL DEFAULT 'uvr1611',
@@ -185,7 +185,7 @@ CREATE TABLE IF NOT EXISTS `t_min` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 CREATE TABLE IF NOT EXISTS `t_digital_times` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `date` datetime NOT NULL,
   `frame` enum('frame1','frame2','frame3','frame4','frame5','frame6','frame7','frame8') NOT NULL,
   `digital1` float DEFAULT NULL,
@@ -210,25 +210,25 @@ CREATE TABLE IF NOT EXISTS `t_digital_times` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 CREATE TABLE IF NOT EXISTS `t_digital_counts` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `date` datetime NOT NULL,
   `frame` enum('frame1','frame2','frame3','frame4','frame5','frame6','frame7','frame8') NOT NULL,
-  `digital1` int(3) DEFAULT NULL,
-  `digital2` int(3) DEFAULT NULL,
-  `digital3` int(3) DEFAULT NULL,
-  `digital4` int(3) DEFAULT NULL,
-  `digital5` int(3) DEFAULT NULL,
-  `digital6` int(3) DEFAULT NULL,
-  `digital7` int(3) DEFAULT NULL,
-  `digital8` int(3) DEFAULT NULL,
-  `digital9` int(3) DEFAULT NULL,
-  `digital10` int(3) DEFAULT NULL,
-  `digital11` int(3) DEFAULT NULL,
-  `digital12` int(3) DEFAULT NULL,
-  `digital13` int(3) DEFAULT NULL,
-  `digital14` int(3) DEFAULT NULL,
-  `digital15` int(3) DEFAULT NULL,
-  `digital16` int(3) DEFAULT NULL,
+  `digital1` smallint(3) UNSIGNED DEFAULT NULL,
+  `digital2` smallint(3) UNSIGNED DEFAULT NULL,
+  `digital3` smallint(3) UNSIGNED DEFAULT NULL,
+  `digital4` smallint(3) UNSIGNED DEFAULT NULL,
+  `digital5` smallint(3) UNSIGNED DEFAULT NULL,
+  `digital6` smallint(3) UNSIGNED DEFAULT NULL,
+  `digital7` smallint(3) UNSIGNED DEFAULT NULL,
+  `digital8` smallint(3) UNSIGNED DEFAULT NULL,
+  `digital9` smallint(3) UNSIGNED DEFAULT NULL,
+  `digital10` smallint(3) UNSIGNED DEFAULT NULL,
+  `digital11` smallint(3) UNSIGNED DEFAULT NULL,
+  `digital12` smallint(3) UNSIGNED DEFAULT NULL,
+  `digital13` smallint(3) UNSIGNED DEFAULT NULL,
+  `digital14` smallint(3) UNSIGNED DEFAULT NULL,
+  `digital15` smallint(3) UNSIGNED DEFAULT NULL,
+  `digital16` smallint(3) UNSIGNED DEFAULT NULL,
   `logger` varchar(45) NOT NULL DEFAULT 'uvr1611',
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQUE` (`date`,`frame`,`logger`)
