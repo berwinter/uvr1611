@@ -7,6 +7,7 @@
  * @copyright  Copyright (c) Bertram Winter bertram.winter@gmail.com
  * @license    GPLv3 License
  */
+include_once("lib/error.inc.php");
 include_once("lib/config.inc.php");
 include_once("lib/backend/uvr1611.inc.php");
 include_once("lib/backend/blnet-parser.inc.php");
@@ -30,12 +31,13 @@ class BlnetConnection
 	const MAX_RETRYS = 10;
 	const DATASET_SIZE = 61;
 	const LATEST_SIZE = 56;
-	
-	
+
+
 	/**
 	 * Privates
 	 */
 	private $config;
+	private $logger;
 	private $debug;
 	private $sock = null;
 	private $count=-1;
@@ -50,11 +52,11 @@ class BlnetConnection
 	/**
 	 * Constructor
 	 */
-	public function __construct()
+	public function __construct($config, $logger)
 	{
-		$config = Config::getInstance();
-		$this->config = $config->uvr1611;
-		$this->debug = $config->app->debug;
+		$this->logger = $logger;
+		$this->config = $config;
+		$this->debug = Config::getInstance()->app->debug;
 		$this->checkMode();
 	}
 
@@ -77,7 +79,7 @@ class BlnetConnection
 			// try 4 times to get values
 			for($i=0; $i<self::MAX_RETRYS; $i++) {
 				$data = $this->query($cmd, $this->actualSize);
-				
+
 				if($this->checksum($data)) {
 					$binary = unpack("C*",$data);
 					if($binary[1] == self::WAIT_TIME) {
@@ -87,7 +89,7 @@ class BlnetConnection
 						sleep($binary[2]);
 						$this->connect();
 					}
-					else {	
+					else {
 						$info["got"]["frame$j"] = $i;
 						$frames = array_merge($frames, $this->splitLatest($data, "frame$j"));
 						break;
@@ -109,7 +111,7 @@ class BlnetConnection
 		}
 		throw new Exception("Could not get latest data.");
 	}
-	
+
 	/**
 	 * Start read on the bootloader
 	 */
@@ -118,7 +120,7 @@ class BlnetConnection
 		create_pid();
 		return $this->getCount();
 	}
-	
+
 	/**
 	 * End read and reset memory on the bootloader
 	 */
@@ -140,8 +142,8 @@ class BlnetConnection
 		close_pid();
 		$this->disconnect();
 	}
-	
-	
+
+
 	/**
 	 * Fetch datasets from bootloader memory
 	 * @throws Exception Checksum error
@@ -151,18 +153,18 @@ class BlnetConnection
 	{
 		if($this->count > 0) {
 			$this->connect();
-			
+
 			// build address for bootloader
 			$address1 = $this->address & 0xFF;
 			$address2 = ($this->address & 0x7F00)>>7;
 			$address3 = ($this->address & 0xFF8000)>>15;
-			
+
 			// build command
 			$cmd = pack("C6", self::READ_DATA, $address1, $address2, $address3, 1,
 							  self::READ_DATA + 1 + $address1 + $address2 + $address3);
-			
+
 			$data = $this->query($cmd, $this->fetchSize);
-			
+
 			if($this->checksum($data)) {
 				// increment address
 				$this->address -= $this->addressInc;
@@ -174,7 +176,7 @@ class BlnetConnection
 			throw new Exception("Could not get data.");
 		}
 	}
-	
+
 	/**
 	 * Get the number of datasets in the bootloader memory
 	 * @return number
@@ -184,7 +186,7 @@ class BlnetConnection
 		if($this->count == -1) {
 			$this->connect();
 			$data = $this->query(self::GET_HEADER, 21);
-			
+
 			if($this->checksum($data)) {
 				switch($this->mode) {
 					case self::CAN_MODE:
@@ -214,10 +216,10 @@ class BlnetConnection
 						$this->fetchSize = 126;
 						break;
 				}
-				
+
 				$this->addressEnd = floor(0x07FFFF/$this->addressInc)*$this->addressInc;
-				
-				
+
+
 				// check if address is valid (!= 0xFFFFFF)
 				if($binary["startaddress3"] != 0xFF ||
 				   $binary["startaddress2"] != 0xFF ||
@@ -233,7 +235,7 @@ class BlnetConnection
 					$endaddress = ($binary["endaddress3"] << 15)
 							    + ($binary["endaddress2"] << 7)
 							    + $binary["endaddress1"];
-					
+
 					if($endaddress > $startaddress) {
 						// calculate count
 						$this->count = (($endaddress - $startaddress)
@@ -251,7 +253,7 @@ class BlnetConnection
 		}
 		return $this->count;
 	}
-	
+
 	/**
 	 * Check if Bootloader Mode is supported
 	 * @throws Exception Mode not supported
@@ -270,7 +272,7 @@ class BlnetConnection
 		}
 		throw new Exception('BL-Net mode is not supported.');
 	}
-	
+
 	/**
 	 * Connect via TCP to the bootloader
 	 */
@@ -283,7 +285,7 @@ class BlnetConnection
 						   $this->config->port);
 		}
 	}
-	
+
 	/**
 	 * Disconnect from the bootloader
 	 */
@@ -292,7 +294,7 @@ class BlnetConnection
 		socket_close($this->sock);
 		$this->sock = null;
 	}
-	
+
 	/**
 	 * Verify the checksum
 	 * @param string $data Binary string to check
@@ -306,7 +308,7 @@ class BlnetConnection
 		$checksum = array_pop($binary);
 		// sum up all bytes
 		foreach($binary as $byte) {
-			$sum += $byte;	
+			$sum += $byte;
 		}
 		// verify the checksum
 		if(($sum % 256) == $checksum) {
@@ -314,7 +316,7 @@ class BlnetConnection
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Send a command to the bootloader and wait for the response
 	 * if response is less then 32 bytes long return immediately
@@ -334,14 +336,14 @@ class BlnetConnection
 				$data .= $return;
 			}
 			while(strlen($return)>32 && strlen($data) < $length);
-			
+
 			return $data;
 		}
 
 		$this->disconnect();
 		throw new Exception('Error while querying command.\nCommand: '.bin2hex($cmd));
 	}
-	
+
 	/**
 	 * Split a binary string in datasets and parse it (Datasets values)
 	 * @param string $data
@@ -376,10 +378,10 @@ class BlnetConnection
 			return false;
 		}
 		else {
-			return $frames;	
+			return $frames;
 		}
 	}
-	
+
 	private function logDataset($data, $frames)
 	{
 		$text ="";
@@ -390,7 +392,7 @@ class BlnetConnection
 		$temp = sys_get_temp_dir();
 		file_put_contents("$temp/uvr1611-logger.log", $text, FILE_APPEND);
 	}
-	
+
 	/**
 	 * Split a binary string in datasets and parse it (Actuell values)
 	 * @param string $data
@@ -404,23 +406,23 @@ class BlnetConnection
 		switch($this->mode) {
 			case self::CAN_MODE:
 				$frames[$frame] = (array)(new BlnetParser(substr($data, 1, self::LATEST_SIZE)));
-				$current_energy = $database->getCurrentEnergy($frame);
+				$current_energy = $database->getCurrentEnergy($frame, $this->logger);
 				$frames[$frame]["current_energy1"] = $current_energy[0];
 				$frames[$frame]["current_energy2"] = $current_energy[1];
 				break;
 			case self::DL_MODE:
 				$frames["frame1"] = (array)(new BlnetParser(substr($data, 1, self::LATEST_SIZE)));
-				$current_energy = $database->getCurrentEnergy("frame1");
+				$current_energy = $database->getCurrentEnergy("frame1", $this->logger);
 				$frames["frame1"]["current_energy1"] = $current_energy[0];
 				$frames["frame1"]["current_energy2"] = $current_energy[1];
 				break;
 			case self::DL2_MODE:
 				$frames["frame1"] = (array)(new BlnetParser(substr($data, 1, self::LATEST_SIZE)));
-				$current_energy = $database->getCurrentEnergy("frame1");
+				$current_energy = $database->getCurrentEnergy("frame1", $this->logger);
 				$frames["frame1"]["current_energy1"] = $current_energy[0];
 				$frames["frame1"]["current_energy2"] = $current_energy[1];
 				$frames["frame2"] = (array)(new BlnetParser(substr($data,1+self::LATEST_SIZE, self::LATEST_SIZE)));
-				$current_energy = $database->getCurrentEnergy("frame2");
+				$current_energy = $database->getCurrentEnergy("frame2", $this->logger);
 				$frames["frame2"]["current_energy1"] = $current_energy[0];
 				$frames["frame2"]["current_energy2"] = $current_energy[1];
 				break;

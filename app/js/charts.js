@@ -65,7 +65,7 @@ var lineChart = {
 	draw: function()
 	{
 		var table = [];
-		var columns = [0]; 
+		var columns = [0];
 		this.data = {};
 		this.data.analog = new google.visualization.DataTable();
 		this.data.analogView = new google.visualization.DataView(this.data.analog);
@@ -74,34 +74,34 @@ var lineChart = {
 		this.data.analog.addColumn('datetime', 'Time');
 		this.data.digital.addColumn('datetime', 'Time');
 		var cols = menu.selectedItem["columns"];
-		
+
 		this.json.digital = [];
 		this.json.analog = [];
-		
-		for ( var i = 0; i < this.json.length; i++ ) { 
+
+		for ( var i = 0; i < this.json.length; i++ ) {
 			this.json.digital[i] = [];
 			this.json.analog[i] = [];
 			this.json.digital[i][0] = new Date(this.json[i][0]*1000);
 			this.json.analog[i][0] = new Date(this.json[i][0]*1000);
 		}
-		
+
 		for (var i in cols.analog) {
 			this.data.analog.addColumn('number', cols.analog[i].name);
 			columns.push(columns.length);
 			var tableRow = {min:{value:null},max:{value:null},avg:{value:0}};
-			for (var j = 0; j < this.json.length; j++ ) { 
+			for (var j = 0; j < this.json.length; j++ ) {
 				var value = this.json[j][cols.analog[i].index];
 				this.json.analog[j].push(value);
 				if(tableRow.min.value == null || value < tableRow.min.value) {
 					tableRow.min.value = value;
-					tableRow.min.time = this.json.analog[j][0];	
-					tableRow.min.row = j;	
+					tableRow.min.time = this.json.analog[j][0];
+					tableRow.min.row = j;
 					tableRow.min.column = this.json.analog[j].length-1;
 				}
 				if(tableRow.max.value == null || value > tableRow.max.value) {
 					tableRow.max.value = value;
 					tableRow.max.time = this.json.analog[j][0];
-					tableRow.max.row = j;	
+					tableRow.max.row = j;
 					tableRow.max.column = this.json.analog[j].length-1;
 				}
 				tableRow.avg.value += value;
@@ -126,7 +126,7 @@ var lineChart = {
 		for (var i in cols.digital) {
 			this.data.digital.addColumn('number', cols.digital[i].name);
 			var lastValue;
-			for ( var j = 0; j < this.json.length; j++ ) { 
+			for ( var j = 0; j < this.json.length; j++ ) {
 				var value = this.json[j][cols.digital[i].index];
 				this.json.digital[j].push({v:value*0.7+(this.json.digital[j].length-1)*1, f:(value?"EIN":"AUS")});
 				if(value != lastValue & j>0) {
@@ -135,7 +135,7 @@ var lineChart = {
 				}
 			}
 		}
-		// set diagram start and end date	
+		// set diagram start and end date
 		var tempDate = new Date(toolbar.date.getFullYear(), toolbar.date.getMonth(), toolbar.date.getDate());
 		this.startDate = new Date(tempDate.getTime() + 86400000 - toolbar.timeInc);
 		this.endDate = new Date(this.startDate.getTime() + toolbar.timeInc + 1);
@@ -179,7 +179,7 @@ var lineChart = {
 		else {
 			$("#step_chart").hide();
 		}
-		
+
 		this.zoomed = false;
 
 	},
@@ -280,16 +280,16 @@ var barChart = {
 	{
 		var data = new google.visualization.DataTable();
 		data.addColumn('string', 'Date');
-		
+
 		var cols = menu.selectedItem["columns"].analog;
 		var table = {};
-		
+
 		for (var i in cols)
 		{
 			data.addColumn('number', cols[i].name);
 			table[i] = this.json.statistics[cols[i].frame][cols[i].type];
 		}
-		
+
 		menu.selectedItem.table.fill(table, this.options.vAxis.format);
 		data.addRows(this.json.rows);
 		this.chart.draw(data, this.options);
@@ -314,13 +314,14 @@ var minmaxChart = {
 			this.chart = new google.visualization.LineChart(document.getElementById('minmax_chart'));
 		},
 		fetch: function(line)
-		{		
+		{
 			$.ajax({
 				url: "api/chart/minmax",
 				data: {
 					date: (toolbar.date.getFullYear() + "-" + (toolbar.date.getMonth() + 1) + "-" + toolbar.date.getDate()),
 					type: menu.selectedItem.columns.analog[line].type,
-					frame: menu.selectedItem.columns.analog[line].frame
+					frame: menu.selectedItem.columns.analog[line].frame,
+					logger: menu.selectedItem.columns.analog[line].logger
 				},
 				dataType:"json",
 				timeout: 120000,
@@ -353,13 +354,13 @@ var minmaxChart = {
 			this.data.addColumn('number', 'Minimum '+menu.selectedItem.columns.analog[line].name);
 			this.data.addColumn('number', 'Maximum '+menu.selectedItem.columns.analog[line].name);
 			// format date
-			for ( var i = 0; i < this.json.length; i++ ) { 
+			for ( var i = 0; i < this.json.length; i++ ) {
 				this.json[i][0] = new Date(this.json[i][0]*1000);
 			}
-			
-			this.data.addRows(this.json);	
+
+			this.data.addRows(this.json);
 			// set unit
-			this.options.vAxis.format = menu.selectedItem["unit"];		
+			this.options.vAxis.format = menu.selectedItem["unit"];
 			this.chart.draw(this.data, this.options);
 		}
 	}

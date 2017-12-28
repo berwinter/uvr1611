@@ -7,6 +7,8 @@
  * @copyright  Copyright (c) Bertram Winter bertram.winter@gmail.com
  * @license    GPLv3 License
  */
+
+include_once("lib/error.inc.php");
 include_once("lib/config.inc.php");
 include_once("lib/backend/cmi-connection.inc.php");
 include_once("lib/backend/web-connection.inc.php");
@@ -15,24 +17,24 @@ include_once("lib/backend/database.inc.php");
 
 class Uvr1611
 {
-	public static $instance;
-	public static function getInstance()
+	public static $instances;
+	public static function getInstance($logger="uvr1611")
 	{
-		if (null == self::$instance) {
-			$config = Config::getInstance()->uvr1611;
-			
+		if (!isset(self::$instances[$logger])) {
+			$config = Config::getInstance()->$logger;
+
 			switch($config->logger) {
-				case "cmi": 
-					self::$instance = new CmiConnection();
+				case "cmi":
+					self::$instances[$logger] = new CmiConnection($config, $logger);
 					break;
-				case "portal": 
-					self::$instance = new WebConnection();
+				case "portal":
+					self::$instances[$logger] = new WebConnection($config, $logger);
 					break;
 				default:
-					self::$instance = new BlnetConnection();
+					self::$instances[$logger] = new BlnetConnection($config, $logger);
 			}
 		}
-		return self::$instance;
+		return self::$instances[$logger];
 	}
 }
 

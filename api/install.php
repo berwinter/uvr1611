@@ -1,5 +1,5 @@
 <?php
-error_reporting(1);
+include_once("lib/error.inc.php");
 include_once("lib/config.inc.php");
 $name = "Installation";
 $check = array();
@@ -109,7 +109,7 @@ function createDatabase($conn, $database) {
 
 function needDatabaseUpdate($conn, $database) {
 	$database = $conn->real_escape_string($database);
-	$result = $conn->query("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME = 'view' AND TABLE_NAME = 't_menu' AND TABLE_SCHEMA = '$database';");	
+	$result = $conn->query("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME = 'view' AND TABLE_NAME = 't_menu' AND TABLE_SCHEMA = '$database';");
 	if(!$result || $result->num_rows == 0) {
 		return true;
 	}
@@ -164,7 +164,7 @@ function resetPassword($conn) {
 	$result = $conn->query("UPDATE `t_users` SET `password` = '40e2776165475d893e923da0fc9039569bad50e7f88e0ff07e11ad8bffd51019c7c0ab2709395c3599f4bebd6a6bd927e9c9470a638e1eef8e8cb971061d7412', `salt` = '80125411a211653c6b76a9c5b9b12b6406a4a53ab61543d31abf626cda4a58ba5c8d2411a5011ad2b61de2cecd07e02b6ec9ad7a2513299d977e34b5c3f76df0' WHERE `username` = 'admin';");
 	if (!$result) {
 	    throw new Exception("Konnte Passwort nicht zurücksetzen: " . $conn->error);
-	} 
+	}
 	return "Passwort wurde auf '1234' zurückgesetzt.";
 }
 echo '<?xml version="1.0" encoding="UTF-8"?>';
@@ -219,7 +219,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 		<p><strong>Achtung!</strong> Die Verwendung dieses Skripts kann im Fehlerfall zu Datenverlust führen. Wichtige Daten sollten zuvor gesichert werden. Nach Abschluss der Installation sollte dieses Skript unbedingt gelöscht werden, um den Datenlogger vor unberechtigem Zugriff zu schützen.</p>
 		<h3>Status</h3>
 		<ul id="status">
-			<?php 
+			<?php
 			if($check["config"]) {
 				echo '<li><span class="ui-icon ui-icon-check"></span> config/config.ini gefunden</li>';
 			}
@@ -264,10 +264,10 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 			<tr>
 				<td class="buttons" colspan="2">
 				<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="submit" name="action" value="reset">Passwort zurücksetzen</button>
-				<?php 
+				<?php
 				if(!$check["mysql"]) {
-					echo '<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="submit" name="action" value="test">Verbindung testen</button>';		
-				}			
+					echo '<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="submit" name="action" value="test">Verbindung testen</button>';
+				}
 				else if(!$check["database"]) {
 					echo '<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" type="submit" name="action" value="install">Datenbank anlegen</button>';
 				}
