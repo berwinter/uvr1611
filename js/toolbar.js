@@ -171,34 +171,20 @@ var toolbar = {
 		// init buttonsets
 		this.buttonset.buttonset();
 		this.period.buttonset().change(function(){
-			switch(toolbar.getPeriod()) {
-				case 'week':
-					toolbar.timeInc = 86400000*7;
-					break;
-				case 'month':
-					toolbar.timeInc = 86400000*30;
-					break;
-				case 'year':
-					toolbar.timeInc = 86400000*365;
-					break;
-				default:
-					toolbar.timeInc = 86400000;
+			if(toolbar.getPeriod() == "week") {
+				toolbar.timeInc = 7*86400000;
+			}
+			else {
+				toolbar.timeInc = 86400000;
 			}
 			menu.selectedItem.load();
 		});
 		this.grouping.buttonset().change(function(){
-			switch(toolbar.getGrouping()) {
-				case 'weeks':
-					toolbar.timeInc = 86400000*7;
-					break;
-				case 'months':
-					toolbar.timeInc = 86400000*31;
-					break;
-				case 'years':
-					toolbar.timeInc = 86400000*365;
-					break;
-				default:
-					toolbar.timeInc = 86400000;
+			if(toolbar.getGrouping() == "months") {
+				toolbar.timeInc = 31*86400000;
+			}
+			else {
+				toolbar.timeInc = 86400000;
 			}
 			menu.selectedItem.load();
 		});

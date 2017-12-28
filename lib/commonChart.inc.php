@@ -28,18 +28,11 @@ if(isset($_GET["id"])) {
 
 // get period
 $period = 0;
-if(isset($_GET["period"])) {
-	switch($_GET["period"]) {
-		case 'week':
-			$period = 6;
-			break;
-		case 'month':
-			$period = 30;
-			break;
-		case 'year':
-			$period = 364;
-			break;
-	}
+if(isset($_GET["period"]) && $_GET["period"] == "week") {
+	$period = 6;
+}
+else if(isset($_GET["period"]) && $_GET["period"] == "year") {
+	$period = 364;
 }
 
 // get grouping
