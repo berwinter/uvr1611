@@ -1,8 +1,9 @@
 <?php
-include_once 'lib/commonChart.inc.php';
 include_once("lib/error.inc.php");
 
 try {
+	include_once 'lib/commonChart.inc.php';
+
 	// get frame
 	$frame = "frame1";
 	if(isset($_GET["frame"])) {

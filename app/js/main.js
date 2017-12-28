@@ -1,3 +1,34 @@
+var config = {
+	data: [],
+	init: function()
+	{
+		$.ajax({
+		    url: "api/config",
+		    dataType:"json",
+		    success: function(jsonData){
+		    	config.data = jsonData;
+		    	
+				$(document).ready(function() {
+					config.display();
+				});
+		    }
+		});
+	},
+	display: function()
+	{
+		$("#contact > a:first").before(config.data["version"]+" ");
+		$("#contact > a:last").attr("href", "mailto:"+config.data["email"]);
+		$("#appname").text(config.data["name"]);
+		$("#bl_login_form").attr("action", "http://"+config.data["address"]+":"+config.data["http_port"]+"/main.html");
+		if(config.data["blnet-login"] == "true") {
+			$("#bl_login_form, #blnet_login").show();
+		}
+		else {
+			$("#bl_login_form, #blnet_login").hide();
+		}
+	}
+}
+
 var menu = {
 	selectedItem: null,
 	items: [],
@@ -525,6 +556,7 @@ var converter = {
 
 google.load('visualization', '1', {'packages':['corechart']});
 menu.init();
+config.init();
 
 $(document).ajaxError(function(event, request, settings) {
 	try {

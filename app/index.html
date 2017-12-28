@@ -1,20 +1,4 @@
-<?php 
-	error_reporting(0);
-	if(file_exists("install.php")) {
-		header("HTTP/1.1 307 Temporary Redirect");
-		header("Location: install.php");
-		exit();
-	}
-
-	include_once("lib/config.inc.php");
-	$config = Config::getInstance();
-	$email = $config->app->email;
-	$name = $config->app->name;
-	$address = $config->uvr1611->address;
-	$http_port = $config->uvr1611->http_port;
-			
-	echo '<?xml version="1.0" encoding="UTF-8"?>';
-?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
@@ -35,20 +19,16 @@
 	</head>
 
 	<body>
-		<div id="contact"><?php include("VERSION"); ?> <a href="https://github.com/berwinter/uvr1611" target="_blank">GitHub</a> <a href="mailto:<?php echo $email; ?>">Kontakt</a></div>
+		<div id="contact"><a href="https://github.com/berwinter/uvr1611" target="_blank">GitHub</a> <a>Kontakt</a></div>
 		<div id="login">
 
-			<?php if($config->uvr1611->blnet_login) { ?>
-			<form id="bl_login_form" method="post" action="<?php echo "http://".$address.":".$http_port."/main.html"; ?>" target="_blank">
+			<form id="bl_login_form" method="post" target="_blank">
 				<input name="blu" type="hidden" value="1" checked="checked"/>
 				<input name="blp" type="hidden" size="10" maxlength="8"/>
 				<input name="bll" type="hidden" value="Login"/>
 			</form>
-			<?php } ?>
 			<input name="password" class="text ui-widget-content ui-corner-all" id="login_password" type="password" size="12"/>
-			<?php if($config->uvr1611->blnet_login) { ?>
 			<button id="bl_login">BL-Net</button>
-			<?php } ?>
 			<button id="dl_login">Login</button><br/>
 			<span id="login_message"></span>
 		</div>
@@ -66,7 +46,7 @@
 		    	</tspan>
 		    </text>
 		    <text x="-0.13813959" y="1049.5406">
-		    	<tspan x="-0.13813959" y="1049.5406" style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#666666;font-family:Arial"><?php echo $name;?></tspan>
+		    	<tspan id="appname" x="-0.13813959" y="1049.5406" style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#666666;font-family:Arial"></tspan>
 		    </text>
 		  </g>
 		</svg>
