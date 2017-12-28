@@ -1,5 +1,5 @@
 var toolbar = {
-	timeInc: 86400000, 
+	timeInc: 86400000,
 	date: null,
 	init: function()
 	{
@@ -19,8 +19,8 @@ var toolbar = {
 		this.edit = $("#editChart");
 		this.editDialog = $("#edit_chart_dialog");
 		this.editTab = $("#edit_chart_tab");
-		
-		
+
+
 		var today = new Date();
 		var dd = today.getDate();
 		var mm = today.getMonth();
@@ -59,7 +59,7 @@ var toolbar = {
 		}, function() {
 			tooltip.hide()
 		});
-		
+
 		this.login.buttonset();
 		this.blLogin.button().click(function (){
 			toolbar.loginToBl();
@@ -70,7 +70,7 @@ var toolbar = {
 		if(menu.loggedin) {
 			$("span", toolbar.dlLogin).text("Logout");
 		}
-		
+
 		this.editDialog.dialog({
 			autoOpen: false,
 			modal: true,
@@ -86,17 +86,17 @@ var toolbar = {
 				dialog.open(menu.selectedItem);
 			}
 		});
-		
+
 		this.editTab.tabs();
-		
+
 		$("#edit_analog ul.activeLines, #edit_analog ul.availableLines").sortable({
 		      connectWith: "#edit_analog ul.editBox"
 		}).disableSelection();
-		
+
 		$("#edit_digital ul.activeLines, #edit_digital ul.availableLines").sortable({
 		      connectWith: "#edit_digital ul.editBox"
 		}).disableSelection();
-		  
+
 		this.edit.button({
 			icons: {
 				primary: "ui-icon-pencil"
@@ -105,8 +105,8 @@ var toolbar = {
 		}).click(function() {
 			toolbar.editDialog.dialog("open");
 		});
-		
-		
+
+
 		// home button
 		this.home.button({
 			icons: {
@@ -115,7 +115,7 @@ var toolbar = {
 		}).click(function (){
 			location.hash = "home";
 		});
-		
+
 		// back button
 		this.back.button({
 			icons: {
@@ -125,7 +125,7 @@ var toolbar = {
 		}).click(function (){
 			toolbar.setDate(new Date(toolbar.date.getTime() - toolbar.timeInc));
 		});
-		
+
 		// back to chart button
 		this.backToChart.button({
 			icons: {
@@ -144,7 +144,7 @@ var toolbar = {
 				$("#step_chart").show();
 			$("#line_chart").show();
 		});
-		
+
 		// forward button
 		this.forward.button({
 			icons: {
@@ -154,12 +154,12 @@ var toolbar = {
 		}).click(function (){
 			toolbar.setDate(new Date(toolbar.date.getTime() + toolbar.timeInc));
 		});
-		
+
 		// today button
 		this.today.button().click(function (){
 			toolbar.setDate(new Date());
 		});
-		
+
 		// init datepicker
 		this.datepicker.addClass("ui-widget ui-widget-content ui-corner-all").datepicker({
 			"onSelect": function(selectedDate){
@@ -167,7 +167,7 @@ var toolbar = {
 			}
 		});
 		toolbar.setDate(new Date());
-		
+
 		// init buttonsets
 		this.buttonset.buttonset();
 		this.period.buttonset().change(function(){
@@ -328,13 +328,16 @@ var dialog = {
 			var $item = $("<li class=\"ui-state-default\">"+item.name+"</li>").data(item);
 			$activeDigitalLines.append($item);
 		}
-		
+
 		if(dialog.names != null) {
 			dialog.showAvaliable();
 		}
 		else {
 			$.ajax({
 			    url: "names.php",
+				data: {
+					logger: menu.selectedItem.logger
+				},
 		        dataType:"json",
 				success: function(data) {
 					dialog.names = data;
@@ -348,7 +351,7 @@ var dialog = {
 		for(var i in dialog.names) {
 			var item = dialog.names[i];
 			if(item.type.indexOf("analog") == 0 || item.type.indexOf("speed") == 0 || item.type.indexOf("power") == 0) {
-				if(dialog.filter(item.frame, item.type)) {
+				if(dialog.filter(item.frame, item.type, item.logger)) {
 					var $item = $("<li class=\"ui-state-default\">"+item.name+"</li>").data(item);
 					$availableAnalogLines.append($item);
 				}
@@ -358,17 +361,17 @@ var dialog = {
 		for(var i in dialog.names) {
 			var item = dialog.names[i];
 			if(item.type.indexOf("digital") == 0) {
-				if(dialog.filter(item.frame, item.type)) {
+				if(dialog.filter(item.frame, item.type, item.logger)) {
 					var $item = $("<li class=\"ui-state-default\">"+item.name+"</li>").data(item);
 					$availableDigitalLines.append($item);
 				}
 			}
 		}
 	},
-	filter: function(frame, type) {
+	filter: function(frame, type, logger) {
 		for(var i in dialog.item.columns.analog) {
 			var item = dialog.item.columns.analog[i];
-			if(item.frame == frame && item.type == type) {
+			if(item.frame == frame && item.type == type && item.logger == logger) {
 				return false;
 			}
 		}
@@ -378,13 +381,13 @@ var dialog = {
 		var analog = [];
 		var lines = [];
 		$("#edit_analog ul.activeLines > li").each(function(i) {
-			var line = {index: i+1, name: $(this).data("name"), type: $(this).data("type"), frame: $(this).data("frame")};
+			var line = {index: i+1, name: $(this).data("name"), type: $(this).data("type"), frame: $(this).data("frame"), logger: $(this).data("logger")};
 			analog.push(line);
 			lines.push(line);
 		});
 		var digital = [];
 		$("#edit_digital ul.activeLines > li").each(function(i) {
-			var line = {index: i+1+analog.length, name: $(this).data("name"), type: $(this).data("type"), frame: $(this).data("frame")};
+			var line = {index: i+1+analog.length, name: $(this).data("name"), type: $(this).data("type"), frame: $(this).data("frame"), logger: $(this).data("logger")};
 			digital.push(line);
 			lines.push(line);
 		});

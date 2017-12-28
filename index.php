@@ -1,5 +1,5 @@
 <?php 
-	error_reporting(0);
+	include_once("lib/error.inc.php");
 	if(file_exists("install.php")) {
 		header("HTTP/1.1 307 Temporary Redirect");
 		header("Location: install.php");
