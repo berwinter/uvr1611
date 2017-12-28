@@ -28,6 +28,21 @@ class CmiDataset
 						 33 => "speed4",    34 => "power1",    35 => "kWh1",
 						 36 => "MWh1",      37 => "power2",    38 => "kWh2",
 						 39 => "MWh2"),
+		"uvrx2" =>  array(0 =>
+						array(0 => "analog1",   1 => "analog2",   2 => "analog3",
+						  	  3 => "analog4",   4 => "analog5",   5 => "analog6",
+		                      6 => "analog7",   7 => "analog8",   8 => "analog9",
+				  		      9 => "analog10", 10 => "analog11", 11 => "analog12",
+						     12 => "analog13", 13 => "analog14", 14 => "analog15",
+				             15 => "analog16"),
+						  1 =>
+						array(0 => "digital1",   1 => "digital2",   2 => "digital3",
+  						  	  3 => "digital4",   4 => "digital5",   5 => "digital6",
+  		                      6 => "digital7",   7 => "digital8",   8 => "digital9",
+  				  		      9 => "digital10", 10 => "digital11", 11 => "digital12",
+  						     12 => "digital13", 13 => "digital14", 14 => "digital15",
+  				             15 => "digital16")
+						),
 		"canbc" =>  array(0 => "analog1",    1 => "analog2",    2 => "analog3",
 						  3 => "power1",     4 => "kWh1",       5 => "MWh1",
 						  6 => "analog4",    7 => "analog5",    8 => "analog6",
@@ -61,6 +76,7 @@ class CmiDataset
 	const POWER = 0x0a;
 	const ENERGY = 0x0b;
 	const UVR = 0x80;
+	const UVRX2 = 0x87;
 	const ESR21 = 0x70;
 	const CAN_BC = 0x84;
 	const CAN_EZ = 0x85;
@@ -68,7 +84,7 @@ class CmiDataset
 
 	public function __construct($string) {
 		$this->data = unpack("Csource/Cframe/Ccanid/Cdevice/C3id/C/Cunit/Cformat/Csize/C7", substr($string, 0, 18));
-		$this->desc = trim(substr($string, 18));
+		$this->data["desc"] = trim(substr($string, 18));
 	}
 
 	public function getSize() {
@@ -117,6 +133,8 @@ class CmiDataset
 		switch ($this->data["device"]) {
 			case self::UVR:
 				return $this->mapping["uvr"][$this->data["id1"]];
+			case self::UVRX2:
+				return $this->mapping["uvrx2"][$this->data["id2"]][$this->data["id1"]%16];
 			case self::ESR21:
 				return $this->mapping["esr21"][$this->data["id1"]];
 			case self::CAN_EZ:
@@ -133,6 +151,8 @@ class CmiDataset
 			case self::UVR:
 			case self::ESR21:
 				return "f".$this->data["frame"].":".$this->data["canid"];
+			case self::UVRX2:
+				return "f".(floor($this->data["id1"]/16)).":".$this->data["canid"];
 			case self::CAN_BC:
 				if($this->data["id1"] < 13) {
 					return "f".$this->data["frame"].":".$this->data["canid"].":1";
