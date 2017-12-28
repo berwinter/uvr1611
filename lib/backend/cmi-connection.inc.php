@@ -7,22 +7,23 @@
  * @copyright  Copyright (c) Bertram Winter bertram.winter@gmail.com
  * @license    GPLv3 License
  */
+include_once("lib/error.inc.php");
 include_once("lib/config.inc.php");
 include_once("lib/backend/uvr1611.inc.php");
 include_once("lib/backend/cmi-parser.inc.php");
 include_once("lib/backend/database.inc.php");
-error_reporting(0);
 
 class CmiConnection
 {
 
 	const NEWLINE = "\x0D\x0A";
 	const DATASET_SIZE = 80;
-	
+
 	protected $config;
 	protected $data;
 	protected $pos;
 	private $parser;
+	private $logger;
 	private $count = 0;
 	private $days = array();
 	private $day = 0;
@@ -30,9 +31,10 @@ class CmiConnection
 	private $end = 0;
 	private $size = 0;
 
-	public function __construct()
+	public function __construct($config, $logger)
 	{
-		$this->config = Config::getInstance()->uvr1611;
+		$this->logger = $logger;
+		$this->config = $config;
 		if(!function_exists('curl_version')) {
 			throw new Exception("Requires PHP-CURL for CMI communication.");
 		}
@@ -45,7 +47,7 @@ class CmiConnection
 		$database = Database::getInstance();
 		$frames = $this->fetchData();
 		foreach($frames as $key => $frame) {
-			$current_energy = $database->getCurrentEnergy($key);
+			$current_energy = $database->getCurrentEnergy($key, $this->logger);
 			$frames[$key]["current_energy1"] = $current_energy[0];
 			$frames[$key]["current_energy2"] = $current_energy[1];
 		}
@@ -53,13 +55,13 @@ class CmiConnection
 		$frames["time"] = date("H:i:s");
 		return $frames;
 	}
-	
+
 	public function startRead()
 	{
 		create_pid();
 		return $this->getCount();
 	}
-	
+
 	public function endRead($success = true)
 	{
 		close_pid();
@@ -71,7 +73,7 @@ class CmiConnection
 		$this->pos = 0;
 		$this->days = array();
 	}
-	
+
 	public function fetchData()
 	{
 		if($this->start>=$this->end) {
@@ -92,7 +94,7 @@ class CmiConnection
 		$this->end -= $this->size;
 		return $this->parser->parse(substr($this->data, $this->end, $this->size));
 	}
-	
+
 	public function getCount()
 	{
 		if($this->count == 0) {
@@ -116,11 +118,11 @@ class CmiConnection
 				}
 			}
 			$this->day = 0;
-			rsort($this->days);		
+			rsort($this->days);
 		}
-		return $this->count;		
+		return $this->count;
 	}
-	
+
 	private function getDatasets($count) {
 		$datasets = array();
 		for($i=0;$i<$count;$i++) {
@@ -129,7 +131,7 @@ class CmiConnection
 		}
 		return $datasets;
 	}
-	
+
 	private function readInfoHeader() {
 		$this->pos = strpos($this->data, self::NEWLINE, $this->pos)+2;
 		$this->pos = strpos($this->data, self::NEWLINE, $this->pos)+2;
@@ -140,7 +142,7 @@ class CmiConnection
 		$header["count"] = $data["count1"] + $data["count2"];
 		return $header;
 	}
-	
+
 	function getData($url) {
 		$process = curl_init();
 		$ip = $this->config->address;

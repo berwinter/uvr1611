@@ -1,33 +1,42 @@
 <?php
 include_once("lib/backend/uvr1611.inc.php");
 include_once("lib/error.inc.php");
+include_once("lib/config.inc.php");
 
 try {
 	header('Cache-Control: no-cache, must-revalidate');
 	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 	header('Content-type: application/json; charset=utf-8');
-	
-	
-	
+
 	if(isset($_GET["date"]) && $_GET["date"] < time()) {
 		$date = $_GET["date"];
 		// connect to database
 		$database = Database::getInstance();
 		echo preg_replace('/"(-?\d+\.?\d*)"/', '$1', json_encode($database->queryLatest($date)));
 	}
-	else 
+	else
 	{
 		$data = load_cache("uvr1611_latest", Config::getInstance()->app->latestcache);
-	
+
 		if(!$data)
 		{
-			$uvr = Uvr1611::getInstance();
-			$latest = $uvr->getLatest();
-			$latest["info"]["cached"] = false;
+			$loggers = Config::getInstance()->getLoggers();
+			$latest = array(
+				"info" => array(
+					"cached" => false,
+					"loggers" => $loggers
+				)
+			);
+
+			foreach ($loggers as $logger) {
+				$uvr = Uvr1611::getInstance($logger);
+				$latest[$logger] = $uvr->getLatest();
+			}
+
 			$data = json_encode($latest);
 			save_cache($latest,"uvr1611_latest");
 		}
-	
+
 		echo $data;
 	}
 }

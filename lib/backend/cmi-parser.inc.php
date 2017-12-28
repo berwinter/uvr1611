@@ -7,7 +7,7 @@
  * @copyright  Copyright (c) Bertram Winter bertram.winter@gmail.com
  * @license    GPLv3 License
  */
-error_reporting(0);
+include_once("lib/error.inc.php");
 
 class CmiDataset
 {

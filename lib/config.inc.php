@@ -14,7 +14,7 @@ class Config
 	 * Config location constant
 	 */
     const DEFAULT_CONFIG_FILE = 'config/config.ini';
- 
+
     /**
      * Singleton Interface
      */
@@ -26,7 +26,7 @@ class Config
         }
         return self::$instance;
     }
- 
+
     /**
      * Constructor
      * @param array $options predefined options
@@ -43,7 +43,11 @@ class Config
 			throw new Exception("config.ini not found.");
 		}
     }
- 
+
+		public function getLoggers() {
+			return array_keys(array_filter(get_object_vars($this), "isLogger", ARRAY_FILTER_USE_KEY));
+		}
+
     /**
      * Sets a array of confif options as properties of this class
      * @param array $options
@@ -59,7 +63,7 @@ class Config
         }
         return $this;
     }
- 
+
 	/**
 	 * Provides access to the configuration properties
 	 * @param string $name Property name
@@ -69,4 +73,8 @@ class Config
     {
         return "";
     }
+}
+
+function isLogger($name) {
+	return (substr($name, 0, strlen("uvr1611")) === "uvr1611");
 }
