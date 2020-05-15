@@ -13,7 +13,7 @@ var menu = {
 				var $menu = $("<div></div>");
 				var $pages = $("<div><div id=\"chart_container\"><div id=\"step_chart\"></div><div id=\"line_chart\"></div><div id=\"minmax_chart\"></div></div><div id=\"energy_container\"><div id=\"bar_chart\"></div></div></div>");
 				$pages.find("#minmax_chart").hide();
-				
+
 				for (var i in menu.items)
 				{
 					var item = menu.items[i];
@@ -69,11 +69,11 @@ var menu = {
 				function() {
 					$(this).removeClass("hover");
 				});
-				
+
 				$menu.find("div.item").click(function() {
 					location.hash = $(this).data("index");
 				});
-				
+
 				$(document).ready(function() {
 					$("#menu").append($menu.children());
 					$("#pages").append($pages.children());
@@ -90,17 +90,19 @@ var menu = {
 	{
 		$("div.item").hide();
 		if(menu.loggedin) {
+			toolbar.edit.show();
 			$("span", toolbar.dlLogin).text("Logout");
 			if(!$("div.item").is(":visible")) {
 				$("div.item").fadeIn('slow');
 			}
 		}
 		else {
+			toolbar.edit.hide();
 			if(!$("div.item:not(.protected)").is(":visible")) {
 				$("div.item:not(.protected)").fadeIn('slow');
 			}
 		}
-		
+
 
 	},
 	login: function()
@@ -155,7 +157,7 @@ var menu = {
 					$("#content").show().animate({'top':90}, function() {
 						$("#content").trigger('complete');
 					});
-					
+
 					menu.showContent();
 				});
 			}
@@ -170,7 +172,7 @@ var menu = {
 		$("#pages > table.chartinfo").detach();
 		$("#pages").children().hide();
 		menu.selectedItem["container"].show();
-		
+
 		switch(menu.selectedItem["type"]) {
 			case "schema":
 				toolbar.hideDateNavigation();
@@ -207,7 +209,7 @@ var menu = {
 }
 
 
-var weather = 
+var weather =
 {
 	fetch: function(city)
 	{
@@ -254,7 +256,7 @@ var weather =
 					weather.calcSun($(this), currTime, sunRise, sunSet);
 				});
 			}
-		});	
+		});
     },
 	calcSun: function(sun, currTime, sunRise, sunSet) {
 		var timeFormatter = new google.visualization.DateFormat({pattern: "HH:mm"});
@@ -337,12 +339,12 @@ var weather =
 			var xpos = 40+x;
 		}
 		sun.find("#current_time").attr("transform","matrix(1, 0, 0, 1, "+xpos+", 80)");
-		
+
 	}
 }
 
 
-var actualValues = 
+var actualValues =
 {
 	date: null,
 	init: function()
@@ -374,47 +376,47 @@ var actualValues =
      			var text = value.format.replace(/((DIGITAL|MWH|KWH|MISCHER_AUF|MISCHER_ZU|VENTIL|DRAINBACK|DREHZAHL|GRADCOLOR|ANIMATION)\()?#\.?(#*)\)?/g, function(number,tmp,modifier,fractions) {
      				switch(modifier) {
      					case "MISCHER_AUF":
-     						return converter.mixerOn(data[value.frame][value.type]);
+     						return converter.mixerOn(data[value.logger][value.frame][value.type]);
      					case "MISCHER_ZU":
-     						return converter.mixerOff(data[value.frame][value.type]);
+     						return converter.mixerOff(data[value.logger][value.frame][value.type]);
                         case "DRAINBACK":
-     						return converter.drainback(data[value.frame][value.type]);
+     						return converter.drainback(data[value.logger][value.frame][value.type]);
      					case "VENTIL":
-     						return converter.valve(data[value.frame][value.type]);
+     						return converter.valve(data[value.logger][value.frame][value.type]);
      					case "DIGITAL":
-     						return converter.digital(data[value.frame][value.type]);
+     						return converter.digital(data[value.logger][value.frame][value.type]);
      					case "MWH":
-     						return converter.mwh(data[value.frame][value.type]);
+     						return converter.mwh(data[value.logger][value.frame][value.type]);
      					case "KWH":
-     						return converter.kwh(data[value.frame][value.type]).toFixed(fractions.length);
+     						return converter.kwh(data[value.logger][value.frame][value.type]).toFixed(fractions.length);
      					case "DREHZAHL":
-     						return converter.speed(data[value.frame][value.type]);
+     						return converter.speed(data[value.logger][value.frame][value.type]);
 						case "GRADCOLOR":
-							var color = converter.color(data[value.frame][value.type]);
+							var color = converter.color(data[value.logger][value.frame][value.type]);
 							$(value.path).attr("style","stop-color:"+color);
 							return null;
      					case "ANIMATION":
      						for(var i in $(value.path))
      						{
-     							if(data[value.frame][value.type] == 1)
+     							if(data[value.logger][value.frame][value.type] == 1)
      							{
      								$(value.path)[i].beginElement();
      							}
      							else
      							{
-     								$(value.path)[i].endElement();	
+     								$(value.path)[i].endElement();
      							}
      						}
      						return null;
      					default:
      						try {
-     							return data[value.frame][value.type].toFixed(fractions.length);
+     							return data[value.logger][value.frame][value.type].toFixed(fractions.length);
      						}
      						catch (e) {
-     							return data[value.frame][value.type];
+     							return data[value.logger][value.frame][value.type];
      						}
      				}
-     
+
      			});
 			}
 			catch(e) {
@@ -423,19 +425,19 @@ var actualValues =
 				}
 				else {
 					var text = "ERROR";
-					var message = "Could not format "+data[value.frame][value.type]+" of "+value.frame+"."+value.type+" using "+value.format+".";
+					var message = "Could not format "+data[value.logger][value.frame][value.type]+" of "+value.frame+"."+value.type+" using "+value.format+".";
 					$("#errorMessage").html("<strong>Error</strong> "+message);
-					$("#error").slideDown();					
+					$("#error").slideDown();
 				}
 			}
-     			
+
      		if(text !== null && text !== "null" && text.indexOf("undefined") == -1)
      		{
 				$(value.path).text(text);
      		}
-			
+
 		}
-		$("#time").text(data["time"]);
+		$("#time").text(data["uvr1611"]["time"]);
 	}
 }
 
@@ -546,6 +548,6 @@ $(document).ready(function() {
 	});
 	actualValues.init();
 	toolbar.init();
-	
+
 	$(window).on("hashchange", menu.handle);
 });

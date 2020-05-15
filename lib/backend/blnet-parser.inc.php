@@ -1,13 +1,13 @@
 <?php
 /**
  * Parses a binary string containing a dataset
- * 
+ *
  * Provides access to the values of a dataset as object properties
  *
  * @copyright  Copyright (c) Bertram Winter bertram.winter@gmail.com
  * @license    GPLv3 License
  */
-error_reporting(0);
+include_once("lib/error.inc.php");
 
 class BlnetParser
 {
@@ -35,7 +35,7 @@ class BlnetParser
 	// 32 bit
 	const INT32_MASK = 0xFFFFFFFF;
 	const INT32_SIGN = 0x80000000;
-	
+
 	/**
 	 * Constructor
 	 * Parses thourgh the dataset and add values as properties
@@ -57,25 +57,25 @@ class BlnetParser
 		// unpack binary string
 		$package = unpack("v16analog/vdigital/C4speed/Cactive".
 						  "/Vpower1/vkWh1/vMWh1/Vpower2/vkWh2/vMWh2",$data);
-		
+
 		// 16 Analog channels
 		for($i=1; $i<=16; $i++) {
 			$key = ("analog".$i);
 			$this->$key = self::convertAnalog($package["analog".$i]);
 		}
-		
+
 		// 16 Digital channels (only 13 in use)
 		for($i=1; $i<=16; $i++) {
 			$key = ("digital".$i);
 			$this->$key = self::convertDigital($package["digital"],$i);
 		}
-		
+
 		// 4 speeds
 		for($i=1; $i<=4; $i++) {
 			$key = ("speed".$i);
 			$this->$key = self::convertSpeed($package["speed".$i]);
 		}
-		
+
 		// 2 energy values
 		for($i=1; $i<=2; $i++) {
 			$key = ("energy".$i);
@@ -83,16 +83,16 @@ class BlnetParser
 											  $package["kWh".$i],
 											  $package["active"], $i);
 		}
-		
+
 		// 2 power values
 		for($i=1; $i<=2; $i++) {
 			$key = ("power".$i);
 			$this->$key = self::convertPower($package["power".$i],
 					                         $package["active"], $i);
 		}
-	
+
 	}
-	
+
 	/**
 	 * Provides access to the configuration properties
 	 * @param string $name Property name
@@ -102,7 +102,7 @@ class BlnetParser
 	{
 		throw new Exception('call to undefined property: '.$name);
 	}
-	
+
 	/**
 	 * Convert the int value to a float
 	 * @param int $value
@@ -132,7 +132,7 @@ class BlnetParser
 				return self::calculateValue($value);
 		}
 	}
-	
+
 	/**
 	 * Check if bit is set on a given position
 	 * @param int $value
@@ -148,7 +148,7 @@ class BlnetParser
 			return self::DIGITAL_OFF;
 		}
 	}
-	
+
 	/**
 	 * Check if speed is activated and returns its actual value
 	 * @param int  $value
@@ -163,7 +163,7 @@ class BlnetParser
 			return ($value & self::SPEED_MASK);
 		}
 	}
-	
+
 	/**
 	 * Checks if heat meter is activated on a given position
 	 * and returns its energy
@@ -182,7 +182,7 @@ class BlnetParser
 			return "NULL";
 		}
 	}
-	
+
 	/**
 	 * Checks if heat meter is activated on a given position
 	 * and returns its power
