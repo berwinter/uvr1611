@@ -525,8 +525,8 @@ var converter = {
 	}
 }
 
-google.load('visualization', '1', {'packages':['corechart']});
-menu.init();
+google.charts.load('visualization', {packages: ['corechart']});
+google.charts.setOnLoadCallback(menu.init);
 
 $(document).ajaxError(function(event, request, settings) {
 	try {

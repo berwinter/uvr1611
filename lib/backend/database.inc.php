@@ -253,16 +253,18 @@ class Database
 			$i++;
 		}
 
-		$sql = "SELECT date, ";
-		$sql .= join(", ",$columnNames);
-		$sql .= " FROM (SELECT @row := @row+1 AS rownum, UNIX_TIMESTAMP(datasets.date) AS date, ";
-		$sql .= join(", ", $columns);
-		$sql .= " FROM (SELECT @row :=0) r, t_data AS datasets ";
-		$sql .= join(" ", $joins);
-		$sql .= " WHERE datasets.logger = '$logger' AND datasets.date > DATE_SUB(\"$date\", INTERVAL $period DAY) ".
-				"AND datasets.date < DATE_ADD(\"$date\", INTERVAL 1 DAY))".
-				"ranked WHERE rownum %$reduction =1 GROUP BY date;";
-		$statement->close();
+		$sql =
+			'SELECT date, ' . $sql .= join(', ', $columnNames) .
+			' FROM (SELECT @row := @row+1 AS rownum, UNIX_TIMESTAMP(datasets.date) AS date, ' . join(', ', $columns) .
+			'  FROM (SELECT @row :=0) r, t_data AS datasets ' .
+			join(' ', $joins) .
+			"  WHERE datasets.logger = '" . $logger . "'" .
+      '   AND  datasets.date > DATE_SUB("' . $date . '", INTERVAL ' . $period . ' DAY)' .
+			'   AND datasets.date < DATE_ADD("' . $date . '", INTERVAL 1 DAY))ranked' .
+			' WHERE rownum %' . $reduction . ' = 1' .
+			' GROUP BY date, ' . join(', ', $columnNames) . ';';
+
+    $statement->close();
 		// fetch chart data
 		$rows = array();
 		if(	$result = $this->mysqli->query($sql)) {
@@ -355,17 +357,18 @@ class Database
 			$i++;
 		}
 
-		$sql = "SELECT date, ";
-		$sql .= join(", ",$columnNames);
-		$sql .= " FROM (SELECT @row := @row+1 AS rownum, UNIX_TIMESTAMP(datasets.date) AS date, ";
-		$sql .= join(", ", $columns);
-		$sql .= " FROM (SELECT @row :=0) r, t_data AS datasets ";
-		$sql .= join(" ", $joins);
-		$sql .= " WHERE datasets.logger='$logger' AND datasets.date > DATE_SUB(\"$date\", INTERVAL $period DAY) ".
-				"AND datasets.date < DATE_ADD(\"$date\", INTERVAL 1 DAY))".
-				"ranked WHERE rownum %$reduction =1 GROUP BY date;";
+		$sql =
+			'SELECT date, ' . join(', ', $columnNames) .
+			' FROM (SELECT @row := @row+1 AS rownum, UNIX_TIMESTAMP(datasets.date) AS date, ' . join(', ', $columns) .
+			'  FROM (SELECT @row :=0) r, t_data AS datasets ' .
+			join(' ', $joins) .
+			"  WHERE datasets.logger = '" . $logger . "'" .
+      '   AND  datasets.date > DATE_SUB(' . $date . ', INTERVAL ' . $period . ' DAY)' .
+			'   AND datasets.date < DATE_ADD(' . $date . ', INTERVAL 1 DAY))ranked' .
+			' WHERE rownum %' . $reduction . ' = 1' .
+			' GROUP BY date' . join(', ', $columnNames) . ';';
 
-		// fetch chart data
+    // fetch chart data
 		$rows = array();
 		if($result = $this->mysqli->query($sql)) {
 			while($r = $result->fetch_array(MYSQLI_NUM)) {
@@ -446,9 +449,9 @@ class Database
 					"        AND YEAR(\"$date\")" .
 					"   AND datasets.logger='$logger'" . 
 					"   GROUP BY datasets.date" .
+					"   ORDER BY datasets.date ASC" .
 			        " ) AS temp" .
-			        " GROUP BY YEAR(temp.date)" .
-			        " ORDER BY temp.date ASC;";
+			        " GROUP BY DATE_FORMAT(temp.date, '%Y ');";
 				break;
 			case 'months':
 				$sql =
@@ -462,9 +465,9 @@ class Database
 					"        AND DATE_FORMAT(\"$date\", '%Y%m')" .
 					"   AND datasets.logger='$logger'" . 
 					"   GROUP BY datasets.date" .
+					"   ORDER BY datasets.date ASC" .
 			        " ) AS temp" .
-			        " GROUP BY MONTH(temp.date), YEAR(temp.date)" .
-			        " ORDER BY temp.date ASC;";
+			        " GROUP BY DATE_FORMAT(temp.date, '%b %Y');";
 				break;
 			case 'weeks':
 				$sql =
@@ -478,9 +481,9 @@ class Database
 					"        AND YEARWEEK(\"$date\",1)" .
 					"   AND datasets.logger='$logger'" . 
 					"   GROUP BY datasets.date" .
+					"   ORDER BY datasets.date ASC" .
 			        " ) AS temp" .
-			        " GROUP BY YEARWEEK(temp.date,1)" .
-			        " ORDER BY temp.date ASC;";
+			        " GROUP BY DATE_FORMAT(temp.date, '%Y-W%u');";
 				break;
 			default:
 				$sql = 
